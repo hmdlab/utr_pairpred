@@ -27,6 +27,10 @@ def ext_longest_seq(seq_df: pd.DataFrame) -> pd.DataFrame:
     return max_len_trans_df
 
 
+def convert_TtoU(seq: str) -> str:
+    return seq.replace("T", "U")
+
+
 def main(opt):
     # Create seq df
     fasta = opt.file_path
@@ -72,15 +76,15 @@ def main(opt):
             "ENST_ID": list(seq_dict.keys()),
             "GENE": gene_symbols,
             "5UTR": [
-                seq_dict[k][s - 1 : e]
+                seq_dict[k][s - 1 : e].replace("T", "U")
                 for k, s, e in zip(seq_dict.keys(), UTR5_start, UTR5_end)
             ],
             "CDS": [
-                seq_dict[k][s - 1 : e]
+                seq_dict[k][s - 1 : e].replace("T", "U")
                 for k, s, e in zip(seq_dict.keys(), CDS_start, CDS_end)
             ],
             "3UTR": [
-                seq_dict[k][s - 1 :]
+                seq_dict[k][s - 1 :].replace("T", "U")
                 for k, s, e in zip(seq_dict.keys(), UTR3_start, UTR3_end)
             ],
             "total_len": total_len,
