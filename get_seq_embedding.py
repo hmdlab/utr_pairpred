@@ -15,7 +15,7 @@ def _argparse():
     args.add_argument(
         "--over_length",
         type=str,
-        choices=["trancate", "average"],
+        choices=["trancate_forward", "trancate_back", "average"],
         help="processing method when the input sequence length over the maximum input len,1022.",
     )
     args.add_argument(
@@ -39,16 +39,23 @@ class GetEmbedding:
             model_location=opt.RNAFM_path
         )
         self.batch_converter = self.alphabet.get_batch_converter()
+        if torch.cuda.is_available():
+            self.device = "cuda"
+        else:
+            self.device = "cpu"
+        self.model.to(self.device)
         self.model.eval()
 
     def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
         data = [(f"{seq_name}", f"{seq}")]
         _, _, batch_tokens = self.batch_converter(data)
+        batch_tokens = batch_tokens.to(self.device)
         with torch.no_grad():
             results = self.model(batch_tokens, repr_layers=[12])
         token_embeddings = results["representations"][
             12
         ]  # dim=(1,seq_len+2,emb_dim=640)
+        token_embeddings = token_embeddings.detach().cpu()
         return token_embeddings[0][0]  # return embedding of [CLS] token.
 
     def get(self, seq: str, seq_name="RNA1") -> torch.Tensor:
@@ -65,10 +72,15 @@ class GetEmbedding:
         """
         seq_len = len(seq)
         if seq_len > self.max_seq_len:
-            if self.over_length == "trancate":
+            if self.over_length == "trancate_forward":
                 seq = seq[: self.max_seq_len]
                 embedding = self._calc_embedding(seq, seq_name)
                 return embedding
+            elif self.over_length == "trancate_back":
+                seq = seq[-self.max_seq_len :]
+                embedding = self._calc_embedding(seq, seq_name)
+                return embedding
+
             elif self.over_length == "average":
                 seq_fragments = [
                     seq[i : i + self.max_seq_len]
