@@ -88,12 +88,15 @@ def main(opt):
                 for k, s, e in zip(seq_dict.keys(), UTR3_start, UTR3_end)
             ],
             "total_len": total_len,
-            "5UTR_len": [(e - s) for s, e in zip(UTR5_start, UTR5_end)],
-            "CDS_len": [(e - s) for s, e in zip(CDS_start, CDS_end)],
-            "3UTR_len": [(e - s) for s, e in zip(UTR3_start, UTR3_end)],
+            "5UTR_len": [(e - s) + 1 for s, e in zip(UTR5_start, UTR5_end)],
+            "CDS_len": [(e - s) + 1 for s, e in zip(CDS_start, CDS_end)],
+            "3UTR_len": [(e - s) + 1 for s, e in zip(UTR3_start, UTR3_end)],
         }
     )
     max_len_trans_df = ext_longest_seq(seq_df)
+    max_len_trans_df = max_len_trans_df[
+        (max_len_trans_df["5UTR_len"] >= 10) & (max_len_trans_df["3UTR_len"] >= 10)
+    ]  ## filtering by minimum seq length
     max_len_trans_df.to_csv(opt.output)
 
 

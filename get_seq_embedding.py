@@ -6,7 +6,6 @@ import torch
 import fm
 from tqdm import tqdm
 import pandas as pd
-import numpy as np
 
 
 def _argparse():
@@ -91,7 +90,7 @@ class GetEmbedding:
 
 def main(opt: argparse.Namespace):
     """main"""
-    seq_df = pd.read_csv(opt.i, index_col=0).iloc[:10]
+    seq_df = pd.read_csv(opt.i, index_col=0)
     embedder = GetEmbedding(opt)
     emb_array = []
     seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
