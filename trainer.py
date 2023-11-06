@@ -15,13 +15,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import torch
 from torch import nn
-from torch.optim import Adam
-from torch.nn import functional as F
-from torch.nn import CrossEntropyLoss
+from torch.optim import Adam, SGD
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss
 from torch.utils.data import Dataset, DataLoader
 
-from .dataset import PairDataset
-from .model import PairPredMLP
+from dataset import PairDataset
+from model import PairPredMLP
 
 
 def _argparse():
@@ -62,13 +61,18 @@ def create_pair_set(data_path):
     for i in range(len(df)):
         flg = 1
         while flg:
-            utr3_idx = random.randint(0, len(df))
+            utr3_idx = random.randint(0, len(df) - 1)
             if utr3_idx != i:
                 flg = 0
         pair_list.append([i, utr3_idx, 0])
     assert len(pair_list) == len(df) * 2
     pair_list = np.array(pair_list)
     return pair_list
+
+
+def _discretize(logits, threshold=0.5):
+    discretized = logits >= threshold
+    return discretized
 
 
 def metrics(pred: np.array, label: np.array) -> dict:
@@ -81,36 +85,42 @@ def metrics(pred: np.array, label: np.array) -> dict:
     return scores
 
 
-def val(cfg: yaml, model: nn.Module, val_dataset: Dataset, device: str) -> dict:
+def val(
+    cfg: yaml, model: nn.Module, val_dataset: Dataset, loss_fn, device: str, epoch: int
+) -> dict:
     val_dataloader = DataLoader(
         val_dataset, batch_size=cfg.train.val_bs, shuffle=False, drop_last=True
     )
-    loss_fn = CrossEntropyLoss()
     model.eval()
+    sigmoid = nn.Sigmoid()
     running_loss = 0
     eval_steps = 0
     preds = None
 
     for data, labels in val_dataloader:
         eval_steps += 1
-        data = data.to(device)
-        labels = labels.to(device)
+        input = torch.cat([data[0], data[1]], dim=1)  # concat embeddings
+        input = input.to(device)
+        labels = torch.tensor(labels, dtype=torch.float).to(device)
 
-        logits = model(data)
+        logits = model(input)
         loss = loss_fn(logits.view(-1), labels.view(-1))
         if len(cfg.gpus) > 1:
             loss = loss.mean()
         running_loss += loss.item()
 
         if preds is None:
-            preds = torch.max(logits.detach().cpu().numpy().data, 1)
+            logits = sigmoid(logits)
+            preds = _discretize(logits.detach().cpu().numpy())
             out_labels = labels.detach().cpu().numpy()
         else:
-            preds = np.append(
-                preds, torch.max(logits.detach().cpu().numpy().data, 1), axis=0
-            )
+            logits = sigmoid(logits)
+            preds = np.append(preds, _discretize(logits.detach().cpu().numpy()), axis=0)
             out_labels = np.append(out_labels, labels.detach().cpu().numpy(), axis=0)
 
+    running_loss = running_loss / eval_steps
+    print(f"Eval loss:{running_loss}")
+    wandb.log({"val/loss": running_loss}, step=epoch)
     scores = metrics(preds, out_labels)
     return scores
 
@@ -120,25 +130,27 @@ def train(
     model: nn.Module,
     train_dataset: Dataset,
     val_dataset: Dataset,
+    loss_fn,
+    optimizer,
     device: str,
 ) -> None:
     train_dataloader = DataLoader(
         train_dataset, batch_size=cfg.train.train_bs, shuffle=True, drop_last=True
     )
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
     for epoch in range(cfg.train.epoch):
+        optimizer.zero_grad()
         model.train()
         running_loss = 0.0
         train_steps = 0
         for data, labels in tqdm(train_dataloader, desc=f"Epoch: {epoch}"):
-            data = data.to(device)
-            labels = labels.to(device)
-            logit = model(data)
+            input = torch.cat([data[0], data[1]], dim=1)  # concat embeddings
+            input = input.to(device)
+            labels = torch.tensor(labels, dtype=torch.float).to(device)
+            logit = model(input)
 
             loss = loss_fn(logit.view(-1), labels.view(-1))
 
-            loss = loss / cfg.train.gcc.acc
+            # loss = loss / cfg.train.grad_acc
 
             loss.backward()
             optimizer.step()
@@ -148,25 +160,23 @@ def train(
             train_steps += 1
 
         epoch_loss = running_loss / train_steps
+
         wandb.log(
             {
-                "train_loss": epoch_loss,
+                "train/loss": epoch_loss,
                 "learning rate": optimizer.param_groups[0]["lr"],
             },
             step=epoch,
         )
+
         print(f"Epoch {epoch} loss:{epoch_loss}")
         if (epoch + 1) % cfg.train.val_epoch == 0:
-            scores = val(cfg, model, val_dataset, device)
+            scores = val(cfg, model, val_dataset, loss_fn, device, epoch)
             for key, value in scores.items():
-                wandb.log({key: value}, step=epoch)
+                wandb.log({f"val/{key}": value}, step=epoch)
                 print(f"{key}:{value:.4f}")
 
 
-@hydra.main(
-    config_path="/home/ksuga/whole_mrna_predictor/UTR_PairPred/config",
-    config_name="base_trainer",
-)
 def main(opt: argparse.Namespace):
     cfg = _parse_config(opt.cfg)
 
@@ -174,8 +184,8 @@ def main(opt: argparse.Namespace):
     _random_seeds(cfg.seed)
 
     wandb.init(
-        name=f"{os.path.basename(cfg.result_dir)}",
         project=cfg.wandb_project,
+        name=f"{os.path.basename(cfg.result_dir)}",
         config=cfg,
     )
 
@@ -196,7 +206,10 @@ def main(opt: argparse.Namespace):
     model = PairPredMLP(cfg.model)
     model.to(device)
 
-    train(cfg, model, train_dataset, val_dataset, device)
+    loss_fn = BCEWithLogitsLoss()
+    optimizer = SGD(model.parameters(), lr=float(cfg.train.lr))
+
+    train(cfg, model, train_dataset, val_dataset, loss_fn, optimizer, device)
 
 
 if __name__ == "__main__":

@@ -4,18 +4,19 @@ import torch.nn as nn
 
 class PairPredMLP(nn.Module):
     def __init__(self, cfg):
-        super.__init__()
+        super().__init__()
+        self.cfg = cfg
         self.fc1 = nn.Sequential(
             nn.Linear(in_features=self.cfg.fc1_in, out_features=self.cfg.fc1_out),
             nn.ReLU(),
-            nn.BatchNorm1d(num_features=self.cfg.layer1_in),
+            nn.BatchNorm1d(num_features=self.cfg.fc1_out),
             nn.Dropout(p=0.02),
         )
 
         self.fc2 = nn.Sequential(
             nn.Linear(in_features=self.cfg.fc2_in, out_features=self.cfg.fc2_out),
             nn.ReLU(),
-            nn.BatchNorm1d(num_features=self.cfg.layer2_in),
+            nn.BatchNorm1d(num_features=self.cfg.fc2_out),
             nn.Dropout(p=0.02),
         )
 
