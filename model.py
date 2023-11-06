@@ -1,6 +1,5 @@
-import torch
+"""Model class for simple MLP"""
 import torch.nn as nn
-import torch.functional as F
 
 
 class PairPredMLP(nn.Module):

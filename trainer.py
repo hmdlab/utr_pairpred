@@ -1,25 +1,24 @@
 """Main trainer code"""
 import os
-import gc
 import argparse
-import json
 import random
-import math
 from attrdict import AttrDict
 from typing import Tuple, Union
 import yaml
+import hydra
 import random
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
 import wandb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import torch
 from torch import nn
 from torch.optim import Adam
 from torch.nn import functional as F
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import Dataset, DataLoader
-from torch.utils.data.distributed import DistributedSampler
 
 from .dataset import PairDataset
 from .model import PairPredMLP
@@ -48,10 +47,131 @@ def _parse_config(cfg_path: str) -> dict:
     return config
 
 
+def _random_seeds(seed=0) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+
+def create_pair_set(data_path):
+    df = pd.read_csv(data_path, index_col=0)
+    pair_list = [
+        [i, i, 1] for i in range(len(df))
+    ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+    ## add negative pairs
+    for i in range(len(df)):
+        flg = 1
+        while flg:
+            utr3_idx = random.randint(0, len(df))
+            if utr3_idx != i:
+                flg = 0
+        pair_list.append([i, utr3_idx, 0])
+    assert len(pair_list) == len(df) * 2
+    pair_list = np.array(pair_list)
+    return pair_list
+
+
+def metrics(pred: np.array, label: np.array) -> dict:
+    scores = dict()
+    scores["accuracy"] = accuracy_score(pred, label)
+    scores["precision"] = precision_score(pred, label)
+    scores["recall"] = recall_score(pred, label)
+    scores["f1"] = f1_score(pred, label)
+
+    return scores
+
+
+def val(cfg: yaml, model: nn.Module, val_dataset: Dataset, device: str) -> dict:
+    val_dataloader = DataLoader(
+        val_dataset, batch_size=cfg.train.val_bs, shuffle=False, drop_last=True
+    )
+    loss_fn = CrossEntropyLoss()
+    model.eval()
+    running_loss = 0
+    eval_steps = 0
+    preds = None
+
+    for data, labels in val_dataloader:
+        eval_steps += 1
+        data = data.to(device)
+        labels = labels.to(device)
+
+        logits = model(data)
+        loss = loss_fn(logits.view(-1), labels.view(-1))
+        if len(cfg.gpus) > 1:
+            loss = loss.mean()
+        running_loss += loss.item()
+
+        if preds is None:
+            preds = torch.max(logits.detach().cpu().numpy().data, 1)
+            out_labels = labels.detach().cpu().numpy()
+        else:
+            preds = np.append(
+                preds, torch.max(logits.detach().cpu().numpy().data, 1), axis=0
+            )
+            out_labels = np.append(out_labels, labels.detach().cpu().numpy(), axis=0)
+
+    scores = metrics(preds, out_labels)
+    return scores
+
+
+def train(
+    cfg: yaml,
+    model: nn.Module,
+    train_dataset: Dataset,
+    val_dataset: Dataset,
+    device: str,
+) -> None:
+    train_dataloader = DataLoader(
+        train_dataset, batch_size=cfg.train.train_bs, shuffle=True, drop_last=True
+    )
+    loss_fn = nn.CrossEntropyLoss()
+    optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
+    for epoch in range(cfg.train.epoch):
+        model.train()
+        running_loss = 0.0
+        train_steps = 0
+        for data, labels in tqdm(train_dataloader, desc=f"Epoch: {epoch}"):
+            data = data.to(device)
+            labels = labels.to(device)
+            logit = model(data)
+
+            loss = loss_fn(logit.view(-1), labels.view(-1))
+
+            loss = loss / cfg.train.gcc.acc
+
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+            running_loss += loss.item()
+            train_steps += 1
+
+        epoch_loss = running_loss / train_steps
+        wandb.log(
+            {
+                "train_loss": epoch_loss,
+                "learning rate": optimizer.param_groups[0]["lr"],
+            },
+            step=epoch,
+        )
+        print(f"Epoch {epoch} loss:{epoch_loss}")
+        if (epoch + 1) % cfg.train.val_epoch == 0:
+            scores = val(cfg, model, val_dataset, device)
+            for key, value in scores.items():
+                wandb.log({key: value}, step=epoch)
+                print(f"{key}:{value:.4f}")
+
+
+@hydra.main(
+    config_path="/home/ksuga/whole_mrna_predictor/UTR_PairPred/config",
+    config_name="base_trainer",
+)
 def main(opt: argparse.Namespace):
     cfg = _parse_config(opt.cfg)
 
-    # Setting logger
+    ## Setup section
+    _random_seeds(cfg.seed)
 
     wandb.init(
         name=f"{os.path.basename(cfg.result_dir)}",
@@ -63,32 +183,20 @@ def main(opt: argparse.Namespace):
     os.makedirs("results", exist_ok=True)
     os.makedirs(cfg.result_dir, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    num_gpu = len(cfg.gpus)
 
-    logger.info(f"loading data from {cfg.data}")
-    data, label = load_data(cfg.data, col=cfg.dataset.regions)
-    train_data, val_data, train_label, val_label = train_test_split(
-        data, label, test_size=0.2, random_state=cfg.seed
-    )
+    ## Creating dataset and dataloader
+    data = create_pair_set(data_path=cfg.seq_data)
+    train_data, val_data = train_test_split(data, test_size=0.2, random_state=cfg.seed)
 
     print("Creating train dataset ...")
-    train_dataset = UTRDataset_CNN(
-        train_data, train_label, phase="train", regions=cfg.dataset.regions
-    )
+    train_dataset = PairDataset(train_data, seq_emb_path=cfg.emb_data)
     print("Creating val dataset...")
-    val_dataset = UTRDataset_CNN(
-        val_data, val_label, phase="val", regions=cfg.dataset.regions
-    )
+    val_dataset = PairDataset(val_data, seq_emb_path=cfg.emb_data)
 
-    model = MRNA_CNN(cfg)
+    model = PairPredMLP(cfg.model)
     model.to(device)
-    if num_gpu > 1:
-        model = DP(model)
 
-    # optimizer
-    optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
-
-    train(cfg, model, train_dataset, val_dataset, optimizer)
+    train(cfg, model, train_dataset, val_dataset, device)
 
 
 if __name__ == "__main__":

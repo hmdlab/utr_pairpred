@@ -39,12 +39,7 @@ class GetEmbedding:
             model_location=opt.RNAFM_path
         )
         self.batch_converter = self.alphabet.get_batch_converter()
-        if torch.cuda.is_available():
-            self.device = "cuda"
-        else:
-            self.device = "cpu"
-        self.model.to(self.device)
-        self.model.eval()
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
         data = [(f"{seq_name}", f"{seq}")]
