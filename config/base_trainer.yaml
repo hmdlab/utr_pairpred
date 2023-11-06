@@ -1,0 +1,29 @@
+# General params
+wandb_project: UTR_PairPred
+result_dir: ./MLP_ave
+data_dir: ./data
+seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
+emb_data: ./data/gencode44_embedding_ave.pkl
+gpus: [0,1,2,3]
+
+# Params related to training
+train:
+  train_bs: 32 #Trainin batch size
+  val_bs: 16 #Validation batch size
+  lr: 1e-4 #Learning rate
+  epoch: 300 # Training epoch
+  val_epoch: 5 #Validate in each this epoch
+  grad_acc: 1 #Gradient_accumulations steps
+
+# Params related to CNN model
+model:
+  fc1_in: 1280
+  fc1_out: 640
+  fc2_in: 640
+  fc2_out: 128
+  fc3_in: 128
+  fc3_out: 1
+
+
+
+
