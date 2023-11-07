@@ -11,14 +11,14 @@ class PairPredMLP(nn.Module):
             nn.Linear(in_features=self.cfg.fc1_in, out_features=self.cfg.fc1_out),
             nn.ReLU(),
             nn.BatchNorm1d(num_features=self.cfg.fc1_out),
-            nn.Dropout(p=0.02),
+            nn.Dropout(cfg.dropout),
         )
 
         self.fc2 = nn.Sequential(
             nn.Linear(in_features=self.cfg.fc2_in, out_features=self.cfg.fc2_out),
             nn.ReLU(),
             nn.BatchNorm1d(num_features=self.cfg.fc2_out),
-            nn.Dropout(p=0.02),
+            nn.Dropout(cfg.dropout),
         )
 
         self.fc3 = nn.Sequential(
@@ -95,7 +95,8 @@ class PairPredCNN(nn.Module):
             nn.Linear(self.main_planes * 1, self.out_planes),
         )
 
-    def forward(x):
+    def forward(self, x):
+        """forward function"""
         output = self.emb_cnn(x)
         return output
 

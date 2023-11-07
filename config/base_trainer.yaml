@@ -12,7 +12,7 @@ train:
   train_bs: 32 #Trainin batch size
   val_bs: 16 #Validation batch size
   lr: 1e-4 #Learning rate
-  epoch: 300 # Training epoch
+  epoch: 100 # Training epoch
   val_epoch: 5 #Validate in each this epoch
   grad_acc: 1 #Gradient_accumulations steps
 
@@ -24,6 +24,7 @@ model:
   fc2_out: 128
   fc3_in: 128
   fc3_out: 1
+  dropout: 0.02
 
 
 

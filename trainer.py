@@ -100,6 +100,8 @@ def val(
     for data, labels in val_dataloader:
         eval_steps += 1
         input = torch.cat([data[0], data[1]], dim=1)  # concat embeddings
+        if cfg.model.arch == "cnn":
+            input = input.unsqueeze(dim=-1)
         input = input.to(device)
         labels = torch.tensor(labels, dtype=torch.float).to(device)
 
@@ -146,6 +148,8 @@ def train(
             input = torch.cat(
                 [data[0], data[1]], dim=1
             )  # concat 5UTR and 3UTR embeddings
+            if cfg.model.arch == "cnn":
+                input = input.unsqueeze(dim=-1)
             input = input.to(device)
             labels = torch.tensor(labels, dtype=torch.float).to(device)
             logit = model(input)

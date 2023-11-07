@@ -24,6 +24,7 @@ model:
   fc2_out: 128
   fc3_in: 128
   fc3_out: 1
+  dropout: 0.02
 
 
 

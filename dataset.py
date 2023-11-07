@@ -25,3 +25,28 @@ class PairDataset(Dataset):
 
     def __len__(self):
         return len(self.pair_idx)
+
+
+class PairDatasetRF:
+    def __init__(self, data: np.array, seq_emb_path: str):
+        self.pair_list = data
+        with open(seq_emb_path, "rb") as f:
+            self.seq_emb = pickle.load(f)
+
+        self.utr5emb = np.stack(list(np.array(self.seq_emb)[:, 0]))
+        self.utr3emb = np.stack(list(np.array(self.seq_emb)[:, 1]))
+
+    def get(self) -> (list, list):
+        embeddings = []
+        labels = []
+        for pair_data in self.pair_list:
+            emb5 = self.utr5emb[pair_data[0]]
+            emb3 = self.utr3emb[pair_data[1]]
+            emb = np.concatenate([emb5, emb3])
+            embeddings.append(emb)
+            labels.append(pair_data[2])
+
+        return (embeddings, labels)
+
+    def __len__(self):
+        return len(self.pair_list)
