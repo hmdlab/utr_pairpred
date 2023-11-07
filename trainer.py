@@ -143,7 +143,9 @@ def train(
         running_loss = 0.0
         train_steps = 0
         for data, labels in tqdm(train_dataloader, desc=f"Epoch: {epoch}"):
-            input = torch.cat([data[0], data[1]], dim=1)  # concat embeddings
+            input = torch.cat(
+                [data[0], data[1]], dim=1
+            )  # concat 5UTR and 3UTR embeddings
             input = input.to(device)
             labels = torch.tensor(labels, dtype=torch.float).to(device)
             logit = model(input)
@@ -200,7 +202,7 @@ def main(opt: argparse.Namespace):
 
     print("Creating train dataset ...")
     train_dataset = PairDataset(train_data, seq_emb_path=cfg.emb_data)
-    print("Creating val dataset...")
+    print("Creating val dataset ...")
     val_dataset = PairDataset(val_data, seq_emb_path=cfg.emb_data)
 
     model = PairPredMLP(cfg.model)
