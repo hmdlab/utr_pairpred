@@ -1,0 +1,10 @@
+# General params
+wandb_project: UTR_PairPred
+result_dir: ./RF_ave
+data_dir: ./data
+seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
+emb_data: ./data/gencode44_embedding_ave.pkl
+seed: 2023
+gpus: [0,1,2,3]
+
+
