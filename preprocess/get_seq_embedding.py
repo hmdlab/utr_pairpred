@@ -7,6 +7,9 @@ import fm
 from tqdm import tqdm
 import pandas as pd
 
+from huggingface import HyenaDNAPreTrainedModel
+from standalone_hyenadna import CharacterTokenizer
+
 
 def _argparse():
     args = argparse.ArgumentParser()
@@ -17,6 +20,19 @@ def _argparse():
         type=str,
         choices=["trancate_forward", "trancate_back", "average"],
         help="processing method when the input sequence length over the maximum input len,1022.",
+    )
+    args.add_argument(
+        "--hyenadna",
+        type=str,
+        default=None,
+        choices=[
+            "hyenadna-tiny-1k-seqlen",
+            "hyenadna-small-32k-seqlen",
+            "hyenadna-medium-160k-seqlen",
+            "hyenadna-medium-450k-seqlen",
+            "hyenadna-large-1m-seqlen",
+        ],
+        help="hyenadna model name",
     )
     args.add_argument(
         "--RNAFM_path",
@@ -95,16 +111,75 @@ class GetEmbedding:
             return self._calc_embedding(seq, seq_name)
 
 
+class GetEmbeddingHyenaDNA:
+    def __init__(self):
+        pretrained_model_name = "hyenadna-small-32k-seqlen"
+        use_head = False
+        n_classes = 2
+        backbone_cfg = None
+        max_lengths = {
+            "hyenadna-tiny-1k-seqlen": 1024,
+            "hyenadna-small-32k-seqlen": 32768,
+            "hyenadna-medium-160k-seqlen": 160000,
+            "hyenadna-medium-450k-seqlen": 450000,  # T4 up to here
+            "hyenadna-large-1m-seqlen": 1_000_000,  # only A100 (paid tier)
+        }
+        max_length = max_lengths[pretrained_model_name]
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("Using device:", self.device)
+        self.model = HyenaDNAPreTrainedModel.from_pretrained(
+            "./checkpoints",
+            pretrained_model_name,
+            download=True,
+            config=backbone_cfg,
+            device=self.device,
+            use_head=use_head,
+            n_classes=n_classes,
+        )
+        self.model.to(self.device)
+
+        self.tokenizer = CharacterTokenizer(
+            characters=["A", "C", "G", "T", "N"],  # add DNA characters, N is uncertain
+            model_max_length=max_length + 2,  # to account for special tokens, like EOS
+            add_special_tokens=False,  # we handle special tokens elsewhere
+            padding_side="left",  # since HyenaDNA is causal, we pad on the left
+        )
+
+    def get(self, seq: str, seq_name=None) -> torch.Tensor:
+        tok_seq = self.tokenizer(seq)
+        tok_seq = tok_seq["input_ids"]  # grab ids
+
+        # place on device, convert to tensor
+        tok_seq = torch.LongTensor(tok_seq).unsqueeze(0)  # unsqueeze for batch dim
+        tok_seq = tok_seq.to(self.device)
+        self.model.eval()
+        with torch.inference_mode():
+            embeddings = self.model(tok_seq)  # dim=[bs,seq_len,hidden_dim]
+
+        return embeddings[0][0]
+
+
 def main(opt: argparse.Namespace):
     """main"""
     seq_df = pd.read_csv(opt.i, index_col=0)
-    embedder = GetEmbedding(opt)
     emb_array = []
-    seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
 
-    for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
-        emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
-        emb_array.append([emb5, emb3])
+    if opt.hyenadna == None:
+        embedder = GetEmbedding(opt)
+        seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
+
+        for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
+            emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
+            emb_array.append([emb5, emb3])
+
+    else:
+        embedder = GetEmbeddingHyenaDNA()
+        seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
+
+        for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
+            utr5, utr3 = utr5.replace("U", "T"), utr3.replace("U", "T")
+            emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
+            emb_array.append([emb5, emb3])
 
     with open(opt.o, "wb") as f:
         pickle.dump(emb_array, f)

@@ -101,15 +101,16 @@ def main(opt: argparse.Namespace):
     val_dataset = PairDatasetRF(val_data, seq_emb_path=cfg.emb_data)
     X_val, y_val = val_dataset.get()
 
-    print(f"Model fitting ...")
+    print("Model fitting ...")
     model = RandomForestClassifier(random_state=cfg.seed)
     model.fit(X_train, y_train)
 
-    print(f"Predicting ...")
+    print("Predicting ...")
     pred = model.predict(X_val)
-    metrics = (pred, y_val)
-    print(f"Prediction finished !!!\n Metrics")
-    print(metrics)
+    scores = metrics(pred, y_val)
+    print("Prediction finished !!!\n Metrics")
+    for k, v in scores.items():
+        print(f"{k}:{v:.4f}")
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss
 from torch.utils.data import Dataset, DataLoader
 
 from dataset import PairDataset
-from model import PairPredMLP
+from model import PairPredMLP, PairPredCNN
 
 
 def _argparse():
@@ -208,8 +208,11 @@ def main(opt: argparse.Namespace):
     train_dataset = PairDataset(train_data, seq_emb_path=cfg.emb_data)
     print("Creating val dataset ...")
     val_dataset = PairDataset(val_data, seq_emb_path=cfg.emb_data)
+    if cfg.model.arch == "mlp":
+        model = PairPredMLP(cfg.model)
+    elif cfg.model.arch == "cnn":
+        model = PairPredCNN(cfg.model)
 
-    model = PairPredMLP(cfg.model)
     model.to(device)
 
     loss_fn = BCEWithLogitsLoss()
