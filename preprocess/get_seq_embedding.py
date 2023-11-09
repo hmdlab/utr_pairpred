@@ -112,8 +112,7 @@ class GetEmbedding:
 
 
 class GetEmbeddingHyenaDNA:
-    def __init__(self):
-        pretrained_model_name = "hyenadna-small-32k-seqlen"
+    def __init__(self, pretrained_model_name="hyenadna-small-32k-seqlen"):
         use_head = False
         n_classes = 2
         backbone_cfg = None
@@ -156,7 +155,9 @@ class GetEmbeddingHyenaDNA:
         with torch.inference_mode():
             embeddings = self.model(tok_seq)  # dim=[bs,seq_len,hidden_dim]
 
-        return embeddings[0][0]
+        tok_seq = tok_seq.detach().cpu()
+
+        return embeddings[0][-1]  # only use CLS token
 
 
 def main(opt: argparse.Namespace):
@@ -165,6 +166,7 @@ def main(opt: argparse.Namespace):
     emb_array = []
 
     if opt.hyenadna == None:
+        print(f"Using 'RNA-FM' for embedding !!! ")
         embedder = GetEmbedding(opt)
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
 
@@ -173,14 +175,17 @@ def main(opt: argparse.Namespace):
             emb_array.append([emb5, emb3])
 
     else:
-        embedder = GetEmbeddingHyenaDNA()
+        print(f"Using '{opt.hyenadna}' model for embedding !!!")
+        embedder = GetEmbeddingHyenaDNA(pretrained_model_name=opt.hyenadna)
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
 
         for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
             utr5, utr3 = utr5.replace("U", "T"), utr3.replace("U", "T")
             emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
+            emb5, emb3 = emb5.detach().cpu(), emb3.detach().cpu()
             emb_array.append([emb5, emb3])
 
+    print(f"Writing down embedding results ...")
     with open(opt.o, "wb") as f:
         pickle.dump(emb_array, f)
 

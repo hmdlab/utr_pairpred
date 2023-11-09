@@ -266,7 +266,7 @@ def inference_single():
 
 
 # # uncomment to run! (to get embeddings)
-inference_single()
+# inference_single()
 
 
 # to run this, just call:

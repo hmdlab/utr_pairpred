@@ -9,6 +9,7 @@ def _argparse():
     args = argparse.ArgumentParser()
     args.add_argument("--file_path", type=str, help="path to pc_transcripts.fasta file")
     args.add_argument("--output", type=str, help="path to output file")
+    args.add_argument("--max_seq_len", type=int, default=None)
     opt = args.parse_args()
     return opt
 
@@ -94,9 +95,19 @@ def main(opt):
         }
     )
     max_len_trans_df = ext_longest_seq(seq_df)
-    max_len_trans_df = max_len_trans_df[
-        (max_len_trans_df["5UTR_len"] >= 10) & (max_len_trans_df["3UTR_len"] >= 10)
-    ]  ## filtering by minimum seq length
+    if opt.max_seq_len == None:
+        max_len_trans_df = max_len_trans_df[
+            (max_len_trans_df["5UTR_len"] >= 10) & (max_len_trans_df["3UTR_len"] >= 10)
+        ]  ## filtering by minimum seq length
+
+    else:
+        max_len_trans_df = max_len_trans_df[
+            (max_len_trans_df["5UTR_len"] >= 10)
+            & (max_len_trans_df["5UTR_len"] <= opt.max_seq_len)
+            & (max_len_trans_df["3UTR_len"] >= 10)
+            & (max_len_trans_df["3UTR_len"] <= opt.max_seq_len)
+        ]
+    print(f"df_shape:{max_len_trans_df.shape}")
     max_len_trans_df.to_csv(opt.output)
 
 

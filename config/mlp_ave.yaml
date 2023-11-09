@@ -19,9 +19,9 @@ train:
 # Params related to CNN model
 model:
   arch: mlp
-  fc1_in: 1280
-  fc1_out: 640
-  fc2_in: 640
+  fc1_in: 512
+  fc1_out: 256
+  fc2_in: 256
   fc2_out: 128
   fc3_in: 128
   fc3_out: 1
