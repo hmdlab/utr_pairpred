@@ -57,6 +57,8 @@ class GetEmbedding:
         self.batch_converter = self.alphabet.get_batch_converter()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
+        self.model = self.model.to(self.device)
+
     def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
         data = [(f"{seq_name}", f"{seq}")]
         _, _, batch_tokens = self.batch_converter(data)

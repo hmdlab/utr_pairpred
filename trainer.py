@@ -16,7 +16,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import torch
 from torch import nn
 from torch.optim import Adam, AdamW, SGD
-from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss
+from torch.nn import BCEWithLogitsLoss
 from torch.utils.data import Dataset, DataLoader
 
 from dataset import PairDataset
@@ -203,13 +203,11 @@ def main(opt: argparse.Namespace):
 
     wandb.init(
         project=cfg.wandb_project,
+        group=cfg.wandb_group,
         name=f"{os.path.basename(cfg.result_dir)}",
         config=cfg,
     )
 
-    cfg.result_dir = os.path.join("results", cfg.result_dir)
-    os.makedirs("results", exist_ok=True)
-    os.makedirs(cfg.result_dir, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     ## Creating dataset and dataloader
