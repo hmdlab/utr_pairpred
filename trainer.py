@@ -15,12 +15,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import torch
 from torch import nn
-from torch.optim import Adam, SGD
+from torch.optim import Adam, AdamW, SGD
 from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss
 from torch.utils.data import Dataset, DataLoader
 
 from dataset import PairDataset
-from model import PairPredMLP, PairPredCNN
+from _model_dict import MODEL_DICT
 
 
 def _argparse():
@@ -98,18 +98,25 @@ def val(
     preds = None
 
     for data, labels in val_dataloader:
-        eval_steps += 1
-        input = torch.cat([data[0], data[1]], dim=1)  # concat embeddings
-        if cfg.model.arch == "cnn":
-            input = input.unsqueeze(dim=-1)
-        input = input.to(device)
-        labels = torch.tensor(labels, dtype=torch.float).to(device)
+        if cfg.model.arch == "mlp_split":
+            inputs = (data[0].to(device), data[1].to(device))
 
-        logits = model(input)
+        else:
+            inputs = torch.cat(
+                [data[0], data[1]], dim=1
+            )  # concat 5UTR and 3UTR embeddings
+            if cfg.model.arch == "cnn":
+                inputs = inputs.unsqueeze(dim=-1)
+            inputs = inputs.to(device)
+
+        logits = model(inputs)
+
+        labels = torch.tensor(labels, dtype=torch.float).to(device)
         loss = loss_fn(logits.view(-1), labels.view(-1))
         if len(cfg.gpus) > 1:
             loss = loss.mean()
         running_loss += loss.item()
+        eval_steps += 1
 
         if preds is None:
             logits = sigmoid(logits)
@@ -145,15 +152,20 @@ def train(
         running_loss = 0.0
         train_steps = 0
         for data, labels in tqdm(train_dataloader, desc=f"Epoch: {epoch}"):
-            input = torch.cat(
-                [data[0], data[1]], dim=1
-            )  # concat 5UTR and 3UTR embeddings
-            if cfg.model.arch == "cnn":
-                input = input.unsqueeze(dim=-1)
-            input = input.to(device)
-            labels = torch.tensor(labels, dtype=torch.float).to(device)
-            logit = model(input)
+            if "split" in cfg.model.arch:
+                inputs = (data[0].to(device), data[1].to(device))
 
+            else:
+                inputs = torch.cat(
+                    [data[0], data[1]], dim=1
+                )  # concat 5UTR and 3UTR embeddings
+                if cfg.model.arch == "cnn":
+                    inputs = inputs.unsqueeze(dim=-1)
+                inputs = inputs.to(device)
+
+            logit = model(inputs)
+
+            labels = torch.tensor(labels, dtype=torch.float).to(device)
             loss = loss_fn(logit.view(-1), labels.view(-1))
 
             # loss = loss / cfg.train.grad_acc
@@ -208,15 +220,16 @@ def main(opt: argparse.Namespace):
     train_dataset = PairDataset(train_data, seq_emb_path=cfg.emb_data)
     print("Creating val dataset ...")
     val_dataset = PairDataset(val_data, seq_emb_path=cfg.emb_data)
-    if cfg.model.arch == "mlp":
-        model = PairPredMLP(cfg.model)
+
+    model = MODEL_DICT[cfg.model.arch](cfg.model)
+    if "mlp" in cfg.model.arch:
+        optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
     elif cfg.model.arch == "cnn":
-        model = PairPredCNN(cfg.model)
+        optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
 
     model.to(device)
 
     loss_fn = BCEWithLogitsLoss()
-    optimizer = SGD(model.parameters(), lr=float(cfg.train.lr))
 
     train(cfg, model, train_dataset, val_dataset, loss_fn, optimizer, device)
 

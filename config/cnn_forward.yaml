@@ -1,6 +1,6 @@
 # General params
 wandb_project: UTR_PairPred
-result_dir: ./CNN_forward
+result_dir: ./CNN_forward_Adam_1e4
 data_dir: ./data
 seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
 emb_data: ./data/gencode44_embedding_trancate_forward.pkl

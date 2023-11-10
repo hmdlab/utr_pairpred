@@ -1,4 +1,5 @@
 """Model class for simple MLP"""
+import torch
 import torch.nn as nn
 from attrdict import AttrDict
 
@@ -29,6 +30,49 @@ class PairPredMLP(nn.Module):
         x = self.fc1(x)
         x = self.fc2(x)
         x = self.fc3(x)
+        return x
+
+
+class PairPredMLP_split(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.cfg = cfg
+        self.fc5utr = nn.Sequential(
+            nn.Linear(in_features=self.cfg.fc5utr_in, out_features=self.cfg.fc5utr_out),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=self.cfg.fc5utr_out),
+            nn.Dropout(cfg.dropout_5utr),
+        )
+
+        self.fc3utr = nn.Sequential(
+            nn.Linear(in_features=self.cfg.fc3utr_in, out_features=self.cfg.fc3utr_out),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=self.cfg.fc3utr_out),
+            nn.Dropout(cfg.dropout_3utr),
+        )
+
+        self.fc_common1 = nn.Sequential(
+            nn.Linear(
+                in_features=self.cfg.fc_common1_in, out_features=self.cfg.fc_common1_out
+            ),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=self.cfg.fc_common1_out),
+            nn.Dropout(cfg.dropout_fc_common1),
+        )
+
+        self.fc_common2 = nn.Sequential(
+            nn.Linear(
+                in_features=self.cfg.fc_common2_in, out_features=self.cfg.fc_common2_out
+            ),
+        )
+
+    def forward(self, inputs):
+        x_5utr, x_3utr = inputs[0], inputs[1]
+        x_5utr = self.fc5utr(x_5utr)
+        x_3utr = self.fc3utr(x_3utr)
+        x = torch.cat([x_5utr, x_3utr], dim=1)
+        x = self.fc_common1(x)
+        x = self.fc_common2(x)
         return x
 
 
