@@ -27,6 +27,36 @@ class PairDataset(Dataset):
         return len(self.pair_idx)
 
 
+class PairDataset_Multi(Dataset):
+    def __init__(self, data: np.array, seq_emb_path: list):
+        super().__init__()
+        self.pair_idx = (
+            data  # Embedding idx. dim=[sample_num,3]=(utr5idx,utr3idx,label)
+        )
+        self.utr5emb_list = list()
+        self.utr3emb_list = list()
+        for path in seq_emb_path:
+            with open(path, "rb") as f:
+                self.seq_emb = pickle.load(f)
+                self.utr5emb_list.append(
+                    torch.stack(list(np.array(self.seq_emb)[:, 0]))
+                )
+                self.utr3emb_list.append(
+                    torch.stack(list(np.array(self.seq_emb)[:, 1]))
+                )
+
+        self.utr5emb = torch.cat(self.utr5emb_list)
+        self.utr3emb = torch.cat(self.utr3emb_list)
+
+    def __getitem__(self, idx) -> Union[list, int]:
+        pair_data = self.pair_idx[idx]
+        embs = [self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]]]
+        return embs, pair_data[2]  # label
+
+    def __len__(self):
+        return len(self.pair_idx)
+
+
 class PairDatasetRF:
     def __init__(self, data: np.array, seq_emb_path: str):
         self.pair_list = data

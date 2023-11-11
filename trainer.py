@@ -5,7 +5,6 @@ import random
 from attrdict import AttrDict
 from typing import Tuple, Union
 import yaml
-import hydra
 import random
 from tqdm import tqdm
 import numpy as np
@@ -19,7 +18,7 @@ from torch.optim import Adam, AdamW, SGD
 from torch.nn import BCEWithLogitsLoss
 from torch.utils.data import Dataset, DataLoader
 
-from dataset import PairDataset
+from dataset import PairDataset, PairDataset_Multi
 from _model_dict import MODEL_DICT
 
 
@@ -52,22 +51,47 @@ def _random_seeds(seed=0) -> None:
     torch.manual_seed(seed)
 
 
-def create_pair_set(data_path):
-    df = pd.read_csv(data_path, index_col=0)
-    pair_list = [
-        [i, i, 1] for i in range(len(df))
-    ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
-    ## add negative pairs
-    for i in range(len(df)):
-        flg = 1
-        while flg:
-            utr3_idx = random.randint(0, len(df) - 1)
-            if utr3_idx != i:
-                flg = 0
-        pair_list.append([i, utr3_idx, 0])
-    assert len(pair_list) == len(df) * 2
-    pair_list = np.array(pair_list)
-    return pair_list
+def create_pair_set(cfg, data_path):
+    if cfg.multi_species:
+        df_list = [pd.read_csv(path) for path in data_path]
+        all_pair_list = []
+        sample_count = 0
+        for df in df_list:
+            pair_list = [
+                [sample_count + i, sample_count + i, 1] for i in range(len(df))
+            ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+            ## add negative pairs
+            for i in range(len(df)):
+                flg = 1
+                while flg:
+                    utr3_idx = random.randint(0, len(df) - 1)
+                    if utr3_idx != i:
+                        flg = 0
+                pair_list.append([i + sample_count, utr3_idx + sample_count, 0])
+            assert len(pair_list) == len(df) * 2
+            all_pair_list.extend(pair_list)
+            sample_count += len(df)
+
+        all_pair_list = np.array(all_pair_list)
+        return all_pair_list
+
+    else:
+        df = pd.read_csv(data_path, index_col=0)
+        pair_list = [
+            [i, i, 1] for i in range(len(df))
+        ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+        ## add negative pairs
+        for i in range(len(df)):
+            flg = 1
+            while flg:
+                utr3_idx = random.randint(0, len(df) - 1)
+                if utr3_idx != i:
+                    flg = 0
+            pair_list.append([i, utr3_idx, 0])
+        assert len(pair_list) == len(df) * 2
+        pair_list = np.array(pair_list)
+
+        return pair_list
 
 
 def _discretize(logits, threshold=0.5):
@@ -83,6 +107,26 @@ def metrics(pred: np.array, label: np.array) -> dict:
     scores["f1"] = f1_score(pred, label)
 
     return scores
+
+
+def load_dataset(cfg: AttrDict) -> (Dataset, Dataset):
+    ## Creating dataset and dataloader
+    if cfg.multi_species:
+        dataset_class = PairDataset_Multi
+    else:
+        dataset_class = PairDataset
+
+    data = create_pair_set(cfg, data_path=cfg.seq_data)
+    print(f"Total sample size:{len(data)}")
+
+    train_data, val_data = train_test_split(data, test_size=0.2, random_state=cfg.seed)
+
+    print("Creating train dataset ...")
+    train_dataset = dataset_class(train_data, seq_emb_path=cfg.emb_data)
+    print("Creating val dataset ...")
+    val_dataset = dataset_class(val_data, seq_emb_path=cfg.emb_data)
+
+    return (train_dataset, val_dataset)
 
 
 def val(
@@ -105,7 +149,7 @@ def val(
             inputs = torch.cat(
                 [data[0], data[1]], dim=1
             )  # concat 5UTR and 3UTR embeddings
-            if cfg.model.arch == "cnn":
+            if "cnn" in cfg.model.arch:
                 inputs = inputs.unsqueeze(dim=-1)
             inputs = inputs.to(device)
 
@@ -159,7 +203,7 @@ def train(
                 inputs = torch.cat(
                     [data[0], data[1]], dim=1
                 )  # concat 5UTR and 3UTR embeddings
-                if cfg.model.arch == "cnn":
+                if "cnn" in cfg.model.arch:
                     inputs = inputs.unsqueeze(dim=-1)
                 inputs = inputs.to(device)
 
@@ -210,19 +254,12 @@ def main(opt: argparse.Namespace):
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    ## Creating dataset and dataloader
-    data = create_pair_set(data_path=cfg.seq_data)
-    train_data, val_data = train_test_split(data, test_size=0.2, random_state=cfg.seed)
-
-    print("Creating train dataset ...")
-    train_dataset = PairDataset(train_data, seq_emb_path=cfg.emb_data)
-    print("Creating val dataset ...")
-    val_dataset = PairDataset(val_data, seq_emb_path=cfg.emb_data)
-
+    train_dataset, val_dataset = load_dataset(cfg)
     model = MODEL_DICT[cfg.model.arch](cfg.model)
+
     if "mlp" in cfg.model.arch:
         optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
-    elif cfg.model.arch == "cnn":
+    elif "cnn" in cfg.model.arch:
         optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
 
     model.to(device)

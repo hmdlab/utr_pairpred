@@ -145,6 +145,43 @@ class PairPredCNN(nn.Module):
         return output
 
 
+class PairPredCNN_small(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.in_planes = cfg.in_planes
+        self.out_planes = cfg.out_planes
+        self.main_planes = cfg.main_planes  # dim. int
+        dropout = cfg.dropout  # float
+        self.emb_cnn = nn.Sequential(
+            nn.Conv1d(self.in_planes, self.main_planes, kernel_size=3, padding=1),  ## 3
+            ResBlock(
+                self.main_planes * 1,
+                self.main_planes * 1,
+                stride=2,
+                dilation=1,
+                conv_layer=nn.Conv1d,
+                norm_layer=nn.BatchNorm1d,
+            ),
+            ResBlock(
+                self.main_planes * 1,
+                self.main_planes * 1,
+                stride=1,
+                dilation=1,
+                conv_layer=nn.Conv1d,
+                norm_layer=nn.BatchNorm1d,
+            ),
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(),
+            nn.Dropout(dropout),
+            nn.Linear(self.main_planes * 1, self.out_planes),
+        )
+
+    def forward(self, x):
+        """forward function"""
+        output = self.emb_cnn(x)
+        return output
+
+
 class ResBlock(nn.Module):
     def __init__(
         self,
