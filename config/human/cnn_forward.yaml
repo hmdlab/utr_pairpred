@@ -1,6 +1,8 @@
 # General params
 wandb_project: UTR_PairPred
-result_dir: ./CNN_forward_Adam_1e4
+wandb_group: null
+multi_species: False
+result_dir: ./CNN_forward_Adam_1e4_drop05
 data_dir: ./data
 seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
 emb_data: ./data/gencode44_embedding_trancate_forward.pkl
@@ -22,7 +24,7 @@ model:
   in_planes: 1280
   out_planes: 1
   main_planes: 128
-  dropout: 0.2
+  dropout: 0.5
 
 
 

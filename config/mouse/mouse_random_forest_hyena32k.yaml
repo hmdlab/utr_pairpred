@@ -1,0 +1,14 @@
+# General params
+wandb_project: UTR_PairPred
+wandb_group: Mouse
+result_dir: ./mouse_rf_hyena32k
+data_dir: ./data
+seq_data: ./data/gencode_vM33_utr_gene_unique_max32k.csv # path to raw data csv
+emb_data: ./data/gencode_vM33_embedding_hyenadna_ave_32k.pkl
+seed: 2023
+gpus: [0,1,2,3]
+
+
+model:
+  arch: rf
+

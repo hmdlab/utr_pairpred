@@ -1,6 +1,8 @@
 # General params
 wandb_project: UTR_PairPred
-result_dir: ./MLP_tranc_backward
+wandb_group: null
+multi_species: False
+result_dir: ./MLP_tranc_backward_Adam_drop05
 data_dir: ./data
 seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
 emb_data: ./data/gencode44_embedding_trancate_back.pkl
@@ -18,13 +20,14 @@ train:
 
 # Params related to CNN model
 model:
+  arch: mlp
   fc1_in: 1280
   fc1_out: 640
   fc2_in: 640
   fc2_out: 128
   fc3_in: 128
   fc3_out: 1
-  dropout: 0.02
+  dropout: 0.5
 
 
 

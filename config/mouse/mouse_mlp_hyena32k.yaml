@@ -1,11 +1,11 @@
 # General params
 wandb_project: UTR_PairPred
-wandb_group: null
+wandb_group: mouse
 multi_species: False
-result_dir: ./MLP_hyena32k
+result_dir: ./mouse_MLP_hyena32k
 data_dir: ./data
-seq_data: ./data/gencode44_utr_gene_unique_max32k.csv # path to raw data csv
-emb_data: ./data/gencode44_embedding_hyenadna_ave_32k.pkl
+seq_data: ./data/gencode_vM33_utr_gene_unique_max32k.csv # path to raw data csv
+emb_data: ./data/gencode_vM33_embedding_hyenadna_ave_32k.pkl
 seed: 2023
 gpus: [0,1,2,3]
 

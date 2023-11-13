@@ -2,7 +2,7 @@
 wandb_project: UTR_PairPred
 wandb_group: null
 multi_species: False
-result_dir: ./MLP_hyena32k
+result_dir: ./CNN_hyena32k_Adam_drop05
 data_dir: ./data
 seq_data: ./data/gencode44_utr_gene_unique_max32k.csv # path to raw data csv
 emb_data: ./data/gencode44_embedding_hyenadna_ave_32k.pkl
@@ -20,15 +20,11 @@ train:
 
 # Params related to CNN model
 model:
-  arch: mlp
-  fc1_in: 512
-  fc1_out: 256
-  fc2_in: 256
-  fc2_out: 128
-  fc3_in: 128
-  fc3_out: 1
+  arch: cnn
+  in_planes: 512
+  out_planes: 1
+  main_planes: 64
   dropout: 0.5
-
 
 
 

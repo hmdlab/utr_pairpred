@@ -1,11 +1,11 @@
 # General params
 wandb_project: UTR_PairPred
-wandb_group: null
-multi_species: False
-result_dir: ./CNN_back_Adam_1e4_drop05
+wandb_group: Multi_spieces
+result_dir: ./multi_cnn_ave
 data_dir: ./data
-seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
-emb_data: ./data/gencode44_embedding_trancate_back.pkl # path to embedding pkl file
+multi_species: True
+seq_data: [./data/gencode44_utr_gene_unique.csv,./data/gencode_vM33_utr_gene_unique.csv] # path to raw data csv
+emb_data: [./data/gencode44_embedding_ave.pkl,  ./data/gencode_vM33_embedding_ave.pkl]
 seed: 2023
 gpus: [0,1,2,3]
 
@@ -14,7 +14,7 @@ train:
   train_bs: 32 #Trainin batch size
   val_bs: 16 #Validation batch size
   lr: 1e-4 #Learning rate
-  epoch: 100 # Training epoch
+  epoch: 300 # Training epoch
   val_epoch: 5 #Validate in each this epoch
   grad_acc: 1 #Gradient_accumulations steps
 
@@ -25,6 +25,7 @@ model:
   out_planes: 1
   main_planes: 128
   dropout: 0.5
+
 
 
 
