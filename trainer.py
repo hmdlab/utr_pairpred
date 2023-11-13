@@ -142,7 +142,7 @@ def val(
     preds = None
 
     for data, labels in val_dataloader:
-        if cfg.model.arch == "mlp_split":
+        if "split" in cfg.model.arch:
             inputs = (data[0].to(device), data[1].to(device))
 
         else:
