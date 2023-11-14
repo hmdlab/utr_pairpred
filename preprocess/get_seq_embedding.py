@@ -68,6 +68,7 @@ class GetEmbedding:
         token_embeddings = results["representations"][
             12
         ]  # dim=(1,seq_len+2,emb_dim=640)
+        batch_tokens = batch_tokens.detach().cpu()
         token_embeddings = token_embeddings.detach().cpu()
         return token_embeddings[0][0]  # return embedding of [CLS] token.
 
@@ -103,7 +104,7 @@ class GetEmbedding:
                     self._calc_embedding(seq_frag, seq_name)
                     for seq_frag in seq_fragments
                 ]  # list[torch.Tensor]
-                frag_embs = torch.stack(frag_embs)
+                frag_embs = torch.stack(frag_embs)  # fragments of embeddings
                 ave_embedding = torch.mean(frag_embs, 0)  # calc mean along with dim=1
                 return ave_embedding
             else:

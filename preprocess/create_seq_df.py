@@ -1,5 +1,5 @@
+import os
 import pandas as pd
-import numpy as np
 from tqdm import tqdm
 from Bio import SeqIO
 import argparse
@@ -58,10 +58,10 @@ def convert_TtoU(seq: str) -> str:
 def main_ensembl(opt: argparse.Namespace):
     ## building pyensembl db
     embl_data = Genome(
-        reference_name=opt.ref_name,
+        reference_name=os.path.join(opt.ensembl_dir, opt.ref_name),
         annotation_name=f"my_{opt.ref_name}",
-        gtf_path_or_url=opt.gtf,
-        transcript_fasta_paths_or_urls=opt.fasta,
+        gtf_path_or_url=os.path.join(opt.ensembl_dir, opt.gtf),
+        transcript_fasta_paths_or_urls=os.path.join(opt.ensembl_dir, opt.fasta),
     )
     embl_data.index()
 
@@ -80,8 +80,8 @@ def main_ensembl(opt: argparse.Namespace):
 
     min_len = 9
 
-    for rec in SeqIO.parse(opt.fasta, "fasta"):
-        tmp_data = rec.description.splt(" ")
+    for rec in SeqIO.parse(os.path.join(opt.ensembl_dir, opt.fasta), "fasta"):
+        tmp_data = rec.description.split(" ")
         enst_id = tmp_data[0].split(".")[0]
         try:
             transcript = embl_data.transcript_by_id(enst_id)
