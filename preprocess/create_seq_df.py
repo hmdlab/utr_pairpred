@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from Bio import SeqIO
 import argparse
+from pyensembl import Genome
 
 
 def _argparse():
@@ -10,6 +11,28 @@ def _argparse():
     args.add_argument("--file_path", type=str, help="path to pc_transcripts.fasta file")
     args.add_argument("--output", type=str, help="path to output file")
     args.add_argument("--max_seq_len", type=int, default=None)
+    ## args related to pyensembl.
+    args.add_argument(
+        "--ensembl_dir", type=str, default=None, help="path to ensembl data dir"
+    )
+    args.add_argument(
+        "--ref_name",
+        type=str,
+        default=None,
+        help="reference genome name when building pyensembl db",
+    )
+    args.add_argument(
+        "--gtf",
+        type=str,
+        default=None,
+        help="gtf file name using when building pyensembl db",
+    )
+    args.add_argument(
+        "--fasta",
+        type=str,
+        default=None,
+        help="fasta file name using when building pyensembl db",
+    )
     opt = args.parse_args()
     return opt
 
@@ -32,7 +55,93 @@ def convert_TtoU(seq: str) -> str:
     return seq.replace("T", "U")
 
 
-def main(opt):
+def main_ensembl(opt: argparse.Namespace):
+    ## building pyensembl db
+    embl_data = Genome(
+        reference_name=opt.ref_name,
+        annotation_name=f"my_{opt.ref_name}",
+        gtf_path_or_url=opt.gtf,
+        transcript_fasta_paths_or_urls=opt.fasta,
+    )
+    embl_data.index()
+
+    ## Filtering sequence
+    (
+        enst_ids,
+        ensg_id,
+        valid_5utr,
+        valid_3utr,
+        valid_cds,
+        len_total,
+        len_5utr,
+        len_3utr,
+        len_cds,
+    ) = ([], [], [], [], [], [], [], [], [])
+
+    min_len = 9
+
+    for rec in SeqIO.parse(opt.fasta, "fasta"):
+        tmp_data = rec.description.splt(" ")
+        enst_id = tmp_data[0].split(".")[0]
+        try:
+            transcript = embl_data.transcript_by_id(enst_id)
+            utr5 = (
+                transcript.five_prime_utr_sequence
+                if len(transcript.five_prime_utr_sequence) > min_len
+                else None
+            )
+            utr3 = (
+                transcript.three_prime_utr_sequence
+                if len(transcript.three_prime_utr_sequence) > min_len
+                else None
+            )
+            cds = (
+                transcript.coding_sequence
+                if len(transcript.coding_sequence) > min_len
+                else None
+            )
+
+            if (utr5 is not None) and (utr3 is not None) and (cds is not None):
+                enst_ids.append(enst_id)
+                ensg_id.append(transcript.gene_id)
+                valid_cds.append(cds)
+                valid_5utr.append(utr5)
+                valid_3utr.append(utr3)
+
+                len_total.append(len(cds) + len(utr5) + len(utr3))
+                len_cds.append(len(cds))
+                len_5utr.append(len(utr5))
+                len_3utr.append(len(utr3))
+
+        except ValueError:
+            pass
+
+    seq_df = pd.DataFrame(
+        {
+            "ENST_ID": enst_ids,
+            "GENE": ensg_id,
+            "5UTR": valid_5utr,
+            "CDS": valid_cds,
+            "3UTR": valid_3utr,
+            "total_len": len_total,
+            "5UTR_len": len_5utr,
+            "CDS_len": len_cds,
+            "3UTR_len": len_3utr,
+        }
+    )
+    max_len_trans_df = ext_longest_seq(seq_df)
+    if opt.max_seq_len != None:
+        max_len_trans_df = max_len_trans_df[
+            (max_len_trans_df["5UTR_len"] >= 10)
+            & (max_len_trans_df["5UTR_len"] <= opt.max_seq_len)
+            & (max_len_trans_df["3UTR_len"] >= 10)
+            & (max_len_trans_df["3UTR_len"] <= opt.max_seq_len)
+        ]
+    print(f"df_shape:{max_len_trans_df.shape}")
+    max_len_trans_df.to_csv(opt.output)
+
+
+def main(opt: argparse.Namespace):
     # Create seq df
     fasta = opt.file_path
     UTR5_start, UTR5_end, CDS_start, CDS_end, UTR3_start, UTR3_end = (
@@ -113,4 +222,7 @@ def main(opt):
 
 if __name__ == "__main__":
     opt = _argparse()
-    main(opt)
+    if opt.ensembl_dir == None:
+        main(opt)
+    else:
+        main_ensembl(opt)

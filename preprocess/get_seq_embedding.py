@@ -159,7 +159,7 @@ class GetEmbeddingHyenaDNA:
 
         tok_seq = tok_seq.detach().cpu()
 
-        return embeddings[0][-1]  # only use CLS token
+        return embeddings[0].mean(dim=0)  # embeddings[0][-1]  only use CLS token
 
 
 def main(opt: argparse.Namespace):
