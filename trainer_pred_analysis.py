@@ -2,8 +2,10 @@
 import os
 import argparse
 import random
+import pickle
 from attrdict import AttrDict
 from typing import Tuple, Union
+import wandb
 import yaml
 import random
 from tqdm import tqdm
@@ -16,6 +18,8 @@ from sklearn.metrics import (
     recall_score,
     f1_score,
     confusion_matrix,
+    roc_curve,
+    roc_auc_score,
 )
 import torch
 from torch import nn
@@ -104,7 +108,7 @@ def _discretize(logits, threshold=0.5):
     return discretized
 
 
-def metrics(pred: np.array, label: np.array, phase="val") -> dict:
+def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") -> dict:
     "evaluation metrics"
     scores = dict()
     scores["accuracy"] = accuracy_score(label, pred)
@@ -115,7 +119,12 @@ def metrics(pred: np.array, label: np.array, phase="val") -> dict:
     if phase == "test":
         conf_mat = confusion_matrix(label, pred)
         scores["confusion_matrix"] = conf_mat
-
+        fpr_all, tpr_all, thresholds_all = roc_curve(
+            label, out_logits, drop_intermediate=False
+        )
+        scores["fpr_all"] = fpr_all
+        scores["tpr_all"] = tpr_all
+        scores["roc_thresh"] = thresholds_all
     return scores
 
 
@@ -129,7 +138,7 @@ def load_dataset(cfg: AttrDict) -> dict:
     data = create_pair_set(cfg, data_path=cfg.seq_data)
     print(f"Total sample size:{len(data)}")
 
-    if cfg.create_testset:
+    if cfg.conduct_test:
         train_data, val_data = train_test_split(
             data, test_size=0.2, random_state=cfg.seed
         )
@@ -185,26 +194,40 @@ class Trainer:
         self.device = device
         self.sigmoid = nn.Sigmoid()
 
-        self.train_dataset = dataset_dict["train"]
         self.train_dataloader = DataLoader(
-            self.train_dataset,
+            dataset_dict["train"],
             batch_size=self.cfg.train.train_bs,
             shuffle=True,
             drop_last=True,
         )
 
-        self.val_dataset = dataset_dict["val"]
         self.val_dataloader = DataLoader(
-            self.val_dataset, batch_size=cfg.train.val_bs, shuffle=False, drop_last=True
+            dataset_dict["val"],
+            batch_size=cfg.train.val_bs,
+            shuffle=False,
+            drop_last=True,
         )
+        self.dataloader_dict = {
+            "train": self.train_dataloader,
+            "val": self.val_dataloader,
+        }
+        if self.cfg.conduct_test:
+            self.test_dataloader = DataLoader(
+                dataset_dict["test"],
+                batch_size=cfg.train.val_bs,
+                shuffle=False,
+                drop_last=True,
+            )
+            self.dataloader_dict["test"] = self.test_dataloader
 
-        self.best_model = float("inf")
+        self.best_model = None
+        self.best_model_path = os.path.join(self.cfg.result_dir, "best_model.pth")
 
     def iterate(self, epoch: int, phase: str):
         if phase == "train":
             self.optimizer.zero_grad()
             self.model.train()
-        elif phase == "val":
+        elif (phase == "val") or (phase == "test"):
             self.model.eval()
             preds = None
         else:
@@ -212,7 +235,8 @@ class Trainer:
 
         running_loss = 0.0
         steps = 0
-        for data, labels in tqdm(self.rain_dataloader, desc=f"Epoch: {epoch}"):
+
+        for data, labels in tqdm(self.dataloader_dict[phase], desc=f"Epoch: {epoch}"):
             if "split" in self.cfg.model.arch:
                 inputs = (data[0].to(self.device), data[1].to(self.device))
 
@@ -238,13 +262,17 @@ class Trainer:
             running_loss += loss.item()
             steps += 1
 
-            if phase == "val":
+            if (phase == "val") or (phase == "test"):
                 if preds is None:
-                    logits = self.sigmoid(logits)
+                    logits = self.sigmoid(logit)
+                    out_logits = logits.detach().cpu().numpy()
                     preds = _discretize(logits.detach().cpu().numpy())
                     out_labels = labels.detach().cpu().numpy()
                 else:
-                    logits = self.sigmoid(logits)
+                    logits = self.sigmoid(logit)
+                    out_logits = np.append(
+                        out_logits, logits.detach().cpu().numpy(), axis=0
+                    )
                     preds = np.append(
                         preds, _discretize(logits.detach().cpu().numpy()), axis=0
                     )
@@ -253,24 +281,34 @@ class Trainer:
                     )
 
         epoch_loss = running_loss / steps
-
+        wandb.log({f"{phase}/loss": epoch_loss}, step=epoch)
         print(f"Phase:{phase},Epoch {epoch}, loss:{epoch_loss}")
-        if phase == "val":
-            scores = scores = metrics(preds, out_labels)
+        if (phase == "val") or (phase == "test"):
+            scores = metrics(preds, out_labels, out_logits, phase)
             for key, value in scores.items():
-                ## Insert wandb.log if needed.
-                print(f"{key}:{value:.4f}")
-
-        return epoch_loss
+                if phase == "val":
+                    wandb.log({f"{phase}/{key}": value}, step=epoch)
+            return epoch_loss, out_labels, preds, out_logits, scores
 
     def run(self):
         best_loss = float("inf")
         for epoch in range(self.cfg.train.epoch):
-            _ = self.iterate(epoch, phase="train")
+            self.iterate(epoch, phase="train")
             if (epoch + 1) % self.cfg.train.val_epoch == 0:
-                epoch_loss = self.iterate(epoch, phase="val")
+                epoch_loss, _, _, _, _ = self.iterate(epoch, phase="val")
                 if epoch_loss < best_loss:
                     self.best_model = self.model.state_dict()
+
+        torch.save(self.best_model, self.best_model_path)
+
+    def test(self):
+        self.model.load_state_dict(torch.load(self.best_model_path))
+        _, out_labels, preds, out_logits, score = self.iterate(epoch=0, phase="test")
+        with open(os.path.join(self.cfg.result_dir, "test_pred_result.pkl"), "wb") as f:
+            pickle.dump([preds, out_labels, out_logits], f)
+
+        with open(os.path.join(self.cfg.result_dir, "score_dict.pkl"), "wb") as f:
+            pickle.dump(score, f)
 
 
 def main(opt: argparse.Namespace):
@@ -279,8 +317,15 @@ def main(opt: argparse.Namespace):
     ## Setup section
     _random_seeds(cfg.seed)
 
+    wandb.init(
+        project=cfg.wandb_project,
+        group=cfg.wandb_group,
+        name=f"{os.path.basename(cfg.result_dir)}",
+        config=cfg,
+    )
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    os.makedirs(opt.results, exist_ok=True)
+    os.makedirs(cfg.result_dir, exist_ok=True)
     dataset_dict = load_dataset(cfg)
 
     model = MODEL_DICT[cfg.model.arch](cfg.model)
@@ -291,6 +336,8 @@ def main(opt: argparse.Namespace):
 
     trainer = Trainer(cfg, model, dataset_dict, loss_fn, optimizer, device)
     trainer.run()
+    if cfg.conduct_test:
+        trainer.test()
 
 
 if __name__ == "__main__":
