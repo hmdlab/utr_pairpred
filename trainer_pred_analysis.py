@@ -1,0 +1,298 @@
+"""Main trainer code"""
+import os
+import argparse
+import random
+from attrdict import AttrDict
+from typing import Tuple, Union
+import yaml
+import random
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+)
+import torch
+from torch import nn
+from torch.optim import Adam, AdamW, SGD
+from torch.nn import BCEWithLogitsLoss
+from torch.utils.data import Dataset, DataLoader
+
+from dataset import PairDataset, PairDataset_Multi
+from _model_dict import MODEL_DICT
+
+
+def _argparse():
+    args = argparse.ArgumentParser()
+    args.add_argument("--cfg", required=True, type=str, help="path to config yaml")
+    opt = args.parse_args()
+    return opt
+
+
+def _parse_config(cfg_path: str) -> dict:
+    """Load and return yaml format config
+
+    Args:
+        cfg_path (str): yaml config file path
+
+    Returns:
+        config (dict): config dict
+    """
+
+    with open(cfg_path) as f:
+        config = yaml.safe_load(f.read())
+    config = AttrDict(config)
+    return config
+
+
+def _random_seeds(seed=0) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+
+def create_pair_set(cfg, data_path):
+    if cfg.multi_species:
+        df_list = [pd.read_csv(path) for path in data_path]
+        all_pair_list = []
+        sample_count = 0
+        for df in df_list:
+            pair_list = [
+                [sample_count + i, sample_count + i, 1] for i in range(len(df))
+            ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+            ## add negative pairs
+            for i in range(len(df)):
+                flg = 1
+                while flg:
+                    utr3_idx = random.randint(0, len(df) - 1)
+                    if utr3_idx != i:
+                        flg = 0
+                pair_list.append([i + sample_count, utr3_idx + sample_count, 0])
+            assert len(pair_list) == len(df) * 2
+            all_pair_list.extend(pair_list)
+            sample_count += len(df)
+
+        all_pair_list = np.array(all_pair_list)
+        return all_pair_list
+
+    else:
+        df = pd.read_csv(data_path, index_col=0)
+        pair_list = [
+            [i, i, 1] for i in range(len(df))
+        ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+        ## add negative pairs
+        for i in range(len(df)):
+            flg = 1
+            while flg:
+                utr3_idx = random.randint(0, len(df) - 1)
+                if utr3_idx != i:
+                    flg = 0
+            pair_list.append([i, utr3_idx, 0])
+        assert len(pair_list) == len(df) * 2
+        pair_list = np.array(pair_list)
+
+        return pair_list
+
+
+def _discretize(logits, threshold=0.5):
+    discretized = logits >= threshold
+    return discretized
+
+
+def metrics(pred: np.array, label: np.array, phase="val") -> dict:
+    "evaluation metrics"
+    scores = dict()
+    scores["accuracy"] = accuracy_score(label, pred)
+    scores["precision"] = precision_score(label, pred)
+    scores["recall"] = recall_score(label, pred)
+    scores["f1"] = f1_score(label, pred)
+
+    if phase == "test":
+        conf_mat = confusion_matrix(label, pred)
+        scores["confusion_matrix"] = conf_mat
+
+    return scores
+
+
+def load_dataset(cfg: AttrDict) -> dict:
+    ## Creating dataset and dataloader
+    if cfg.multi_species:
+        dataset_class = PairDataset_Multi
+    else:
+        dataset_class = PairDataset
+
+    data = create_pair_set(cfg, data_path=cfg.seq_data)
+    print(f"Total sample size:{len(data)}")
+
+    if cfg.create_testset:
+        train_data, val_data = train_test_split(
+            data, test_size=0.2, random_state=cfg.seed
+        )
+        val_data, test_data = train_test_split(
+            val_data, test_size=0.5, random_state=cfg.seed
+        )
+
+        print("Creating train dataset ...")
+        train_dataset = dataset_class(train_data, seq_emb_path=cfg.emb_data)
+        print("Creating val dataset ...")
+        val_dataset = dataset_class(val_data, seq_emb_path=cfg.emb_data)
+        print("Creating test dataset ...")
+        test_dataset = dataset_class(test_data, seq_emb_path=cfg.emb_data)
+
+        dataset_dict = {
+            "train": train_dataset,
+            "val": val_dataset,
+            "test": test_dataset,
+        }
+        return dataset_dict
+
+    else:
+        train_data, val_data = train_test_split(
+            data, test_size=0.2, random_state=cfg.seed
+        )
+
+        print("Creating train dataset ...")
+        train_dataset = dataset_class(train_data, seq_emb_path=cfg.emb_data)
+        print("Creating val dataset ...")
+        val_dataset = dataset_class(val_data, seq_emb_path=cfg.emb_data)
+
+        dataset_dict = {
+            "train": train_dataset,
+            "val": val_dataset,
+        }
+        return dataset_dict
+
+
+class Trainer:
+    def __init__(
+        self,
+        cfg: yaml,
+        model: nn.Module,
+        dataset_dict: dict,
+        loss_fn,
+        optimizer,
+        device=str,
+    ):
+        self.cfg = cfg
+        self.model = model
+        self.loss_fn = loss_fn
+        self.optimizer = optimizer
+        self.device = device
+        self.sigmoid = nn.Sigmoid()
+
+        self.train_dataset = dataset_dict["train"]
+        self.train_dataloader = DataLoader(
+            self.train_dataset,
+            batch_size=self.cfg.train.train_bs,
+            shuffle=True,
+            drop_last=True,
+        )
+
+        self.val_dataset = dataset_dict["val"]
+        self.val_dataloader = DataLoader(
+            self.val_dataset, batch_size=cfg.train.val_bs, shuffle=False, drop_last=True
+        )
+
+        self.best_model = float("inf")
+
+    def iterate(self, epoch: int, phase: str):
+        if phase == "train":
+            self.optimizer.zero_grad()
+            self.model.train()
+        elif phase == "val":
+            self.model.eval()
+            preds = None
+        else:
+            NotImplementedError
+
+        running_loss = 0.0
+        steps = 0
+        for data, labels in tqdm(self.rain_dataloader, desc=f"Epoch: {epoch}"):
+            if "split" in self.cfg.model.arch:
+                inputs = (data[0].to(self.device), data[1].to(self.device))
+
+            else:
+                inputs = torch.cat(
+                    [data[0], data[1]], dim=1
+                )  # concat 5UTR and 3UTR embeddings
+                if "cnn" in self.cfg.model.arch:
+                    inputs = inputs.unsqueeze(dim=-1)
+                inputs = inputs.to(self.device)
+
+            logit = self.model(inputs)
+
+            labels = torch.tensor(labels, dtype=torch.float).to(self.device)
+            loss = self.loss_fn(logit.view(-1), labels.view(-1))
+
+            # loss = loss / cfg.train.grad_acc
+            if phase == "train":
+                loss.backward()
+                self.optimizer.step()
+                self.optimizer.zero_grad()
+
+            running_loss += loss.item()
+            steps += 1
+
+            if phase == "val":
+                if preds is None:
+                    logits = self.sigmoid(logits)
+                    preds = _discretize(logits.detach().cpu().numpy())
+                    out_labels = labels.detach().cpu().numpy()
+                else:
+                    logits = self.sigmoid(logits)
+                    preds = np.append(
+                        preds, _discretize(logits.detach().cpu().numpy()), axis=0
+                    )
+                    out_labels = np.append(
+                        out_labels, labels.detach().cpu().numpy(), axis=0
+                    )
+
+        epoch_loss = running_loss / steps
+
+        print(f"Phase:{phase},Epoch {epoch}, loss:{epoch_loss}")
+        if phase == "val":
+            scores = scores = metrics(preds, out_labels)
+            for key, value in scores.items():
+                ## Insert wandb.log if needed.
+                print(f"{key}:{value:.4f}")
+
+        return epoch_loss
+
+    def run(self):
+        best_loss = float("inf")
+        for epoch in range(self.cfg.train.epoch):
+            _ = self.iterate(epoch, phase="train")
+            if (epoch + 1) % self.cfg.train.val_epoch == 0:
+                epoch_loss = self.iterate(epoch, phase="val")
+                if epoch_loss < best_loss:
+                    self.best_model = self.model.state_dict()
+
+
+def main(opt: argparse.Namespace):
+    cfg = _parse_config(opt.cfg)
+
+    ## Setup section
+    _random_seeds(cfg.seed)
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    os.makedirs(opt.results, exist_ok=True)
+    dataset_dict = load_dataset(cfg)
+
+    model = MODEL_DICT[cfg.model.arch](cfg.model)
+
+    model.to(device)
+    loss_fn = BCEWithLogitsLoss()
+    optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
+
+    trainer = Trainer(cfg, model, dataset_dict, loss_fn, optimizer, device)
+    trainer.run()
+
+
+if __name__ == "__main__":
+    opt = _argparse()
+    main(opt)
