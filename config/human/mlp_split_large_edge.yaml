@@ -1,12 +1,12 @@
 # General params
 wandb_project: UTR_PairPred
 wandb_group: human
-result_dir: ./results/MLP_split_large_ave_Adam_drop_complex
+result_dir: ./results/MLP_split_large_edge_drop_complex
 multi_species: False
 data_dir: ./data
 seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
-emb_data: ./data/gencode44_embedding_ave.pkl
-conduct_test: True
+emb_data: ./data/gencode44_embedding_edge.pkl
+conduct_test: False
 seed: 2023
 gpus: [0,1,2,3]
 

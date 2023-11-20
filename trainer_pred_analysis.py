@@ -125,6 +125,7 @@ def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") 
         scores["fpr_all"] = fpr_all
         scores["tpr_all"] = tpr_all
         scores["roc_thresh"] = thresholds_all
+        scores["auc_roc"] = roc_auc_score(label, out_logits)
     return scores
 
 
