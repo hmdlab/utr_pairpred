@@ -103,6 +103,56 @@ def create_pair_set(cfg, data_path):
         return pair_list
 
 
+def create_pos_neg_pair(idx_list: np.array):
+    """Create pos/neg pair list
+
+    Args:
+        idx_list (np.array): list of idx for the dataset
+
+    Returns:
+        _type_: pair list array. dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+    """
+    ## add positive pairs
+    pair_list = [[i, i, 1] for i in idx_list]
+    ## add negative pairs
+    for utr5_idx in idx_list:
+        flg = 1
+        while flg:
+            utr3_idx = np.random.choice(idx_list)
+            if utr3_idx != utr5_idx:
+                flg = 0
+        pair_list.append([utr5_idx, utr3_idx, 0])
+
+    return pair_list
+
+
+def create_split_pair_set(cfg, data_path, test_size=0.2) -> dict:
+    """Split all sequences into for training and evaluating (testing).
+       Create pos/neg pairs within splited sequence ids.
+
+    Args:
+        cfg (_type_): _description_
+        data_path (_type_): _description_
+        test_size (float, optional): _description_. Defaults to 0.2.
+
+    Returns:
+        dict : dict of pair_idx_list for each phase.
+    """
+    df = pd.read_csv(data_path, index_col=0)
+    print(f"Total sample size:{len(df)}")
+    all_idx = np.arange(len(df))
+    train_idx, val_idx = train_test_split(all_idx, test_size=test_size)
+    pair_set_dict = {"train": train_idx, "val": val_idx}
+    if cfg.conduct_test:
+        val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
+        pair_set_dict["val"], pair_set_dict["test"] = val_idx, test_idx
+
+    for phase, idx_list in pair_set_dict.items():
+        pair_set_dict[phase] = create_pos_neg_pair(idx_list)
+
+    return pair_set_dict
+
+
 def _discretize(logits, threshold=0.5):
     discretized = logits >= threshold
     return discretized
@@ -176,6 +226,23 @@ def load_dataset(cfg: AttrDict) -> dict:
             "val": val_dataset,
         }
         return dataset_dict
+
+
+def load_split_dataset(cfg: AttrDict) -> dict:
+    ## Creating dataset and dataloader
+    if cfg.multi_species:
+        dataset_class = PairDataset_Multi
+    else:
+        dataset_class = PairDataset
+
+    pair_set_dict = create_split_pair_set(cfg, data_path=cfg.seq_data)
+    dataset_dict = dict()
+
+    for phase, pair_list in pair_set_dict.items():
+        print(f"Creating {phase} dataset ...")
+        dataset_dict[phase] = dataset_class(pair_list, seq_emb_path=cfg.emb_data)
+
+    return dataset_dict
 
 
 class Trainer:
@@ -293,13 +360,15 @@ class Trainer:
 
     def run(self):
         best_loss = float("inf")
+        best_epoch = 0
         for epoch in range(self.cfg.train.epoch):
             self.iterate(epoch, phase="train")
             if (epoch + 1) % self.cfg.train.val_epoch == 0:
                 epoch_loss, _, _, _, _ = self.iterate(epoch, phase="val")
                 if epoch_loss < best_loss:
+                    best_epoch = epoch
                     self.best_model = self.model.state_dict()
-
+        print(f"Best epoch:{best_epoch}")
         torch.save(self.best_model, self.best_model_path)
 
     def test(self):
@@ -327,8 +396,8 @@ def main(opt: argparse.Namespace):
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs(cfg.result_dir, exist_ok=True)
-    dataset_dict = load_dataset(cfg)
-
+    # dataset_dict = load_dataset(cfg)
+    dataset_dict = load_split_dataset(cfg)
     model = MODEL_DICT[cfg.model.arch](cfg.model)
 
     model.to(device)

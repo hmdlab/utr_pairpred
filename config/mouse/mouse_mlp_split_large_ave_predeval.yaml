@@ -1,12 +1,12 @@
 # General params
 wandb_project: UTR_PairPred
-wandb_group: human
-result_dir: ./results/MLP_split_large_ave_dataset_split
+wandb_group: Mouse
 multi_species: False
+result_dir: ./results/mouse_MLP_split_large_ave_Adam_drop_complex
 data_dir: ./data
-seq_data: ./data/gencode44_utr_gene_unique.csv # path to raw data csv
-emb_data: ./data/gencode44_embedding_ave.pkl
 conduct_test: True
+seq_data: ./data/gencode_vM33_utr_gene_unique.csv # path to raw data csv
+emb_data: ./data/gencode_vM33_embedding_ave.pkl
 seed: 2023
 gpus: [0,1,2,3]
 
@@ -15,7 +15,7 @@ train:
   train_bs: 32 #Trainin batch size
   val_bs: 16 #Validation batch size
   lr: 1e-4 #Learning rate
-  epoch: 300 # Training epoch
+  epoch: 150 # Training epoch
   val_epoch: 5 #Validate in each this epoch
   grad_acc: 1 #Gradient_accumulations steps
 
