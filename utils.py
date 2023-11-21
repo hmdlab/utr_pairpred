@@ -20,23 +20,50 @@ def csv_to_fasta(seq_df: pd.DataFrame, output_fasta_path: str):
             f.write(f">{e} {g}\n{u3}\n")
 
 
-def extract_starred_enst_ids_from_cluster_file(file_path):
-    enst_id_list = []
+def extract_enst_ids_from_file(file_path) -> np.array:
+    """Return ENST_id from result file of CD-hit
 
+    Args:
+        file_path (_type_): Result .fa file of CD-hit.
+
+    Returns:
+        _type_:
+    """
+    # ファイルを読み込む
     with open(file_path, "r") as file:
-        lines = file.readlines()
-        current_cluster = None
+        text_data = file.read()
 
-        for line in lines:
-            if line.startswith(">Cluster"):
-                # 新しいクラスタが始まる行を検出した場合
-                current_cluster = line.strip()
-                continue
+    # ENST idを抽出する正規表現パターン
+    pattern = re.compile(r"(ENST\d+\.\d+)")
 
-            match = re.search(r"ENST([0-9A-Za-z]+\.\d+)\.\.\. \*", line)
-            if match:
-                enst_id = match.group(0)
-                enst_id = enst_id.replace("... *", "")
-                enst_id_list.append(f"{enst_id}")
+    # テキストデータからENST idを抽出
+    enst_ids = re.findall(pattern, text_data)
+    enst_ids = np.array(enst_ids)
 
-    return enst_id_list
+    return enst_ids
+
+
+def create_represent_seq_df(
+    csv_data_path: str, cdhit_prefix: str, output_path: str
+) -> None:
+    """Create represented seq df from results of CD-hit
+
+    Args:
+        csv_data_path (str): _description_
+        cdhit_prefix (str): _description_
+        output_path (str): _description_
+    """
+    df = pd.read_csv(csv_data_path, index_col=0)
+    df.set_index("ENST_ID", inplace=True)
+    cdhit_path_5utr = cdhit_prefix + "_5utr.fa"
+    cdhit_path_3utr = cdhit_prefix + "_3utr.fa"
+
+    rep_id_list_5utr = extract_enst_ids_from_file(cdhit_path_5utr)
+    rep_id_list_3utr = extract_enst_ids_from_file(cdhit_path_3utr)
+
+    rep_id_list_both = list(set(rep_id_list_5utr) & set(rep_id_list_3utr))
+
+    rep_df = df.loc[rep_id_list_both]
+    rep_df.reset_index(inplace=True)
+
+    rep_df.to_csv(output_path)
