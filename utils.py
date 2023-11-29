@@ -67,3 +67,21 @@ def create_represent_seq_df(
     rep_df.reset_index(inplace=True)
 
     rep_df.to_csv(output_path)
+
+
+def create_simple_fasta(csv_data_path: str) -> None:
+    df = pd.read_csv(csv_data_path)
+    utr5 = df["5UTR"].values
+    utr3 = df["3UTR"].values
+    enst_id = df["ENST_ID"].values
+    gene = df["GENE"].values
+
+    with open(csv_data_path.replace(".csv", "_5utr.fa"), "w") as f5, open(
+        csv_data_path.replace(".csv", "_3utr.fa"), "w"
+    ) as f3:
+        for u5, u3, enst, g in zip(utr5, utr3, enst_id, gene):
+            f5.write(f">{enst} {g}\n")
+            f5.write(f"{u5}\n")
+
+            f3.write(f">{enst} {g}\n")
+            f3.write(f"{u3}\n")

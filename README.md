@@ -21,3 +21,11 @@ sh get_emb.sh
 python trainer.py --cfg <YOUR_CONFIG_PATH>
 ```
 - Results will be saved in wandb.
+
+
+## Utils
+**cd-hit**
+- To eliminate similar sequences, use script `script/cd-hit.sh`
+- After running cd-hit, it's need to create new seq_df and embedding along with the result.
+	- You can use `create_represent_seq_df()` func in `utils.py` file.
+\\
