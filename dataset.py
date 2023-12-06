@@ -101,9 +101,46 @@ class PairDatasetCL(Dataset):
         return len(self.pair_idx)
 
 
+class PairDatasetCL_Multi(Dataset):
+    """Dataset class for pairpred Contrastive Learning task"""
+
+    def __init__(self, seq_embs: list, pair_idx: np.ndarray):
+        super().__init__()
+        self.seq_embs = seq_embs
+        self.pair_idx = pair_idx
+
+        self.utr5emb_list = list()
+        self.utr3emb_list = list()
+
+        for seq_emb in self.seq_embs:
+            self.utr5emb_list.append(torch.stack(list(np.array(seq_emb)[:, 0])))
+            self.utr3emb_list.append(torch.stack(list(np.array(seq_emb)[:, 1])))
+
+        self.utr5emb = torch.cat(self.utr5emb_list)
+        self.utr3emb = torch.cat(self.utr3emb_list)
+
+    def __getitem__(self, idx) -> list:
+        embs = [self.utr5emb[self.pair_idx[idx]], self.utr3emb[self.pair_idx[idx]]]
+        return embs
+
+    def __len__(self):
+        return len(self.pair_idx)
+
+
 class PairDatasetCL_test(PairDatasetCL):
     def __init__(self, seq_emb: list, pair_idx: np.ndarray):
         super().__init__(seq_emb, pair_idx)
+
+    def __getitem__(self, idx) -> list:
+        pair_data = self.pair_idx[idx]
+        embs = [self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]]]
+        label = pair_data[2]
+        return embs, label
+
+
+class PairDatasetCL_Multi_test(PairDatasetCL_Multi):
+    def __init__(self, seq_embs: list, pair_idx: np.ndarray):
+        super().__init__(seq_embs, pair_idx)
 
     def __getitem__(self, idx) -> list:
         pair_data = self.pair_idx[idx]
