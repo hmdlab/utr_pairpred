@@ -1,11 +1,12 @@
 # General params
 wandb_project: UTR_PairPred
-wandb_group: Multi_spieces
-result_dir: ./multi_MLP_split_large_ave_Adam_drop_complex
+wandb_group: human
+multi_species: False
+result_dir: ./results/runs/MLP_split_large_ave_cdhit09_model_mod
 data_dir: ./data
-multi_species: True
-seq_data: [./data/human/gencode44_utr_gene_unique.csv,./data/mouse/gencode_vM33_utr_gene_unique.csv] # path to raw data csv
-emb_data: [./data/human/gencode44_embedding_ave.pkl,  ./data/mouse/gencode_vM33_embedding_ave.pkl]
+seq_data: ./data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
+emb_data: ./data/human/gencode44_embedding_ave_cdhit09.pkl
+conduct_test: True
 seed: 2023
 gpus: [0,1,2,3]
 
@@ -14,7 +15,7 @@ train:
   train_bs: 32 #Trainin batch size
   val_bs: 16 #Validation batch size
   lr: 1e-4 #Learning rate
-  epoch: 300 # Training epoch
+  epoch: 100 # Training epoch
   val_epoch: 5 #Validate in each this epoch
   grad_acc: 1 #Gradient_accumulations steps
 
@@ -22,10 +23,10 @@ train:
 model:
   arch: mlp_split_large
   fc5utr_in: 640
-  fc5utr_out: 256
+  fc5utr_out: 640
   fc3utr_in: 640
-  fc3utr_out: 256
-  fc_common1_in: 512 # fc5utr_out + fc3utr_out
+  fc3utr_out: 640
+  fc_common1_in: 1280 # fc5utr_out + fc3utr_out
   fc_common1_out: 1024
   fc_common2_in: 1024
   fc_common2_out: 512
@@ -35,6 +36,12 @@ model:
   dropout_3utr: 0.8
   dropout_fc_common1: 0.5
   dropout_fc_common2: 0.5
+
+
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@
 wandb_project: UTR_PairPred
 wandb_group: human
 multi_species: False
-result_dir: ./results/runs/MLP_split_large_ave_cdhit09_pred_analysis_seed5
+result_dir: ./results/runs/MLP_split_skip
 data_dir: ./data
 seq_data: ./data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
 emb_data: ./data/human/gencode44_embedding_ave_cdhit09.pkl
@@ -21,21 +21,16 @@ train:
 
 # Params related to CNN model
 model:
-  arch: mlp_split_large
-  fc5utr_in: 640
-  fc5utr_out: 256
-  fc3utr_in: 640
-  fc3utr_out: 256
-  fc_common1_in: 512 # fc5utr_out + fc3utr_out
-  fc_common1_out: 1024
-  fc_common2_in: 1024
-  fc_common2_out: 512
-  fc_common3_in: 512
-  fc_common3_out: 1
-  dropout_5utr: 0.8
-  dropout_3utr: 0.8
+  arch: mlp_split_skip
+  input_dim: 640
+  output_dim: 512
+  fc_common1_in: 1024 # fc5utr_out + fc3utr_out
+  fc_common1_out: 512
+  fc_output_in: 512
+  fc_output_out: 1
+  dropout1: 0.8
+  dropout2: 0.5
   dropout_fc_common1: 0.5
-  dropout_fc_common2: 0.5
 
 
 
