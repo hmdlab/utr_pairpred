@@ -1,9 +1,11 @@
 """Model class for simple MLP"""
 import copy
 import math
+import numpy as np
 import torch
 import torch.nn as nn
-import torch.functional as F
+from torch.nn import MultiheadAttention
+import torch.nn.functional as F
 from attrdict import AttrDict
 
 
@@ -128,6 +130,38 @@ class PairPredMLP_split_large(nn.Module):
         x = self.fc_common1(x)
         x = self.fc_common2(x)
         x = self.fc_common3(x)
+        return x
+
+
+class PairPredMLP_split_skip(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.cfg = cfg
+        self.fc5utr = SkipNetwork(cfg)
+        self.fc3utr = SkipNetwork(cfg)
+
+        self.fc_common1 = nn.Sequential(
+            nn.Linear(
+                in_features=self.cfg.fc_common1_in, out_features=self.cfg.fc_common1_out
+            ),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=self.cfg.fc_common1_out),
+            nn.Dropout(cfg.dropout_fc_common1),
+        )
+
+        self.fc_output = nn.Sequential(
+            nn.Linear(
+                in_features=self.cfg.fc_output_in, out_features=self.cfg.fc_output_out
+            ),
+        )
+
+    def forward(self, inputs):
+        x_5utr, x_3utr = inputs[0], inputs[1]
+        x_5utr = self.fc5utr(x_5utr)
+        x_3utr = self.fc3utr(x_3utr)
+        x = torch.cat([x_5utr, x_3utr], dim=1)
+        x = self.fc_common1(x)
+        x = self.fc_output(x)
         return x
 
 
@@ -294,7 +328,86 @@ class ResBlock(nn.Module):
         return out
 
 
-## Belows are extracted from https://github.com/Hhhzj-7/DeepCoVDR/blob/main/enceoder.py
+# Belows are extracted from https://gist.github.com/yonedahayato/17b9dac98cdb77ea82fec1ea6516d94c#file-re_training_clip-ipynb
+# Used for PairPred Contrastive Learning.
+class SkipBlock(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        input_dim = cfg.input_dim
+        self.fc = nn.Sequential(
+            nn.Linear(input_dim, input_dim),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=input_dim),
+            nn.Dropout(cfg.dropout2),
+        )
+
+    def forward(self, x):
+        h = self.fc(x)
+        h = torch.add(h, x)
+        h = F.relu(h)
+
+        return h
+
+
+class SkipNetwork(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        input_dim = cfg.input_dim
+        output_dim = cfg.output_dim
+
+        self.fc1 = nn.Sequential(
+            nn.Linear(input_dim, input_dim),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=input_dim),
+            nn.Dropout(cfg.dropout2),
+        )
+
+        self.block1 = SkipBlock(cfg)
+        self.block2 = SkipBlock(cfg)
+
+        self.fc2 = nn.Sequential(
+            nn.Linear(input_dim, output_dim),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=output_dim),
+            nn.Dropout(cfg.dropout2),
+        )
+
+    def forward(self, x):
+        x = self.fc1(x)
+
+        x = self.block1(x)
+        x = self.block2(x)
+
+        x = self.fc2(x)
+
+        return x
+
+
+class PairPredCR(nn.Module):
+    """Model for PairPred contrastive learning."""
+
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.network_utr5 = SkipNetwork(cfg)
+        self.network_utr3 = SkipNetwork(cfg)
+        self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / 0.07))
+
+    def forward(self, inputs: tuple) -> tuple:
+        logit_scale = self.logit_scale.exp()
+        utr5_features = self.network_utr5(inputs[0])
+        utr3_features = self.network_utr3(inputs[1])
+
+        ## Normalize to calculate cos similarity [-1 to 1]
+        utr5_features = utr5_features / utr5_features.norm(dim=1, keepdim=True)
+        utr3_features = utr3_features / utr3_features.norm(dim=1, keepdim=True)
+
+        logits_per_utr5 = logit_scale * utr5_features @ utr3_features.T
+        logits_per_utr3 = logit_scale * utr3_features @ utr5_features.T
+
+        return (logits_per_utr5, logits_per_utr3)
+
+
+# Belows are extracted from https://github.com/Hhhzj-7/DeepCoVDR/blob/main/enceoder.py
 
 
 class LayerNorm(nn.Module):
@@ -375,6 +488,7 @@ class SelfAttention(nn.Module):
 
             context_layer = torch.matmul(attention_probs1, value_layer)
             context_layer1 = torch.matmul(attention_probs, value_layer1)
+
             context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
             context_layer1 = context_layer1.permute(0, 2, 1, 3).contiguous()
 
@@ -507,30 +621,3 @@ class TransformerEncoder(nn.Module):
         intermediate_output = self.intermediate(attention_output)
         layer_output = self.output(intermediate_output, attention_output)
         return layer_output
-
-
-## Maybe this will not be used.
-class Encoder_MultipleLayers(nn.Module):
-    def __init__(
-        self,
-        n_layer,
-        hidden_size,
-        intermediate_size,
-        num_attention_heads,
-        attention_probs_dropout_prob,
-        hidden_dropout_prob,
-    ):
-        super(Encoder_MultipleLayers, self).__init__()
-        layer = TransformerEncoder(
-            hidden_size,
-            intermediate_size,
-            num_attention_heads,
-            attention_probs_dropout_prob,
-            hidden_dropout_prob,
-        )
-        self.layer = nn.ModuleList([copy.deepcopy(layer) for _ in range(n_layer)])
-
-    def forward(self, hidden_states, attention_mask, fusion):
-        for layer_module in self.layer:
-            hidden_states = layer_module(hidden_states, attention_mask, fusion)
-        return hidden_states

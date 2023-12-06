@@ -21,7 +21,7 @@ class PairDataset(Dataset):
     def __getitem__(self, idx) -> Union[list, int]:
         pair_data = self.pair_idx[idx]
         embs = [self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]]]
-        return embs, pair_data[2]  # label
+        return embs, pair_data[2], pair_data  # label
 
     def __len__(self):
         return len(self.pair_idx)
@@ -80,3 +80,33 @@ class PairDatasetRF:
 
     def __len__(self):
         return len(self.pair_list)
+
+
+class PairDatasetCL(Dataset):
+    """Dataset class for pairpred Contrastive Learning task"""
+
+    def __init__(self, seq_emb: list, pair_idx: np.ndarray):
+        super().__init__()
+        self.seq_emb = seq_emb
+        self.pair_idx = pair_idx
+
+        self.utr5emb = np.stack(list(np.array(self.seq_emb)[:, 0]))
+        self.utr3emb = np.stack(list(np.array(self.seq_emb)[:, 1]))
+
+    def __getitem__(self, idx) -> list:
+        embs = [self.utr5emb[self.pair_idx[idx]], self.utr3emb[self.pair_idx[idx]]]
+        return embs
+
+    def __len__(self):
+        return len(self.pair_idx)
+
+
+class PairDatasetCL_test(PairDatasetCL):
+    def __init__(self, seq_emb: list, pair_idx: np.ndarray):
+        super().__init__(seq_emb, pair_idx)
+
+    def __getitem__(self, idx) -> list:
+        pair_data = self.pair_idx[idx]
+        embs = [self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]]]
+        label = pair_data[2]
+        return embs, label

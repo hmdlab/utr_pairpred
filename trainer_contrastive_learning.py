@@ -4,7 +4,6 @@ import argparse
 import random
 import pickle
 from attrdict import AttrDict
-from typing import Tuple, Union
 import wandb
 import yaml
 import random
@@ -22,20 +21,22 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 import torch
-from torch import nn
-from torch.optim import Adam, AdamW, SGD
-from torch.nn import BCEWithLogitsLoss
-from torch.utils.data import Dataset, DataLoader
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiStepLR
+from torch.utils.data import DataLoader
 
-from dataset import PairDataset, PairDataset_Multi
+from dataset import PairDatasetCL, PairDatasetCL_test
 from _model_dict import MODEL_DICT
+from utils import NpairLoss
 
 
 def _argparse():
     args = argparse.ArgumentParser()
     args.add_argument("--cfg", required=True, type=str, help="path to config yaml")
-    opt = args.parse_args()
-    return opt
+    args = args.parse_args()
+    return args
 
 
 def _parse_config(cfg_path: str) -> dict:
@@ -58,49 +59,6 @@ def _random_seeds(seed=0) -> None:
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-
-
-def create_pair_set(cfg, data_path):
-    if cfg.multi_species:
-        df_list = [pd.read_csv(path) for path in data_path]
-        all_pair_list = []
-        sample_count = 0
-        for df in df_list:
-            pair_list = [
-                [sample_count + i, sample_count + i, 1] for i in range(len(df))
-            ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
-            ## add negative pairs
-            for i in range(len(df)):
-                flg = 1
-                while flg:
-                    utr3_idx = random.randint(0, len(df) - 1)
-                    if utr3_idx != i:
-                        flg = 0
-                pair_list.append([i + sample_count, utr3_idx + sample_count, 0])
-            assert len(pair_list) == len(df) * 2
-            all_pair_list.extend(pair_list)
-            sample_count += len(df)
-
-        all_pair_list = np.array(all_pair_list)
-        return all_pair_list
-
-    else:
-        df = pd.read_csv(data_path, index_col=0)
-        pair_list = [
-            [i, i, 1] for i in range(len(df))
-        ]  # dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
-        ## add negative pairs
-        for i in range(len(df)):
-            flg = 1
-            while flg:
-                utr3_idx = random.randint(0, len(df) - 1)
-                if utr3_idx != i:
-                    flg = 0
-            pair_list.append([i, utr3_idx, 0])
-        assert len(pair_list) == len(df) * 2
-        pair_list = np.array(pair_list)
-
-        return pair_list
 
 
 def create_pos_neg_pair(idx_list: np.array):
@@ -145,10 +103,8 @@ def create_split_pair_set(cfg, data_path, test_size=0.2) -> dict:
     pair_set_dict = {"train": train_idx, "val": val_idx}
     if cfg.conduct_test:
         val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
-        pair_set_dict["val"], pair_set_dict["test"] = val_idx, test_idx
-
-    for phase, idx_list in pair_set_dict.items():
-        pair_set_dict[phase] = create_pos_neg_pair(idx_list)
+        pair_set_dict["val"] = val_idx
+        pair_set_dict["test"] = create_pos_neg_pair(test_idx)
 
     return pair_set_dict
 
@@ -179,68 +135,26 @@ def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") 
     return scores
 
 
-def load_dataset(cfg: AttrDict) -> dict:
-    ## Creating dataset and dataloader
-    if cfg.multi_species:
-        dataset_class = PairDataset_Multi
-    else:
-        dataset_class = PairDataset
-
-    data = create_pair_set(cfg, data_path=cfg.seq_data)
-    print(f"Total sample size:{len(data)}")
-
-    if cfg.conduct_test:
-        train_data, val_data = train_test_split(
-            data, test_size=0.2, random_state=cfg.seed
-        )
-        val_data, test_data = train_test_split(
-            val_data, test_size=0.5, random_state=cfg.seed
-        )
-
-        print("Creating train dataset ...")
-        train_dataset = dataset_class(train_data, seq_emb_path=cfg.emb_data)
-        print("Creating val dataset ...")
-        val_dataset = dataset_class(val_data, seq_emb_path=cfg.emb_data)
-        print("Creating test dataset ...")
-        test_dataset = dataset_class(test_data, seq_emb_path=cfg.emb_data)
-
-        dataset_dict = {
-            "train": train_dataset,
-            "val": val_dataset,
-            "test": test_dataset,
-        }
-        return dataset_dict
-
-    else:
-        train_data, val_data = train_test_split(
-            data, test_size=0.2, random_state=cfg.seed
-        )
-
-        print("Creating train dataset ...")
-        train_dataset = dataset_class(train_data, seq_emb_path=cfg.emb_data)
-        print("Creating val dataset ...")
-        val_dataset = dataset_class(val_data, seq_emb_path=cfg.emb_data)
-
-        dataset_dict = {
-            "train": train_dataset,
-            "val": val_dataset,
-        }
-        return dataset_dict
-
-
 def load_split_dataset(cfg: AttrDict) -> dict:
     ## Creating dataset and dataloader
-    if cfg.multi_species:
-        dataset_class = PairDataset_Multi
-    else:
-        dataset_class = PairDataset
 
+    dataset_class = PairDatasetCL
+    dataset_class_test = PairDatasetCL_test
     pair_set_dict = create_split_pair_set(cfg, data_path=cfg.seq_data)
     dataset_dict = dict()
 
+    print("Loading embedding data ...")
+    with open(cfg.emb_data, "rb") as f:
+        seq_emb = pickle.load(f)
+    print("Successflly loaded embedding data !!!")
+
     for phase, pair_list in pair_set_dict.items():
         print(f"Creating {phase} dataset ...")
-        dataset_dict[phase] = dataset_class(pair_list, seq_emb_path=cfg.emb_data)
+        print(f"{phase},{len(pair_list)}")
+        if phase == "test":
+            dataset_dict[phase] = dataset_class_test(seq_emb, pair_list)
+        else:
+            dataset_dict[phase] = dataset_class(seq_emb, pair_list)
 
     return dataset_dict
 
@@ -253,12 +167,14 @@ class Trainer:
         dataset_dict: dict,
         loss_fn,
         optimizer,
+        scheduler,
         device=str,
     ):
         self.cfg = cfg
         self.model = model
         self.loss_fn = loss_fn
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.device = device
         self.sigmoid = nn.Sigmoid()
 
@@ -292,38 +208,28 @@ class Trainer:
         self.best_model_path = os.path.join(self.cfg.result_dir, "best_model.pth")
 
     def iterate(self, epoch: int, phase: str):
+        """Main iteration"""
         if phase == "train":
             self.optimizer.zero_grad()
             self.model.train()
         elif (phase == "val") or (phase == "test"):
             self.model.eval()
-            preds = None
         else:
-            NotImplementedError
+            raise NotImplementedError()
 
         running_loss = 0.0
         steps = 0
 
-        for data, labels, pair_idx in tqdm(
-            self.dataloader_dict[phase], desc=f"Epoch: {epoch}"
-        ):
-            if "split" in self.cfg.model.arch:
-                inputs = (data[0].to(self.device), data[1].to(self.device))
+        for embs in tqdm(self.dataloader_dict[phase], desc=f"Epoch: {epoch}"):
+            inputs = (embs[0].to(self.device), embs[1].to(self.device))
+            logits = self.model(inputs)
+            if phase == "test":
+                print(logits[0])
 
-            else:
-                inputs = torch.cat(
-                    [data[0], data[1]], dim=1
-                )  # concat 5UTR and 3UTR embeddings
-                if "cnn" in self.cfg.model.arch:
-                    inputs = inputs.unsqueeze(dim=-1)
-                inputs = inputs.to(self.device)
+            loss = self.loss_fn(
+                logits[0], logits[1]
+            )  # (logits_per_utr5,logits_per_utr3)
 
-            logit = self.model(inputs)
-
-            labels = torch.tensor(labels, dtype=torch.float).to(self.device)
-            loss = self.loss_fn(logit.view(-1), labels.view(-1))
-
-            # loss = loss / cfg.train.grad_acc
             if phase == "train":
                 loss.backward()
                 self.optimizer.step()
@@ -331,44 +237,59 @@ class Trainer:
 
             running_loss += loss.item()
             steps += 1
-
-            if (phase == "val") or (phase == "test"):
-                if preds is None:
-                    logits = self.sigmoid(logit)
-                    pair_idx_list = [pair_idx]
-                    out_logits = logits.detach().cpu().numpy()
-                    preds = _discretize(logits.detach().cpu().numpy())
-                    out_labels = labels.detach().cpu().numpy()
-                else:
-                    logits = self.sigmoid(logit)
-                    pair_idx_list.append(pair_idx)
-                    out_logits = np.append(
-                        out_logits, logits.detach().cpu().numpy(), axis=0
-                    )
-                    preds = np.append(
-                        preds, _discretize(logits.detach().cpu().numpy()), axis=0
-                    )
-                    out_labels = np.append(
-                        out_labels, labels.detach().cpu().numpy(), axis=0
-                    )
+        if phase == "train":
+            self.scheduler.step()
 
         epoch_loss = running_loss / steps
-        wandb.log({f"{phase}/loss": epoch_loss}, step=epoch)
+        lr = self.scheduler.get_last_lr()
+        wandb.log(
+            {
+                f"{phase}/loss": epoch_loss,
+                f"{phase}/lr": lr[0],
+            },
+            step=epoch,
+        )
         print(f"Phase:{phase},Epoch {epoch}, loss:{epoch_loss}")
-        if (phase == "val") or (phase == "test"):
-            scores = metrics(preds, out_labels, out_logits, phase)
-            for key, value in scores.items():
-                if phase == "val":
-                    wandb.log({f"{phase}/{key}": value}, step=epoch)
-            return epoch_loss, out_labels, preds, out_logits, scores, pair_idx_list
+
+        return epoch_loss
+
+    def test_iteration(self, phase="test"):
+        self.model.load_state_dict(torch.load(self.best_model_path))
+        self.model.eval()
+        preds = None
+
+        for embs, labels in tqdm(self.dataloader_dict[phase]):
+            inputs = (embs[0].to(self.device), embs[1].to(self.device))
+            logits = self.model(inputs)
+            cos_sim = logits[0].diag()  # get diagonal values
+            logits_sigmoid = F.sigmoid(cos_sim)
+
+            if preds is None:
+                out_logits = logits_sigmoid.detach().cpu().numpy()
+                preds = _discretize(logits_sigmoid.detach().cpu().numpy())
+                out_labels = labels
+
+            else:
+                out_logits = np.append(
+                    out_logits, logits_sigmoid.detach().cpu().numpy(), axis=0
+                )
+                preds = np.append(
+                    preds, _discretize(logits_sigmoid.detach().cpu().numpy())
+                )
+                out_labels = np.append(out_labels, labels)
+
+        scores = metrics(preds, out_labels, out_logits, phase)
+
+        return scores
 
     def run(self):
+        """General controling method"""
         best_loss = float("inf")
         best_epoch = 0
-        for epoch in range(self.cfg.train.epoch):
+        for epoch in range(1, self.cfg.train.epoch + 1):
             self.iterate(epoch, phase="train")
-            if (epoch + 1) % self.cfg.train.val_epoch == 0:
-                epoch_loss, _, _, _, _, _ = self.iterate(epoch, phase="val")
+            if epoch % self.cfg.train.val_epoch == 0:
+                epoch_loss = self.iterate(epoch, phase="val")
                 if epoch_loss < best_loss:
                     best_epoch = epoch
                     self.best_model = self.model.state_dict()
@@ -376,18 +297,17 @@ class Trainer:
         torch.save(self.best_model, self.best_model_path)
 
     def test(self):
-        self.model.load_state_dict(torch.load(self.best_model_path))
-        _, out_labels, preds, out_logits, score, pair_idx_list = self.iterate(
-            epoch=0, phase="test"
-        )
-        with open(os.path.join(self.cfg.result_dir, "test_pred_result.pkl"), "wb") as f:
-            pickle.dump([pair_idx_list, preds, out_labels, out_logits], f)
+        """method for test dataset"""
+        scores = self.test_iteration(phase="test")
+        for k, v in scores.items():
+            print(f"{k}:{v}")
 
         with open(os.path.join(self.cfg.result_dir, "score_dict.pkl"), "wb") as f:
-            pickle.dump(score, f)
+            pickle.dump(scores, f)
 
 
 def main(opt: argparse.Namespace):
+    """main func"""
     cfg = _parse_config(opt.cfg)
 
     ## Setup section
@@ -399,18 +319,17 @@ def main(opt: argparse.Namespace):
         name=f"{os.path.basename(cfg.result_dir)}",
         config=cfg,
     )
-
     device = "cuda" if torch.cuda.is_available() else "cpu"
     os.makedirs(cfg.result_dir, exist_ok=True)
     # dataset_dict = load_dataset(cfg)
     dataset_dict = load_split_dataset(cfg)
     model = MODEL_DICT[cfg.model.arch](cfg.model)
-
     model.to(device)
-    loss_fn = BCEWithLogitsLoss()
+    loss_fn = NpairLoss(device)
     optimizer = Adam(model.parameters(), lr=float(cfg.train.lr))
+    scheduler = MultiStepLR(optimizer, milestones=[50], gamma=0.1)
 
-    trainer = Trainer(cfg, model, dataset_dict, loss_fn, optimizer, device)
+    trainer = Trainer(cfg, model, dataset_dict, loss_fn, optimizer, scheduler, device)
     trainer.run()
     if cfg.conduct_test:
         trainer.test()
