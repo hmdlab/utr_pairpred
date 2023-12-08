@@ -87,7 +87,7 @@ def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") 
     return scores
 
 
-def create_pos_neg_pair(idx_list: np.array):
+def create_pos_neg_pair(idx_list: np.array, sample_counts: list = None):
     """Create pos/neg pair list
 
     Args:
@@ -96,16 +96,34 @@ def create_pos_neg_pair(idx_list: np.array):
     Returns:
         _type_: pair list array. dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
     """
-    ## add positive pairs
+    ## Positive pairs
     pair_list = [[i, i, 1] for i in idx_list]
-    ## add negative pairs
-    for utr5_idx in idx_list:
-        flg = 1
-        while flg:
-            utr3_idx = np.random.choice(idx_list)
-            if utr3_idx != utr5_idx:
-                flg = 0
-        pair_list.append([utr5_idx, utr3_idx, 0])
+
+    ## Negative pairs
+    if sample_counts != None:  # = multi_species==True
+        total_sample = 0
+        for sample_count in sample_counts:
+            species_idx = idx_list[
+                (total_sample <= idx_list) & (idx_list < total_sample + sample_count)
+            ]
+            for utr5_idx in species_idx:
+                flg = 1
+                while flg:
+                    utr3_idx = np.random.choice(species_idx)
+                    if utr3_idx != utr5_idx:
+                        flg = 0
+                pair_list.append([utr5_idx, utr3_idx, 0])
+
+            total_sample += sample_count
+
+    else:
+        for utr5_idx in idx_list:
+            flg = 1
+            while flg:
+                utr3_idx = np.random.choice(idx_list)
+                if utr3_idx != utr5_idx:
+                    flg = 0
+            pair_list.append([utr5_idx, utr3_idx, 0])
 
     return pair_list
 
@@ -124,10 +142,10 @@ def create_split_pair_set(cfg, data_path, test_size=0.2) -> dict:
     """
     if cfg.multi_species:
         df_list = [pd.read_csv(path) for path in data_path]
-        sample_count = 0
+        sample_counts = []
         for df in df_list:
-            sample_count += len(df)
-        all_idx = np.arange(sample_count)
+            sample_counts.append(len(df))
+        all_idx = np.arange(sum(sample_counts))
 
     else:
         df = pd.read_csv(data_path, index_col=0)
@@ -139,7 +157,12 @@ def create_split_pair_set(cfg, data_path, test_size=0.2) -> dict:
     if cfg.conduct_test:
         val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
         pair_set_dict["val"] = val_idx
-        pair_set_dict["test"] = create_pos_neg_pair(test_idx)
+        if cfg.multi_species:
+            pair_set_dict["test"] = create_pos_neg_pair(
+                test_idx, sample_counts=sample_counts
+            )
+        else:
+            pair_set_dict["test"] = create_pos_neg_pair(test_idx)
 
     return pair_set_dict
 
@@ -270,21 +293,25 @@ class Trainer:
         self.model.eval()
         preds = None
 
-        for embs, labels in tqdm(self.dataloader_dict[phase]):
+        for embs, labels, pair_idx in tqdm(self.dataloader_dict[phase]):
             inputs = (embs[0].to(self.device), embs[1].to(self.device))
             logits = self.model(inputs)
             cos_sim = logits[0].diag()  # get diagonal values
             logits_sigmoid = F.sigmoid(cos_sim)
 
             if preds is None:
+                pair_idx_list = [pair_idx]
                 out_logits = logits_sigmoid.detach().cpu().numpy()
+                out_cos_sim = cos_sim.detach().cpu().numpy()
                 preds = _discretize(logits_sigmoid.detach().cpu().numpy())
                 out_labels = labels
 
             else:
+                pair_idx_list.append(pair_idx)
                 out_logits = np.append(
                     out_logits, logits_sigmoid.detach().cpu().numpy(), axis=0
                 )
+                out_cos_sim = np.append(out_cos_sim, cos_sim.detach().cpu().numpy())
                 preds = np.append(
                     preds, _discretize(logits_sigmoid.detach().cpu().numpy())
                 )
@@ -292,7 +319,7 @@ class Trainer:
 
         scores = metrics(preds, out_labels, out_logits, phase)
 
-        return scores
+        return scores, (out_cos_sim, out_logits, pair_idx_list)
 
     def run(self):
         """General controling method"""
@@ -310,12 +337,15 @@ class Trainer:
 
     def test(self):
         """method for test dataset"""
-        scores = self.test_iteration(phase="test")
+        scores, pred_results = self.test_iteration(phase="test")
         for k, v in scores.items():
             print(f"{k}:{v}")
 
         with open(os.path.join(self.cfg.result_dir, "score_dict.pkl"), "wb") as f:
             pickle.dump(scores, f)
+
+        with open(os.path.join(self.cfg.result_dir, "pred_results.pkl"), "wb") as f:
+            pickle.dump(pred_results, f)
 
 
 def main(opt: argparse.Namespace):

@@ -146,4 +146,4 @@ class PairDatasetCL_Multi_test(PairDatasetCL_Multi):
         pair_data = self.pair_idx[idx]
         embs = [self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]]]
         label = pair_data[2]
-        return embs, label
+        return embs, label, pair_data

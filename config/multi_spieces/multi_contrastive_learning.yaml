@@ -2,7 +2,7 @@
 wandb_project: UTR_PairPred
 wandb_group: CL_dev
 multi_species: True
-result_dir: ./results/runs/multi_contrastive_1e4
+result_dir: ./results/runs/multi_contrastive_each_species_out_pred
 data_dir: ./data
 seq_data: [./data/human/gencode44_utr_gene_unique_cdhit09.csv,./data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv] # path to raw data csv
 emb_data: [./data/human/gencode44_embedding_ave_cdhit09.pkl,  ./data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl]
