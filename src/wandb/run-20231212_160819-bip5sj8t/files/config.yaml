@@ -1,0 +1,91 @@
+wandb_version: 1
+
+wandb_project:
+  desc: null
+  value: UTR_PairPred
+wandb_group:
+  desc: null
+  value: human
+multi_species:
+  desc: null
+  value: false
+result_dir:
+  desc: null
+  value: ../results/runs/contrastive_learning_best_loss
+data_dir:
+  desc: null
+  value: ../data
+seq_data:
+  desc: null
+  value: ../data/human/gencode44_utr_gene_unique_cdhit09.csv
+emb_data:
+  desc: null
+  value: ../data/human/gencode44_embedding_ave_cdhit09.pkl
+te_idx:
+  desc: null
+  value: ../data/human/TE/hek_matched_idx_cdhit09.pkl
+conduct_test:
+  desc: null
+  value: true
+seed:
+  desc: null
+  value: 5
+gpus:
+  desc: null
+  value:
+  - 0
+  - 1
+  - 2
+  - 3
+train:
+  desc: null
+  value:
+    train_bs: 32
+    val_bs: 32
+    lr: 1e-4
+    epoch: 60
+    val_epoch: 5
+    grad_acc: 1
+model:
+  desc: null
+  value:
+    arch: contrastive
+    input_dim: 640
+    output_dim: 512
+    dropout1: 0.8
+    dropout2: 0.5
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.10
+    cli_version: 0.15.12
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1702364899.847505
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      2:
+      - 1
+      - 5
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      3:
+      - 13
+      - 16
+      - 23
+      4: 3.8.10
+      5: 0.15.12
+      8:
+      - 5
+      13: linux-x86_64

@@ -2,10 +2,10 @@
 wandb_project: UTR_PairPred
 wandb_group: mouse
 multi_species: False
-result_dir: ./results/runs/mouse_contrastive_1e4
-data_dir: ./data
-seq_data: ./data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv # path to raw data csv
-emb_data: ./data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl
+result_dir: ../results/runs/mouse_contrastive_1e4
+data_dir: ../data
+seq_data: ../data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv # path to raw data csv
+emb_data: ../data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl
 conduct_test: True
 seed: 5
 gpus: [0,1,2,3]

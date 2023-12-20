@@ -123,8 +123,8 @@ def create_simple_fasta(csv_data_path: str) -> None:
             f3.write(f"{u3}\n")
 
 
-def reconst_pair_idx(pred_results: list) -> np.ndarray:
-    """Reconstruct pair idx from reulst pickle file
+def reconst_pair_idx(pair_idx_list: list) -> np.ndarray:
+    """Reconstruct pair idx from result pickle file
 
     Args:
         pred_results (list): list of tensor for each batch
@@ -135,10 +135,54 @@ def reconst_pair_idx(pred_results: list) -> np.ndarray:
     utr5_idx = []
     utr3_idx = []
     label = []
-    for batch in pred_results[0]:
+    for batch in pair_idx_list:
         utr5_idx.extend(batch[0].numpy())
         utr3_idx.extend(batch[1].numpy())
         label.extend(batch[2].numpy())
     pair_idx = np.stack([utr5_idx, utr3_idx, label], axis=1)
 
     return pair_idx
+
+
+class Seq2Feature:
+    def __init__(self):
+        pass
+
+    def codonFreq(self, seq):
+        codon_str = seq.translate()
+        tot = len(codon_str)
+        feature_map = dict()
+        for a in codon_str:
+            a = "codon_" + a
+            if a not in feature_map:
+                feature_map[a] = 0
+            feature_map[a] += 1.0 / tot
+        feature_map["uAUG"] = codon_str.count("M")  # number of start codon
+        feature_map["uORF"] = codon_str.count("*")  # number of stop codon
+        return feature_map
+
+    def singleNucleotide_composition(self, seq, three=False):
+        dna_str = str(seq).upper()
+        N_count = dict()  # add one pseudo count
+        N_count["C"] = 1
+        N_count["G"] = 1
+        N_count["A"] = 1
+        N_count["T"] = 1
+        for a in dna_str:
+            if a not in N_count:
+                N_count[a] = 0
+            N_count[a] += 1
+        feature_map = dict()
+        feature_map["CGperc"] = float(N_count["C"] + N_count["G"]) / len(dna_str)
+        feature_map["CGratio"] = abs(float(N_count["C"]) / N_count["G"] - 1)
+        feature_map["ATratio"] = abs(float(N_count["A"]) / N_count["T"] - 1)
+
+        feature_map["length"] = len(seq)
+
+        return feature_map
+
+    def convert(self, seq: str):
+        # feature_map = list(self.codonFreq(seq))
+        feature_map = list(self.singleNucleotide_composition(seq).items())
+
+        return feature_map

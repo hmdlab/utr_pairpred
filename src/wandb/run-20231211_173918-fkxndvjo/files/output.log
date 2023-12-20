@@ -1,0 +1,70 @@
+
+Loading embedding data ...
+Successflly loaded embedding data !!!
+Creating train dataset ...
+train,27988
+Creating val dataset ...
+val,3499
+Creating test dataset ...
+test,6998
+/home/ksuga/whole_mrna_predictor/UTR_PairPred/src/dataset.py:116: FutureWarning: The input object of type 'Tensor' is an array-like implementing one of the corresponding protocols (`__array__`, `__array_interface__` or `__array_struct__`); but not a sequence (or 0-D). In the future, this object will be coerced as if it was first converted using `np.array(obj)`. To retain the old behaviour, you have to either modify the type 'Tensor', or assign to an empty array created with `np.empty(correct_shape, dtype=object)`.
+  self.utr5emb_list.append(torch.stack(list(np.array(seq_emb)[:, 0])))
+/home/ksuga/whole_mrna_predictor/UTR_PairPred/src/dataset.py:116: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  self.utr5emb_list.append(torch.stack(list(np.array(seq_emb)[:, 0])))
+/home/ksuga/whole_mrna_predictor/UTR_PairPred/src/dataset.py:117: FutureWarning: The input object of type 'Tensor' is an array-like implementing one of the corresponding protocols (`__array__`, `__array_interface__` or `__array_struct__`); but not a sequence (or 0-D). In the future, this object will be coerced as if it was first converted using `np.array(obj)`. To retain the old behaviour, you have to either modify the type 'Tensor', or assign to an empty array created with `np.empty(correct_shape, dtype=object)`.
+  self.utr3emb_list.append(torch.stack(list(np.array(seq_emb)[:, 1])))
+/home/ksuga/whole_mrna_predictor/UTR_PairPred/src/dataset.py:117: VisibleDeprecationWarning: Creating an ndarray from ragged nested sequences (which is a list-or-tuple of lists-or-tuples-or ndarrays with different lengths or shapes) is deprecated. If you meant to do this, you must specify 'dtype=object' when creating the ndarray.
+  self.utr3emb_list.append(torch.stack(list(np.array(seq_emb)[:, 1])))
+
+
+
+
+
+Epoch: 1:  88%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▎                        | 768/874 [00:11<00:01, 65.43it/s]
+Epoch: 1: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 874/874 [00:13<00:00, 64.78it/s]
+
+
+
+
+
+
+Epoch: 2:  94%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▋            | 821/874 [00:12<00:00, 69.86it/s]
+Epoch: 2: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 874/874 [00:13<00:00, 67.02it/s]
+
+
+
+
+
+Epoch: 3:  89%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▌                      | 778/874 [00:11<00:01, 66.47it/s]
+Epoch: 3: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 874/874 [00:12<00:00, 67.32it/s]
+
+
+
+
+
+
+Epoch: 4:  95%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████▊           | 826/874 [00:12<00:00, 70.08it/s]
+Epoch: 4: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 874/874 [00:13<00:00, 66.97it/s]
+
+
+
+
+
+Epoch: 5: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 874/874 [00:13<00:00, 67.01it/s]
+Epoch: 5: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 109/109 [00:00<00:00, 435.28it/s]
+ 38%|████████████████████████████████████████████████████████████████████████████████▍                                                                                                                                     | 82/218 [00:00<00:00, 239.27it/s]
+Phase:train,Epoch 5, loss:3.373408794130286
+Phase:val,Epoch 5, loss:3.685133284385051
+Best epoch:5
+accuracy:0.595756880733945
+precision:0.5595509559726364
+recall:0.911689054015433
+f1:0.6934782608695652
+confusion_matrix:[[ 966 2511]
+ [ 309 3190]]
+fpr_all:[0.         0.         0.         ... 0.99942479 0.9997124  1.        ]
+tpr_all:[0.00000000e+00 2.85795942e-04 5.71591883e-04 ... 1.00000000e+00
+ 1.00000000e+00 1.00000000e+00]
+roc_thresh:[1.6738181  0.67381805 0.67380756 ... 0.3870957  0.3868286  0.38052776]
+
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 218/218 [00:00<00:00, 256.88it/s]

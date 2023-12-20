@@ -1,18 +1,20 @@
 """Getting sequence embedding code"""
 import os
+import sys
+import time
 import subprocess
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 import argparse
 import pickle
+from itertools import product
 
 import torch
 import fm
 from tqdm import tqdm
-import numpy as np
 import pandas as pd
-from Bio.Seq import Seq
 
-from huggingface import HyenaDNAPreTrainedModel
+
+from huggingface_hyena import HyenaDNAPreTrainedModel
 from standalone_hyenadna import CharacterTokenizer
 
 
@@ -40,6 +42,7 @@ def _argparse():
         help="hyenadna model name",
     )
     args.add_argument("--feature_craft", action="store_true")
+    args.add_argument("--with_pad", action="store_true")
     args.add_argument(
         "--RNAFM_path",
         type=str,
@@ -130,6 +133,59 @@ class GetEmbedding:
             return self._calc_embedding(seq, seq_name)
 
 
+class GetEmbeddingWithPad(GetEmbedding):
+    """Get Embedding class"""
+
+    def __init__(self, opt: argparse.Namespace):
+        super().__init__(opt)
+
+    def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
+        data = [(f"{seq_name}", f"{seq}")]
+        _, _, batch_tokens = self.batch_converter(data)
+        pad_tokens = torch.ones(
+            [(self.max_seq_len + 2) - batch_tokens.size()[-1]], dtype=torch.long
+        )
+        batch_tokens = torch.concat([batch_tokens.squeeze(), pad_tokens]).unsqueeze(0)
+        batch_tokens = batch_tokens.to(self.device)
+        with torch.no_grad():
+            results = self.model(batch_tokens, repr_layers=[12])
+        token_embeddings = results["representations"][
+            12
+        ]  # dim=(1,max_seq_len,emb_dim=640)
+        batch_tokens = batch_tokens.detach().cpu()
+        token_embeddings = token_embeddings.detach().cpu()
+        return token_embeddings  # return all
+
+    def get(self, seq: str, seq_name="RNA1", region="utr5") -> torch.Tensor:
+        """getting embedding for each sequence
+
+        Args:
+            seq (str): sequence string
+            seq_name (str, optional): seqence name if needed. Defaults to "RNA1".
+
+        Raises:
+            NotImplementedError: When over_length process is not ["trancate","average]
+        Returns:
+            torch.Tensor: embedding tensor
+        """
+        seq_len = len(seq)
+        if seq_len > self.max_seq_len:
+            if self.over_length == "trancate_forward":
+                seq = seq[: self.max_seq_len]
+                embedding = self._calc_embedding(seq, seq_name)
+                return embedding
+            elif self.over_length == "trancate_back":
+                seq = seq[-self.max_seq_len :]
+                embedding = self._calc_embedding(seq, seq_name)
+                return embedding
+
+            else:
+                raise NotImplementedError()
+
+        else:
+            return self._calc_embedding(seq, seq_name)
+
+
 class GetEmbeddingHyenaDNA:
     def __init__(self, pretrained_model_name="hyenadna-small-32k-seqlen"):
         use_head = False
@@ -180,49 +236,29 @@ class GetEmbeddingHyenaDNA:
 
 
 class GetFeature:
-    def __init__(self, head_cds_len: int, tail_cds_len: int):
-        self.head_cds_length = (
-            head_cds_len  ##assumption last portion of sequence is cds
-        )
-        self.tail_cds_length = tail_cds_len
-        # self.three = three  # Whether including three prime utr. Bool
+    def __init__(self):
+        pass
 
-    def codonFreq(self, seq):
-        codon_str = seq.translate()
-        tot = len(codon_str)
-        feature_map = dict()
-        for a in codon_str:
-            a = "codon_" + a
-            if a not in feature_map:
-                feature_map[a] = 0
-            feature_map[a] += 1.0 / tot
-        feature_map["uAUG"] = codon_str.count("M")  # number of start codon
-        feature_map["uORF"] = codon_str.count("*")  # number of stop codon
-        return feature_map
+    def singleNucleotide_composition(self, seq):
+        base_dic = {"A": 0, "T": 0, "G": 0, "C": 0}
+        for base in base_dic:
+            base_dic[base] = seq.count(base)
 
-    def singleNucleotide_composition(self, seq, three=False):
-        dna_str = str(seq).upper()
-        N_count = dict()  # add one pseudo count
-        N_count["C"] = 1
-        N_count["G"] = 1
-        N_count["A"] = 1
-        N_count["T"] = 1
-        for a in dna_str:
-            if a not in N_count:
-                N_count[a] = 0
-            N_count[a] += 1
+        for k, v in base_dic.items():  ## avoid zero divide
+            if v == 0:
+                base_dic[k] = 1
+
         feature_map = dict()
-        feature_map["CGperc"] = float(N_count["C"] + N_count["G"]) / len(dna_str)
-        feature_map["CGratio"] = abs(float(N_count["C"]) / N_count["G"] - 1)
-        feature_map["ATratio"] = abs(float(N_count["A"]) / N_count["T"] - 1)
-        if three == True:
-            feature_map["utrlen_m80"] = abs(len(dna_str) - 80 - self.tail_cds_length)
-        else:
-            feature_map["utrlen_m80"] = abs(len(dna_str) - 80 - self.head_cds_length)
+        feature_map["CGperc"] = (base_dic["C"] + base_dic["G"]) / len(seq)
+        feature_map["CGratio"] = base_dic["C"] / base_dic["G"]
+        feature_map["ATratio"] = base_dic["A"] / base_dic["T"]
+        feature_map["Length"] = len(seq)
+
+        feature_map = dict(**base_dic, **feature_map)
 
         return feature_map
 
-    def RNAfold_energy(self, sequence, *args):
+    def _RNAfold_energy(self, seq: str, *args):
         rnaf = subprocess.Popen(
             ["RNAfold", "--noPS"] + list(args),
             stdin=subprocess.PIPE,
@@ -231,103 +267,61 @@ class GetFeature:
             # Universal Newlines effectively allows string IO.
             universal_newlines=True,
         )
-        rnafold_output, folderr = rnaf.communicate(sequence)
-        output_lines = rnafold_output.strip().splitlines()
-        sequence = output_lines[0]
-        structure = output_lines[1].split(None, 1)[0].strip()
-        energy = float(output_lines[1].rsplit("(", 1)[1].strip("()").strip())
-        return energy
-
-    def RNAfold_energy_Gquad(self, sequence, *args):
-        rnaf = subprocess.Popen(
-            ["RNAfold", "--noPS"] + list(args),
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            # Universal Newlines effectively allows string IO.
-            universal_newlines=True,
-        )
-        rnafold_output, folderr = rnaf.communicate(sequence)
-        output_lines = rnafold_output.strip().splitlines()
-        sequence = output_lines[0]
-        structure = output_lines[1].split(None, 1)[0].strip()
+        rnafold_output, _ = rnaf.communicate(seq)
+        output_lines = (
+            rnafold_output.strip().splitlines()
+        )  ## output_lines:list=[original_seq,dot-bracket (energy)]
         energy = float(output_lines[1].rsplit("(", 1)[1].strip("()").strip())
         return energy
 
     def foldenergy_feature(self, seq) -> dict:
         dna_str = str(seq)
         feature_map = dict()
-        feature_map["energy_5cap"] = self.RNAfold_energy(dna_str[:100])
-        feature_map["energy_whole"] = self.RNAfold_energy(dna_str)
-        feature_map["energy_last30bp"] = self.RNAfold_energy(
-            dna_str[(len(dna_str) - 30) : len(dna_str)]
-        )
-        feature_map["energy_Gquad_5utr"] = self.RNAfold_energy_Gquad(
-            dna_str[: (len(dna_str) - self.head_cds_length)]
-        )
-        feature_map["energy_Gquad_5cap"] = self.RNAfold_energy_Gquad(dna_str[:50])
-        feature_map["energy_Gquad_last50bp"] = self.RNAfold_energy_Gquad(
-            dna_str[(len(dna_str) - 50) : len(dna_str)]
-        )
+        # feature_map["energy_head"] = self._RNAfold_energy(dna_str[:100])
+        feature_map["energy_whole"] = self._RNAfold_energy(dna_str)
+        # feature_map["energy_tail"] = self._RNAfold_energy(dna_str[-100:])
         return feature_map
 
-    def foldenergy_feature_3utr(self, seq) -> dict:
-        dna_str = str(seq)
-        feature_map = dict()
-        feature_map["energy_5cap"] = self.RNAfold_energy(dna_str[:100])
-        feature_map["energy_whole"] = self.RNAfold_energy(dna_str)
-        feature_map["energy_last30bp"] = self.RNAfold_energy(
-            dna_str[(len(dna_str) - 30) : len(dna_str)]
-        )
-        feature_map["energy_Gquad_3utr"] = self.RNAfold_energy_Gquad(
-            dna_str[self.tail_cds_length :]
-        )  # only for 3utr seq
-        feature_map["energy_Gquad_5cap"] = self.RNAfold_energy_Gquad(dna_str[:50])
-        feature_map["energy_Gquad_last50bp"] = self.RNAfold_energy_Gquad(
-            dna_str[(len(dna_str) - 50) : len(dna_str)]
-        )
-        return feature_map
+    def _count_kmers(self, seq: str, k):
+        kmer_counts = {}
+        sequence_length = len(seq)
 
-    def Kmer_feature(self, seq, klen=6) -> dict:
-        feature_map = dict()
-        seq = seq.upper()
-        for k in range(1, klen + 1):
-            for st in range(len(seq) - klen):
-                kmer = seq[st : (st + k)]
-                featname = "kmer_" + str(kmer)
-                if featname not in feature_map:
-                    feature_map[featname] = 0
-                feature_map[featname] += 1.0 / (len(seq) - k + 1)
-        return feature_map
+        for i in range(sequence_length - k + 1):
+            kmer = seq[i : i + k]
+
+            if kmer in kmer_counts:
+                kmer_counts[kmer] += 1
+            else:
+                kmer_counts[kmer] = 1
+
+        return kmer_counts
+
+    def _generate_all_patterns(self, k):
+        # 全てのk-merパターンを生成
+        nucleotides = ["A", "C", "G", "T"]
+        patterns = ["".join(p) for p in product(nucleotides, repeat=k)]
+        return patterns
+
+    def Kmer_feature(self, seq: str) -> dict:
+        result_dict = dict()
+        for k in range(3, 7):
+            kmer_counts = self._count_kmers(seq, k)
+
+            # 存在しないパターンに対してもカウント0として辞書に含める
+            for pattern in self._generate_all_patterns(k):
+                result_dict[pattern] = kmer_counts.get(pattern, 0)
+        return result_dict
 
     def oss(self, cmd):
         print(cmd)
         os.system(cmd)
 
-    def get(self, seq) -> dict:
+    def get(self, seq):
         ##codon
-        ret = list(self.codonFreq(seq).values())
-        ##DNA CG composition
-        ret += list(self.singleNucleotide_composition(seq).values())
-        ## Kmer feature
-        ret += list(self.Kmer_feature(seq).values())
-
-        return ret
-
-    def get_with_energy(self, seq, is_three):
-        print(f"Features with Energy")
-        ##codon
-        ret = list(self.codonFreq(seq).items())
-        ##DNA CG composition
-        ret += list(self.singleNucleotide_composition(seq, is_three).items())
-        ##RNA folding
-        if is_three == True:
-            ret += list(self.foldenergy_feature_3utr(seq).items())
-        else:
-            ret += list(self.foldenergy_feature(seq).items())
-        ##Kmer features
-        ret += list(self.Kmer_feature(seq).items())
-        return ret
+        feature_dic: dict = self.singleNucleotide_composition(seq)
+        feature_dic = dict(**feature_dic, **self.foldenergy_feature(seq))
+        feature_dic = dict(**feature_dic, **self.Kmer_feature(seq))
+        return feature_dic
 
 
 def main(opt: argparse.Namespace):
@@ -347,18 +341,53 @@ def main(opt: argparse.Namespace):
             emb_array.append([emb5, emb3])
 
     elif opt.feature_craft:
-        print(f"Creating features !!!")
-        embedder = GetFeature(head_cds_len=0, tail_cds_len=0)
+        print("Creating features !!!")
+        converter = GetFeature()
+        pool = Pool(cpu_count())
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
+        seq5utr = [seq.replace("U", "T") for seq in seq5utr]
+        seq3utr = [seq.replace("U", "T") for seq in seq3utr]
 
+        print("Creating 5utr features ...")
+        time1 = time.time()
+        feature_5utr = pool.map(converter.get, seq5utr)
+        df_5utr = pd.DataFrame(feature_5utr, index=seq_df["ENST_ID"].values)
+        df_5utr.to_csv(
+            os.path.join(
+                opt.o, os.path.basename(opt.i).replace(".csv", "_feature_5utr.csv")
+            )
+        )
+        time2 = time.time()
+        print(f"elaplsed time 5utr:{time2-time1}s")
+        print("Creating 3utr features ...")
+        feature_3utr = pool.map(converter.get, seq3utr)
+        df_3utr = pd.DataFrame(feature_3utr, index=seq_df["ENST_ID"].values)
+        df_3utr.to_csv(
+            os.path.join(
+                opt.o, os.path.basename(opt.i).replace(".csv", "_feature_3utr.csv")
+            )
+        )
+        time3 = time.time()
+        print(f"elaplsed time 3utr:{time3-time2}s")
+
+        sys.exit(0)
+
+    elif opt.with_pad:
+        print("RNA-FM batch processing")
+        all_emb5, all_emb3 = None, None
+        embedder = GetEmbeddingWithPad(opt)
+        seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
         for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
-            utr5, utr3 = utr5.replace("U", "T"), utr3.replace("U", "T")
-            utr5, utr3 = Seq(utr5), Seq(utr3)
             emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
-            emb_array.append([emb5, emb3])
+            if all_emb5 is None:
+                all_emb5, all_emb3 = emb5, emb3
+            else:
+                all_emb5 = torch.concat([all_emb5, emb5])
+                all_emb3 = torch.concat([all_emb3, emb3])
 
+        emb_array = (all_emb5, all_emb3)
     else:
-        print(f"Using 'RNA-FM' for embedding !!! ")
+        print("Using 'RNA-FM' for embedding !!! ")
         embedder = GetEmbedding(opt)
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
 

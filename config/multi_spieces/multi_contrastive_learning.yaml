@@ -2,10 +2,10 @@
 wandb_project: UTR_PairPred
 wandb_group: CL_dev
 multi_species: True
-result_dir: ./results/runs/multi_contrastive_each_species_out_pred
-data_dir: ./data
-seq_data: [./data/human/gencode44_utr_gene_unique_cdhit09.csv,./data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv] # path to raw data csv
-emb_data: [./data/human/gencode44_embedding_ave_cdhit09.pkl,  ./data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl]
+result_dir: ../results/runs/multi_contrastive_each_species_bs256
+data_dir: ../data
+seq_data: [../data/human/gencode44_utr_gene_unique_cdhit09.csv,../data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv] # path to raw data csv
+emb_data: [../data/human/gencode44_embedding_ave_cdhit09.pkl,  ../data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl]
 conduct_test: True
 seed: 5
 gpus: [0,1,2,3]
@@ -15,7 +15,7 @@ train:
   train_bs: 32 #Trainin batch size
   val_bs: 32 #Validation batch size
   lr: 1e-4 #Learning rate
-  epoch: 60  # Training epoch
+  epoch: 200  # Training epoch
   val_epoch: 5 #Validate in each this epoch
   grad_acc: 1 #Gradient_accumulations steps
 

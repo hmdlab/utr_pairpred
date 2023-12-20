@@ -406,6 +406,23 @@ class PairPredCR(nn.Module):
 
         return (logits_per_utr5, logits_per_utr3)
 
+    def predict(self, inputs: tuple) -> tuple:
+        """without scaling"""
+        utr5_features_ori = self.network_utr5(inputs[0])
+        utr3_features_ori = self.network_utr3(inputs[1])
+
+        ## Normalize to calculate cos similarity [-1 to 1]
+        utr5_features = utr5_features_ori / utr5_features_ori.norm(dim=1, keepdim=True)
+        utr3_features = utr3_features_ori / utr3_features_ori.norm(dim=1, keepdim=True)
+
+        logits_per_utr5 = utr5_features @ utr3_features.T
+        logits_per_utr3 = utr3_features @ utr5_features.T
+
+        return (logits_per_utr5, logits_per_utr3), (
+            utr5_features_ori,
+            utr3_features_ori,
+        )
+
 
 # Belows are extracted from https://github.com/Hhhzj-7/DeepCoVDR/blob/main/enceoder.py
 
@@ -445,97 +462,58 @@ class SelfAttention(nn.Module):
         new_x_shape = x.size()[:-1] + (
             self.num_attention_heads,
             self.attention_head_size,
-        )
+        )  # [bs,seq_len,hidden_dim,num_head]
         x = x.view(*new_x_shape)
-        return x.permute(0, 2, 1, 3)
+        return x.permute(0, 2, 1, 3)  # [bs,hidden_dim,seq_len,num_head]
 
-    def forward(self, hidden_states, attention_mask, fusion):
+    def forward(self, hidden_states):
         # for cross-attention module
-        if fusion:
-            # Q, K, V for 5utr cross-attention
-            mixed_query_layer = self.query(hidden_states[0])
-            mixed_key_layer = self.key(hidden_states[0])
-            mixed_value_layer = self.value(hidden_states[0])
+        # Q, K, V for 5utr cross-attention
+        query_5utr = self.transpose_for_scores(self.query(hidden_states[0]))
+        key_5utr = self.transpose_for_scores(self.key(hidden_states[0]))
+        value_5utr = self.transpose_for_scores(self.value(hidden_states[0]))
 
-            # Q, K, V for 3utr in cross-attention
-            mixed_query_layer1 = self.query2(hidden_states[1])
-            mixed_key_layer1 = self.key2(hidden_states[1])
-            mixed_value_layer1 = self.value2(hidden_states[1])
+        # Q, K, V for 3utr in cross-attention
+        query_3utr = self.transpose_for_scores(self.query2(hidden_states[0]))
+        key_3utr = self.transpose_for_scores(self.key2(hidden_states[0]))
+        value_3utr = self.transpose_for_scores(self.value2(hidden_states[0]))
 
-            query_layer = self.transpose_for_scores(mixed_query_layer)
-            key_layer = self.transpose_for_scores(mixed_key_layer)
-            value_layer = self.transpose_for_scores(mixed_value_layer)
+        # attention scores for 5UTR
+        attention_scores_5utr = torch.matmul(query_5utr, key_3utr.transpose(-1, -2))
+        attention_scores_5utr = attention_scores_5utr / math.sqrt(
+            self.attention_head_size
+        )
+        attention_probs_5utr = nn.Softmax(dim=-1)(attention_scores_5utr)
+        attention_probs_5utr = self.dropout(attention_probs_5utr)
+        attention_output_5utr = torch.matmul(attention_probs_5utr, value_3utr)
+        attention_output_5utr = attention_output_5utr.permute(0, 2, 1, 3).contiguous()
 
-            query_layer1 = self.transpose_for_scores(mixed_query_layer1)
-            key_layer1 = self.transpose_for_scores(mixed_key_layer1)
-            value_layer1 = self.transpose_for_scores(mixed_value_layer1)
+        new_attention_shape = attention_output_5utr.size()[:-2] + (self.all_head_size,)
+        attention_output_5utr = attention_output_5utr.view(*new_attention_shape)
 
-            # attention scores for drug in cross-attention
-            attention_scores = torch.matmul(query_layer, key_layer1.transpose(-1, -2))
-            attention_scores = attention_scores / math.sqrt(self.attention_head_size)
-            attention_scores = attention_scores + attention_mask
+        # attention scores for 3UTR
+        attention_scores_3utr = torch.matmul(query_3utr, key_5utr.transpose(-1, -2))
+        attention_scores_3utr = attention_scores_3utr / math.sqrt(
+            self.attention_head_size
+        )
+        attention_probs_3utr = nn.Softmax(dim=-1)(attention_scores_3utr)
+        attention_probs_3utr = self.dropout(attention_probs_3utr)
+        attention_output_3utr = torch.matmul(attention_probs_3utr, value_5utr)
 
-            # attention scores for cell line in cross-attention
-            attention_scores1 = torch.matmul(query_layer1, key_layer.transpose(-1, -2))
-            attention_scores1 = attention_scores1 / math.sqrt(self.attention_head_size)
-            attention_scores1 = attention_scores1 + attention_mask
+        attention_output_3utr = attention_output_3utr.permute(0, 2, 1, 3).contiguous()
 
-            attention_probs = nn.Softmax(dim=-1)(attention_scores)
-            attention_probs1 = nn.Softmax(dim=-1)(attention_scores1)
+        new_attention_shape = attention_output_3utr.size()[:-2] + (self.all_head_size,)
+        attention_output_3utr = attention_output_3utr.view(*new_attention_shape)
 
-            attention_probs = self.dropout(attention_probs)
-            attention_probs1 = self.dropout(attention_probs1)
-
-            context_layer = torch.matmul(attention_probs1, value_layer)
-            context_layer1 = torch.matmul(attention_probs, value_layer1)
-
-            context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
-            context_layer1 = context_layer1.permute(0, 2, 1, 3).contiguous()
-
-            new_context_layer_shape = context_layer.size()[:-2] + (self.all_head_size,)
-            new_context_layer_shape1 = context_layer1.size()[:-2] + (
-                self.all_head_size,
-            )
-
-            context_layer = context_layer.view(*new_context_layer_shape)
-            context_layer1 = context_layer1.view(*new_context_layer_shape1)
-
-            context_layer = torch.cat(
-                (context_layer.unsqueeze(0), context_layer1.unsqueeze(0)), 0
-            )
-        # for graphtransformer
-        else:
-            # Q, K, V for drug in graphtransformer
-            mixed_query_layer = self.query(hidden_states)
-            mixed_key_layer = self.key(hidden_states)
-            mixed_value_layer = self.value(hidden_states)
-
-            query_layer = self.transpose_for_scores(mixed_query_layer)
-            key_layer = self.transpose_for_scores(mixed_key_layer)
-            value_layer = self.transpose_for_scores(mixed_value_layer)
-
-            # attention scores for drug in graphtransformer
-            attention_scores = torch.matmul(query_layer, key_layer.transpose(-1, -2))
-            attention_scores = attention_scores / math.sqrt(self.attention_head_size)
-
-            attention_scores = attention_scores + attention_mask
-
-            attention_probs = nn.Softmax(dim=-1)(attention_scores)
-
-            attention_probs = self.dropout(attention_probs)
-
-            context_layer = torch.matmul(attention_probs, value_layer)
-            context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
-            new_context_layer_shape = context_layer.size()[:-2] + (self.all_head_size,)
-            context_layer = context_layer.view(*new_context_layer_shape)
-
-        return context_layer
+        return (attention_output_5utr, attention_output_3utr)
 
 
 # output of self-attention
-class SelfOutput(nn.Module):
+class CrossAttnOutput(nn.Module):
+    """LayerNorm + Skip Connection"""
+
     def __init__(self, hidden_size, hidden_dropout_prob):
-        super(SelfOutput, self).__init__()
+        super(CrossAttnOutput, self).__init__()
         self.dense = nn.Linear(hidden_size, hidden_size)
         self.LayerNorm = LayerNorm(hidden_size)
         self.dropout = nn.Dropout(hidden_dropout_prob)
@@ -559,27 +537,32 @@ class Attention(nn.Module):
         self.selfattn = SelfAttention(
             hidden_size, num_attention_heads, attention_probs_dropout_prob
         )
-        self.output = SelfOutput(hidden_size, hidden_dropout_prob)
+        self.output_5utr = CrossAttnOutput(hidden_size, hidden_dropout_prob)
+        self.output_3utr = CrossAttnOutput(hidden_size, hidden_dropout_prob)
 
-    def forward(self, input_tensor, attention_mask, fusion):
-        selfattn_output = self.selfattn(input_tensor, attention_mask, fusion)
-        if fusion:
-            input_tensor = torch.cat(
-                (input_tensor[0].unsqueeze(0), input_tensor[1].unsqueeze(0)), 0
-            )
-        attention_output = self.output(selfattn_output, input_tensor)
-        return attention_output
+    def forward(self, inputs):
+        crossattention_output: tuple = self.selfattn(inputs)
+        attention_output_5utr = self.output_5utr(crossattention_output[0], inputs[0])
+        attention_output_3utr = self.output_3utr(crossattention_output[1], inputs[1])
+
+        return (attention_output_5utr, attention_output_3utr)
 
 
-class Intermediate(nn.Module):
-    def __init__(self, hidden_size, intermediate_size):
-        super(Intermediate, self).__init__()
-        self.dense = nn.Linear(hidden_size, intermediate_size)
+class FeedForward(nn.Module):
+    def __init__(self, hidden_size, intermediate_size, hidden_dropout_prob):
+        super(FeedForward, self).__init__()
+        self.linear1 = nn.Linear(hidden_size, intermediate_size)
+        self.linear2 = nn.Linear(intermediate_size, hidden_size)
+        self.dropout1 = nn.Dropout(hidden_dropout_prob)
+        self.dropout2 = nn.Dropout(hidden_dropout_prob)
 
-    def forward(self, hidden_states):
-        hidden_states = self.dense(hidden_states)
-        hidden_states = F.relu(hidden_states)
-        return hidden_states
+    def forward(self, x):
+        x = self.linear1(x)  # hidden_size -> intermed_size
+        x = F.relu(x)
+        x = self.dropout1(x)
+        x = self.linear2(x)  # intermed_size -> hidden_size
+        x = self.dropout2(x)
+        return x
 
 
 # output
@@ -613,11 +596,15 @@ class TransformerEncoder(nn.Module):
             attention_probs_dropout_prob,
             hidden_dropout_prob,
         )
-        self.intermediate = Intermediate(hidden_size, intermediate_size)
-        self.output = Output(intermediate_size, hidden_size, hidden_dropout_prob)
+        self.feedforward = FeedForward(
+            hidden_size, intermediate_size, hidden_dropout_prob
+        )
+        self.LayerNorm = LayerNorm(hidden_size)
 
     def forward(self, hidden_states, attention_mask, fusion):
         attention_output = self.attention(hidden_states, attention_mask, fusion)
-        intermediate_output = self.intermediate(attention_output)
-        layer_output = self.output(intermediate_output, attention_output)
+        feedforward_output = self.feedforward(attention_output)
+        layer_output = self.LayerNorm(
+            feedforward_output + attention_output
+        )  ## skip connection
         return layer_output

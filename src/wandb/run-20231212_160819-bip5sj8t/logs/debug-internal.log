@@ -1,0 +1,1167 @@
+2023-12-12 16:08:19,847 INFO    StreamThr :3353043 [internal.py:wandb_internal():86] W&B internal server running at pid: 3353043, started at: 2023-12-12 16:08:19.846352
+2023-12-12 16:08:19,852 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status
+2023-12-12 16:08:19,857 INFO    WriterThread:3353043 [datastore.py:open_for_write():85] open: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/run-bip5sj8t.wandb
+2023-12-12 16:08:19,858 DEBUG   SenderThread:3353043 [sender.py:send():380] send: header
+2023-12-12 16:08:19,892 DEBUG   SenderThread:3353043 [sender.py:send():380] send: run
+2023-12-12 16:08:20,416 INFO    SenderThread:3353043 [dir_watcher.py:__init__():211] watching files in: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files
+2023-12-12 16:08:20,416 INFO    SenderThread:3353043 [sender.py:_start_run_threads():1122] run started: bip5sj8t with start time 1702364899.847505
+2023-12-12 16:08:20,450 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: check_version
+2023-12-12 16:08:20,450 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: check_version
+2023-12-12 16:08:20,608 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: run_start
+2023-12-12 16:08:20,634 DEBUG   HandlerThread:3353043 [system_info.py:__init__():32] System info init
+2023-12-12 16:08:20,634 DEBUG   HandlerThread:3353043 [system_info.py:__init__():47] System info init done
+2023-12-12 16:08:20,635 INFO    HandlerThread:3353043 [system_monitor.py:start():194] Starting system monitor
+2023-12-12 16:08:20,635 INFO    SystemMonitor:3353043 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2023-12-12 16:08:20,636 INFO    HandlerThread:3353043 [system_monitor.py:probe():214] Collecting system info
+2023-12-12 16:08:20,637 INFO    SystemMonitor:3353043 [interfaces.py:start():190] Started cpu monitoring
+2023-12-12 16:08:20,640 INFO    SystemMonitor:3353043 [interfaces.py:start():190] Started disk monitoring
+2023-12-12 16:08:20,642 INFO    SystemMonitor:3353043 [interfaces.py:start():190] Started gpu monitoring
+2023-12-12 16:08:20,644 INFO    SystemMonitor:3353043 [interfaces.py:start():190] Started memory monitoring
+2023-12-12 16:08:20,645 INFO    SystemMonitor:3353043 [interfaces.py:start():190] Started network monitoring
+2023-12-12 16:08:20,682 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:20,684 DEBUG   HandlerThread:3353043 [system_info.py:probe():196] Probing system
+2023-12-12 16:08:20,688 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:20,693 DEBUG   HandlerThread:3353043 [system_info.py:_probe_git():181] Probing git
+2023-12-12 16:08:20,712 DEBUG   HandlerThread:3353043 [system_info.py:_probe_git():189] Probing git done
+2023-12-12 16:08:20,712 DEBUG   HandlerThread:3353043 [system_info.py:probe():244] Probing system done
+2023-12-12 16:08:20,712 DEBUG   HandlerThread:3353043 [system_monitor.py:probe():223] {'os': 'Linux-5.19.0-38-generic-x86_64-with-glibc2.34', 'python': '3.8.10', 'heartbeatAt': '2023-12-12T07:08:20.684905', 'startedAt': '2023-12-12T07:08:19.835992', 'docker': None, 'cuda': None, 'args': ('--cfg', '../config/human/contrastive_learning.yaml'), 'state': 'running', 'program': 'trainer_contrastive_learning.py', 'codePathLocal': 'trainer_contrastive_learning.py', 'codePath': 'src/trainer_contrastive_learning.py', 'git': {'remote': 'git@github.com:Thickstem/UTR_PairPred.git', 'commit': 'b15417ec985b932012bb2c5dc8d347fbf0b93992'}, 'email': 'mosohaso3560@gmail.com', 'root': '/home/ksuga/whole_mrna_predictor/UTR_PairPred', 'host': 'hamadalab-AMEDLEAP-bis', 'username': 'ksuga', 'executable': '/home/ksuga/whole_mrna_predictor/.venv/bin/python', 'cpu_count': 32, 'cpu_count_logical': 64, 'cpu_freq': {'current': 1687.4859375, 'min': 800.0, 'max': 3500.0}, 'cpu_freq_per_core': [{'current': 800.304, 'min': 800.0, 'max': 3500.0}, {'current': 800.324, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 1600.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 2201.572, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 2200.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.454, 'min': 800.0, 'max': 3500.0}, {'current': 2200.0, 'min': 800.0, 'max': 3500.0}, {'current': 1500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 1700.0, 'min': 800.0, 'max': 3500.0}, {'current': 2300.848, 'min': 800.0, 'max': 3500.0}, {'current': 2199.045, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 2199.992, 'min': 800.0, 'max': 3500.0}, {'current': 2200.811, 'min': 800.0, 'max': 3500.0}, {'current': 1400.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 2200.0, 'min': 800.0, 'max': 3500.0}, {'current': 1400.0, 'min': 800.0, 'max': 3500.0}, {'current': 1700.0, 'min': 800.0, 'max': 3500.0}, {'current': 3500.0, 'min': 800.0, 'max': 3500.0}, {'current': 800.0, 'min': 800.0, 'max': 3500.0}], 'disk': {'/': {'total': 3519.256721496582, 'used': 2968.398468017578}}, 'gpu': 'NVIDIA RTX A6000', 'gpu_count': 5, 'gpu_devices': [{'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA RTX A6000', 'memory_total': 51527024640}, {'name': 'NVIDIA T400 4GB', 'memory_total': 4294967296}], 'memory': {'total': 503.50334548950195}}
+2023-12-12 16:08:20,712 INFO    HandlerThread:3353043 [system_monitor.py:probe():224] Finished collecting system info
+2023-12-12 16:08:20,712 INFO    HandlerThread:3353043 [system_monitor.py:probe():227] Publishing system info
+2023-12-12 16:08:20,712 DEBUG   HandlerThread:3353043 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-12-12 16:08:20,713 DEBUG   HandlerThread:3353043 [system_info.py:_save_pip():68] Saving pip packages done
+2023-12-12 16:08:20,715 INFO    HandlerThread:3353043 [system_monitor.py:probe():229] Finished publishing system info
+2023-12-12 16:08:20,723 DEBUG   SenderThread:3353043 [sender.py:send():380] send: files
+2023-12-12 16:08:20,724 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-12-12 16:08:20,740 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:08:20,741 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:08:20,802 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:08:21,146 DEBUG   SenderThread:3353043 [sender.py:send():380] send: telemetry
+2023-12-12 16:08:21,403 INFO    wandb-upload_0:3353043 [upload_job.py:push():131] Uploaded file /tmp/tmpvx411wuiwandb/fdnj2hnw-wandb-metadata.json
+2023-12-12 16:08:21,418 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_created():271] file/dir created: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-metadata.json
+2023-12-12 16:08:21,418 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_created():271] file/dir created: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/requirements.txt
+2023-12-12 16:08:22,417 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_created():271] file/dir created: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:22,697 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:22,700 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:24,418 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:24,709 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:24,712 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:25,512 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:26,721 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:26,724 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:28,734 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:28,738 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:30,513 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:30,748 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:30,751 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:32,761 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:32,765 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:34,775 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:34,779 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:35,514 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:35,740 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:08:35,742 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:08:35,747 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:08:36,789 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:36,793 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:38,803 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:38,807 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:40,596 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:40,818 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:40,821 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:42,427 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:42,848 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:42,852 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:44,863 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:44,867 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:45,650 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:46,430 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:46,878 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:46,882 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:48,431 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:48,893 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:48,897 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:50,124 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:08:50,432 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:50,664 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:50,746 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:08:50,746 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:08:50,899 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:08:51,305 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:08:51,315 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:51,318 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:51,433 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/config.yaml
+2023-12-12 16:08:52,433 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:53,327 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:53,331 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:54,435 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:55,340 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:55,344 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:55,942 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:08:56,318 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:08:56,323 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:08:56,324 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:08:56,325 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:08:56,436 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:56,437 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_created():271] file/dir created: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:08:57,354 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:57,357 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:58,446 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:08:59,367 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:08:59,371 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:00,448 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:01,032 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:01,380 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:01,384 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:02,449 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:02,644 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:02,647 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:02,647 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:02,649 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:03,396 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:03,400 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:03,450 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:04,450 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:05,412 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:05,417 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:05,742 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:09:05,743 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:09:05,749 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:09:06,135 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:06,452 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:07,429 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:07,433 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:08,453 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:09,021 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:09,025 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:09,025 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:09,027 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:09,444 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:09,449 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:09,454 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:10,455 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:11,150 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:11,461 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:11,466 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:12,456 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:13,477 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:13,482 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:14,457 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:15,238 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:15,241 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:15,241 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:15,243 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:15,377 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:15,457 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:15,493 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:15,496 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:16,240 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:16,458 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:17,507 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:17,511 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:18,459 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:19,522 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:19,525 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:20,462 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:20,645 DEBUG   SystemMonitor:3353043 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2023-12-12 16:09:20,649 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:09:20,741 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:09:20,742 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:09:20,749 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:09:21,243 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:21,620 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:21,623 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:21,624 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:21,625 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:21,924 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:09:21,933 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:21,936 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:22,464 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:22,466 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:23,945 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:23,948 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:24,465 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:25,956 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:25,959 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:26,266 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:26,467 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:27,888 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:27,892 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:27,892 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:27,894 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:27,969 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:27,972 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:28,468 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:28,469 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:29,982 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:29,985 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:30,469 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:31,357 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:31,995 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:31,998 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:32,470 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:34,009 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:34,013 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:34,181 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:34,185 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:34,186 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:34,187 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:34,471 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:34,471 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:35,741 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:09:35,742 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:09:35,750 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:09:36,024 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:36,027 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:36,417 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:36,471 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:38,039 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:38,043 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:38,472 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:40,054 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:40,058 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:40,473 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:40,544 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:40,548 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:40,548 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:40,549 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:41,473 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:41,481 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:42,068 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:42,072 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:42,474 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:44,084 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:44,088 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:44,475 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:46,100 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:46,104 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:46,476 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:46,561 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:46,885 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:46,888 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:46,889 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:46,891 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:47,023 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:47,476 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:48,125 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:48,129 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:48,477 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:50,140 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:50,144 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:50,477 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:50,652 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:09:51,259 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:09:51,259 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:09:51,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:09:51,636 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:52,479 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:52,554 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:09:52,563 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:52,566 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:53,799 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:09:53,802 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:09:53,803 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:09:53,804 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:09:54,480 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:54,480 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:09:54,576 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:54,579 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:56,481 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:56,588 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:56,592 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:56,703 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:09:58,481 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:09:58,601 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:09:58,605 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:00,162 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:00,166 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:00,167 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:00,168 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:00,482 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:00,483 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:00,615 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:00,619 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:01,795 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:02,483 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:02,628 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:02,632 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:04,484 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:04,642 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:04,646 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:06,257 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:10:06,258 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:10:06,264 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:10:06,386 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:06,491 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:06,514 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:06,514 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:06,516 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:06,657 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:06,662 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:06,873 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:07,492 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:08,492 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:08,674 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:08,679 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:10,493 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:10,690 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:10,695 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:11,949 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:12,494 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:12,707 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:12,712 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:12,813 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:12,817 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:12,817 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:12,818 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:13,494 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:14,495 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:14,739 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:14,744 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:16,495 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:16,755 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:16,760 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:16,950 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:18,496 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:18,772 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:18,777 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:19,216 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:19,220 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:19,220 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:19,222 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:19,355 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:19,497 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:20,497 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:20,654 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:10:20,789 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:20,794 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:21,258 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:10:21,259 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:10:21,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:10:21,951 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:22,498 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:23,211 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:10:23,222 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:23,226 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:24,499 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:25,236 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:25,240 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:25,670 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:25,673 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:25,673 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:25,676 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:26,500 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:26,500 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:26,962 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:27,249 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:27,254 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:28,501 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:29,264 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:29,269 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:30,502 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:31,281 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:31,286 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:32,030 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:32,142 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:32,144 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:32,145 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:32,146 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:32,503 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:32,503 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:33,297 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:33,303 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:34,504 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:35,314 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:35,320 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:36,258 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:10:36,259 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:10:36,265 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:10:36,505 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:37,102 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:37,331 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:37,337 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:38,506 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:38,610 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:38,613 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:38,614 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:38,616 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:39,349 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:39,354 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:39,507 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:40,508 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:41,366 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:41,372 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:42,149 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:42,509 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:43,387 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:43,393 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:43,582 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:43,583 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:43,583 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:43,585 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:44,510 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:44,511 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:45,405 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:45,411 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:46,512 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:47,263 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:47,424 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:47,430 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:48,093 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:48,096 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:48,097 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:48,098 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:48,224 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:48,516 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:48,518 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:49,443 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:49,449 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:50,516 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:50,658 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:10:51,258 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:10:51,259 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:10:51,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:10:51,462 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:51,467 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:52,371 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:52,518 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:52,825 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:52,830 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:52,830 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:52,831 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:53,519 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:53,897 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:10:53,907 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:53,912 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:54,519 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:55,921 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:55,925 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:56,521 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:57,388 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:10:57,837 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:10:57,841 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:10:57,842 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:10:57,843 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:10:57,935 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:57,939 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:58,522 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:10:58,523 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:10:59,949 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:10:59,953 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:00,523 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:01,964 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:01,968 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:02,389 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:02,507 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:02,511 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:02,511 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:02,512 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:02,525 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:02,525 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:03,979 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:03,984 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:04,526 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:05,995 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:06,000 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:06,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:11:06,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:11:06,262 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:11:06,527 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:07,122 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:07,125 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:07,126 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:07,127 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:07,455 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:07,527 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:08,011 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:08,016 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:08,528 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:10,039 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:10,044 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:10,529 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:11,836 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:11,838 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:11,839 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:11,840 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:11,951 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:12,057 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:12,062 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:12,530 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:12,531 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:12,563 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:14,073 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:14,078 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:14,532 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:16,095 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:16,100 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:16,533 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:16,682 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:16,684 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:16,691 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:16,700 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:17,533 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:17,590 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:18,112 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:18,117 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:18,534 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:20,129 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:20,134 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:20,535 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:20,662 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:11:21,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:11:21,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:11:21,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:11:21,984 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:21,988 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:21,989 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:21,991 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:22,146 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:22,151 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:22,537 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:22,537 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:22,653 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:24,538 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:24,605 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:11:24,615 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:24,619 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:26,539 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:26,629 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:26,634 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:27,678 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:27,849 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:27,852 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:27,852 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:27,853 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:28,540 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:28,541 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:28,645 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:28,649 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:30,553 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:30,660 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:30,665 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:32,555 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:32,676 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:32,681 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:32,688 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:32,908 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:32,910 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:32,910 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:32,912 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:33,555 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:34,556 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:34,692 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:34,697 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:36,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:11:36,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:11:36,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:11:36,557 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:36,708 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:36,713 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:37,686 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:37,689 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:37,690 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:37,691 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:37,692 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:37,821 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:38,558 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:38,559 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:38,727 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:38,734 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:40,559 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:40,745 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:40,750 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:42,509 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:42,513 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:42,513 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:42,514 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:42,561 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:42,561 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:42,740 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:42,763 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:42,769 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:44,562 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:44,781 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:44,787 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:46,563 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:46,800 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:46,806 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:47,093 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:47,097 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:47,097 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:47,099 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:47,564 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:47,769 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:48,564 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:48,819 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:48,824 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:50,565 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:50,667 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:11:50,837 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:50,843 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:51,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:11:51,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:11:51,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:11:51,924 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:51,926 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:51,926 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:51,927 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:52,567 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:52,568 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:52,803 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:52,856 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:52,862 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:54,568 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:55,271 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:11:55,285 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:55,290 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:56,570 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:56,829 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:11:56,830 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:11:56,831 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:11:56,833 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:11:57,337 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:57,343 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:57,571 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:11:57,833 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:11:58,572 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:11:59,363 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:11:59,369 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:00,573 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:01,382 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:01,389 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:02,574 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:02,757 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:02,761 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:02,762 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:02,764 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:02,862 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:02,895 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:03,402 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:03,408 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:03,575 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:04,575 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:05,421 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:05,427 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:06,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:12:06,260 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:12:06,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:12:06,577 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:07,438 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:07,443 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:07,947 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:08,583 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:09,008 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:09,011 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:09,011 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:09,012 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:09,456 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:09,461 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:09,583 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:10,584 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:11,474 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:11,479 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:12,585 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:12,963 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:13,492 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:13,496 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:14,587 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:15,080 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:15,084 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:15,084 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:15,086 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:15,509 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:15,514 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:15,588 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:16,588 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:17,526 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:17,531 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:18,066 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:18,590 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:19,542 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:19,548 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:20,591 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:20,671 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:12:21,165 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:21,168 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:21,169 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:21,170 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:21,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:12:21,262 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:12:21,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:12:21,559 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:21,564 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:21,591 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:22,592 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:23,190 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:23,577 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:23,583 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:24,593 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:25,980 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:12:25,990 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:25,995 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:26,134 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:26,136 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:26,137 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:26,137 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:26,595 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:26,595 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:28,004 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:28,009 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:28,247 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:28,596 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:30,019 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:30,023 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:30,597 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:30,838 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:30,841 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:30,842 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:30,843 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:30,976 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:31,598 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:32,033 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:32,038 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:32,598 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:33,308 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:34,048 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:34,052 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:34,599 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:35,860 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:35,864 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:35,865 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:35,867 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:36,064 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:36,068 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:36,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:12:36,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:12:36,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:12:36,601 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:36,601 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:38,077 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:38,080 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:38,321 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:38,602 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:40,090 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:40,094 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:40,568 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:40,572 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:40,572 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:40,579 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:40,603 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:40,604 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:42,104 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:42,108 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:42,607 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:43,393 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:44,118 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:44,122 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:45,609 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:45,881 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:45,884 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:45,885 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:45,885 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:46,131 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:46,135 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:46,610 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:47,610 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:48,144 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:48,148 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:48,426 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:48,611 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:49,612 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:50,158 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:50,161 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:50,675 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:12:50,969 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:50,972 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:50,973 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:50,974 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:51,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:12:51,262 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:12:51,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:12:51,613 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:51,614 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:52,182 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:52,186 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:52,614 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:53,521 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:53,614 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:54,195 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:54,197 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:55,615 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:56,053 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:56,056 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:12:56,056 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:12:56,057 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:12:56,167 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:12:56,552 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:12:56,560 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:56,562 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:56,616 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:12:57,617 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:58,563 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:12:58,571 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:58,573 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:12:58,617 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:12:59,618 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:00,571 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:00,574 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:00,574 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:00,576 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:00,585 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:00,587 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:00,619 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:01,619 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:02,597 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:02,600 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:02,620 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:03,621 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:03,705 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:04,610 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:04,614 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:05,113 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:05,115 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:05,115 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:05,116 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:05,622 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:05,622 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:06,260 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:13:06,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:13:06,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:13:06,628 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:06,632 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:06,636 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:07,628 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:08,646 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:08,649 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:08,709 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:09,630 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:09,693 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:09,697 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:09,698 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:09,699 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:10,630 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:10,631 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:10,659 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:10,663 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:11,631 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:12,673 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:12,677 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:13,640 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:13,766 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:14,578 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:14,582 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:14,582 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:14,584 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:14,640 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:14,702 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:14,705 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:15,641 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:16,642 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:16,715 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:16,719 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:17,643 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:18,730 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:18,733 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:18,890 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:19,513 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:19,517 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:19,517 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:19,519 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:19,645 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:19,649 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:19,649 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:20,645 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:20,680 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:13:20,743 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:20,755 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:21,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:13:21,261 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:13:21,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:13:21,646 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:22,770 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:22,774 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:23,647 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:23,914 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:24,207 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:24,208 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:24,209 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:24,209 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:24,648 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:24,784 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:24,788 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:25,648 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:26,649 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:27,162 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:13:27,169 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:27,171 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:27,649 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:28,395 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:28,398 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:28,399 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:28,400 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:28,650 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:28,976 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:29,179 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:29,181 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:29,651 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:30,651 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:31,191 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:31,195 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:31,652 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:33,135 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:33,139 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:33,140 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:33,141 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:33,204 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:33,207 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:33,654 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:33,654 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:34,069 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:34,666 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:35,216 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:35,219 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:35,667 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:36,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:13:36,262 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:13:36,306 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:13:37,233 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:37,239 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:37,555 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:37,558 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:37,559 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:37,560 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:37,668 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:37,669 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:38,669 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:39,089 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:39,251 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:39,255 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:39,669 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:41,264 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:41,267 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:41,670 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:42,305 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:42,308 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:42,308 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:42,310 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:42,437 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:42,671 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:43,277 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:43,281 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:43,671 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:44,153 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:44,672 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:45,290 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:45,294 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:45,673 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:47,282 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:47,285 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:47,286 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:47,287 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:47,304 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:47,308 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:47,674 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:47,674 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:48,674 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:49,274 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:49,319 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:49,323 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:49,675 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:50,688 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:13:51,261 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: stop_status
+2023-12-12 16:13:51,262 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: stop_status
+2023-12-12 16:13:51,302 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:13:51,333 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:51,337 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:51,563 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:51,566 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:51,566 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:51,567 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:51,676 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:51,677 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:52,677 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:53,348 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:53,353 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:53,677 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:54,318 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:55,364 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:55,368 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:55,678 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:56,255 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:13:56,258 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:13:56,259 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:13:56,261 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:13:56,688 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:13:57,689 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:57,727 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:13:57,737 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:57,741 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:58,690 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:59,341 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:13:59,691 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:13:59,766 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:13:59,771 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:00,880 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:14:00,884 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:14:00,884 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:14:00,886 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:14:01,692 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:01,692 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:14:01,783 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:01,789 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:02,692 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:03,693 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:03,801 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:03,806 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:04,370 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:14:05,534 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:14:05,538 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:14:05,539 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:14:05,540 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:14:05,647 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: partial_history
+2023-12-12 16:14:05,696 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:05,696 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:14:05,818 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:05,822 ERROR   gpu       :3353043 [interfaces.py:monitor():144] Failed to sample metric: Not Supported
+2023-12-12 16:14:06,109 DEBUG   SenderThread:3353043 [sender.py:send():380] send: exit
+2023-12-12 16:14:06,109 INFO    SenderThread:3353043 [sender.py:send_exit():585] handling exit code: 0
+2023-12-12 16:14:06,110 INFO    SenderThread:3353043 [sender.py:send_exit():587] handling runtime: 345
+2023-12-12 16:14:06,111 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:14:06,112 INFO    SenderThread:3353043 [sender.py:send_exit():593] send defer
+2023-12-12 16:14:06,112 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,113 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 0
+2023-12-12 16:14:06,114 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,114 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 0
+2023-12-12 16:14:06,114 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 1
+2023-12-12 16:14:06,115 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,115 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 1
+2023-12-12 16:14:06,116 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,116 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 1
+2023-12-12 16:14:06,116 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 2
+2023-12-12 16:14:06,116 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,117 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 2
+2023-12-12 16:14:06,117 INFO    HandlerThread:3353043 [system_monitor.py:finish():203] Stopping system monitor
+2023-12-12 16:14:06,118 DEBUG   SystemMonitor:3353043 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2023-12-12 16:14:06,119 DEBUG   SystemMonitor:3353043 [system_monitor.py:_start():183] Publishing last batch of metrics
+2023-12-12 16:14:06,124 INFO    HandlerThread:3353043 [interfaces.py:finish():202] Joined cpu monitor
+2023-12-12 16:14:06,125 INFO    HandlerThread:3353043 [interfaces.py:finish():202] Joined disk monitor
+2023-12-12 16:14:06,522 ERROR   gpu       :3353043 [interfaces.py:aggregate():161] Failed to serialize metric: division by zero
+2023-12-12 16:14:06,523 INFO    HandlerThread:3353043 [interfaces.py:finish():202] Joined gpu monitor
+2023-12-12 16:14:06,523 INFO    HandlerThread:3353043 [interfaces.py:finish():202] Joined memory monitor
+2023-12-12 16:14:06,524 INFO    HandlerThread:3353043 [interfaces.py:finish():202] Joined network monitor
+2023-12-12 16:14:06,525 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,526 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 2
+2023-12-12 16:14:06,526 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 3
+2023-12-12 16:14:06,526 DEBUG   SenderThread:3353043 [sender.py:send():380] send: stats
+2023-12-12 16:14:06,528 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,529 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 3
+2023-12-12 16:14:06,531 DEBUG   SenderThread:3353043 [sender.py:send():380] send: history
+2023-12-12 16:14:06,531 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: summary_record
+2023-12-12 16:14:06,532 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:14:06,533 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,533 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 3
+2023-12-12 16:14:06,533 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 4
+2023-12-12 16:14:06,534 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,534 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 4
+2023-12-12 16:14:06,535 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,535 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 4
+2023-12-12 16:14:06,535 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 5
+2023-12-12 16:14:06,536 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,536 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 5
+2023-12-12 16:14:06,537 DEBUG   SenderThread:3353043 [sender.py:send():380] send: summary
+2023-12-12 16:14:06,538 INFO    SenderThread:3353043 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-12-12 16:14:06,539 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,539 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 5
+2023-12-12 16:14:06,539 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 6
+2023-12-12 16:14:06,539 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,540 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 6
+2023-12-12 16:14:06,540 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,541 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 6
+2023-12-12 16:14:06,541 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 7
+2023-12-12 16:14:06,541 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: status_report
+2023-12-12 16:14:06,542 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:06,542 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 7
+2023-12-12 16:14:06,543 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:06,543 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 7
+2023-12-12 16:14:06,696 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:06,697 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:14:07,109 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: poll_exit
+2023-12-12 16:14:07,697 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:08,697 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:08,937 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 8
+2023-12-12 16:14:08,937 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: poll_exit
+2023-12-12 16:14:08,938 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:08,938 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 8
+2023-12-12 16:14:08,939 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:08,939 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 8
+2023-12-12 16:14:08,940 INFO    SenderThread:3353043 [job_builder.py:build():281] Attempting to build job artifact
+2023-12-12 16:14:08,941 INFO    SenderThread:3353043 [job_builder.py:_get_source_type():393] is repo sourced job
+2023-12-12 16:14:08,947 INFO    SenderThread:3353043 [job_builder.py:build():369] adding wandb-job metadata file
+2023-12-12 16:14:08,953 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 9
+2023-12-12 16:14:08,953 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:08,953 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 9
+2023-12-12 16:14:08,954 DEBUG   SenderThread:3353043 [sender.py:send():380] send: artifact
+2023-12-12 16:14:09,698 INFO    Thread-12 :3353043 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:09,782 INFO    SenderThread:3353043 [sender.py:send_artifact():1456] sent artifact job-git_github.com_Thickstem_UTR_PairPred.git_src_trainer_contrastive_learning.py - {'id': 'QXJ0aWZhY3Q6NjY0Njc1MjQy', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjEyMTgxOTM5Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NjY0Njc1MjQy', 'versionIndex': 3}}}
+2023-12-12 16:14:09,782 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:09,782 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 9
+2023-12-12 16:14:09,783 INFO    SenderThread:3353043 [dir_watcher.py:finish():358] shutting down directory watcher
+2023-12-12 16:14:10,700 INFO    SenderThread:3353043 [dir_watcher.py:finish():388] scan: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files
+2023-12-12 16:14:10,700 INFO    SenderThread:3353043 [dir_watcher.py:finish():402] scan save: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log output.log
+2023-12-12 16:14:10,701 INFO    SenderThread:3353043 [dir_watcher.py:finish():402] scan save: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/requirements.txt requirements.txt
+2023-12-12 16:14:10,701 INFO    SenderThread:3353043 [dir_watcher.py:finish():402] scan save: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-metadata.json wandb-metadata.json
+2023-12-12 16:14:10,702 INFO    SenderThread:3353043 [dir_watcher.py:finish():402] scan save: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/config.yaml config.yaml
+2023-12-12 16:14:10,706 INFO    SenderThread:3353043 [dir_watcher.py:finish():402] scan save: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json wandb-summary.json
+2023-12-12 16:14:10,706 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 10
+2023-12-12 16:14:10,707 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:10,707 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 10
+2023-12-12 16:14:10,712 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:10,712 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 10
+2023-12-12 16:14:10,713 INFO    SenderThread:3353043 [file_pusher.py:finish():175] shutting down file pusher
+2023-12-12 16:14:11,798 INFO    wandb-upload_1:3353043 [upload_job.py:push():131] Uploaded file /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/requirements.txt
+2023-12-12 16:14:11,827 INFO    wandb-upload_3:3353043 [upload_job.py:push():131] Uploaded file /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/wandb-summary.json
+2023-12-12 16:14:11,878 INFO    wandb-upload_0:3353043 [upload_job.py:push():131] Uploaded file /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/output.log
+2023-12-12 16:14:12,111 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: keepalive
+2023-12-12 16:14:12,275 INFO    wandb-upload_2:3353043 [upload_job.py:push():131] Uploaded file /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/files/config.yaml
+2023-12-12 16:14:12,476 INFO    Thread-11 :3353043 [sender.py:transition_state():613] send defer: 11
+2023-12-12 16:14:12,476 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:12,476 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 11
+2023-12-12 16:14:12,478 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:12,478 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 11
+2023-12-12 16:14:12,478 INFO    SenderThread:3353043 [file_pusher.py:join():181] waiting for file pusher
+2023-12-12 16:14:12,478 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 12
+2023-12-12 16:14:12,479 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:12,479 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 12
+2023-12-12 16:14:12,480 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:12,480 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 12
+2023-12-12 16:14:12,480 INFO    SenderThread:3353043 [file_stream.py:finish():595] file stream finish called
+2023-12-12 16:14:12,653 INFO    SenderThread:3353043 [file_stream.py:finish():599] file stream finish is done
+2023-12-12 16:14:12,653 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 13
+2023-12-12 16:14:12,653 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:12,653 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 13
+2023-12-12 16:14:12,654 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:12,654 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 13
+2023-12-12 16:14:12,655 INFO    SenderThread:3353043 [sender.py:transition_state():613] send defer: 14
+2023-12-12 16:14:12,655 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: defer
+2023-12-12 16:14:12,656 INFO    HandlerThread:3353043 [handler.py:handle_request_defer():172] handle defer: 14
+2023-12-12 16:14:12,657 DEBUG   SenderThread:3353043 [sender.py:send():380] send: final
+2023-12-12 16:14:12,657 DEBUG   SenderThread:3353043 [sender.py:send():380] send: footer
+2023-12-12 16:14:12,657 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: defer
+2023-12-12 16:14:12,657 INFO    SenderThread:3353043 [sender.py:send_request_defer():609] handle sender defer: 14
+2023-12-12 16:14:12,658 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: poll_exit
+2023-12-12 16:14:12,659 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: server_info
+2023-12-12 16:14:12,660 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: poll_exit
+2023-12-12 16:14:12,661 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: server_info
+2023-12-12 16:14:12,669 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: get_summary
+2023-12-12 16:14:12,670 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: sampled_history
+2023-12-12 16:14:12,673 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: internal_messages
+2023-12-12 16:14:12,674 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: job_info
+2023-12-12 16:14:12,814 DEBUG   SenderThread:3353043 [sender.py:send_request():407] send_request: job_info
+2023-12-12 16:14:12,815 INFO    MainThread:3353043 [wandb_run.py:_footer_history_summary_info():3599] rendering history
+2023-12-12 16:14:12,816 INFO    MainThread:3353043 [wandb_run.py:_footer_history_summary_info():3631] rendering summary
+2023-12-12 16:14:12,817 INFO    MainThread:3353043 [wandb_run.py:_footer_sync_info():3558] logging synced files
+2023-12-12 16:14:12,818 DEBUG   HandlerThread:3353043 [handler.py:handle_request():146] handle_request: shutdown
+2023-12-12 16:14:12,818 INFO    HandlerThread:3353043 [handler.py:finish():866] shutting down handler
+2023-12-12 16:14:13,675 INFO    WriterThread:3353043 [datastore.py:close():294] close: /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231212_160819-bip5sj8t/run-bip5sj8t.wandb
+2023-12-12 16:14:13,814 INFO    SenderThread:3353043 [sender.py:finish():1534] shutting down sender
+2023-12-12 16:14:13,815 INFO    SenderThread:3353043 [file_pusher.py:finish():175] shutting down file pusher
+2023-12-12 16:14:13,815 INFO    SenderThread:3353043 [file_pusher.py:join():181] waiting for file pusher

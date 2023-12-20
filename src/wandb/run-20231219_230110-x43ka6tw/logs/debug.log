@@ -1,0 +1,28 @@
+2023-12-19 23:01:10,246 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Current SDK version is 0.15.12
+2023-12-19 23:01:10,246 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Configure stats pid to 387802
+2023-12-19 23:01:10,246 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Loading settings from /home/ksuga/.config/wandb/settings
+2023-12-19 23:01:10,246 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Loading settings from /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/settings
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'api_key': '***REDACTED***'}
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'src/trainer_contrastive_learning.py', 'program_abspath': '/home/ksuga/whole_mrna_predictor/UTR_PairPred/src/trainer_contrastive_learning.py', 'program': 'trainer_contrastive_learning.py'}
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:_log_setup():528] Logging user logs to /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231219_230110-x43ka6tw/logs/debug.log
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:_log_setup():529] Logging internal logs to /home/ksuga/whole_mrna_predictor/UTR_PairPred/src/wandb/run-20231219_230110-x43ka6tw/logs/debug-internal.log
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:init():568] calling init triggers
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:init():575] wandb.init called with sweep_config: {}
+config: {'wandb_project': 'UTR_PairPred', 'wandb_group': 'human', 'multi_species': False, 'result_dir': '../results/runs/contrastive_learning_seed5', 'data_dir': '../data', 'seq_data': '../data/human/gencode44_utr_gene_unique_cdhit09.csv', 'emb_data': '../data/human/gencode44_embedding_ave_cdhit09.pkl', 'te_idx': '../data/human/TE/hek_matched_idx_cdhit09.pkl', 'conduct_test': True, 'seed': 5, 'gpus': [0, 1, 2, 3], 'train': {'train_bs': 32, 'val_bs': 32, 'lr': '1e-4', 'epoch': 80, 'val_epoch': 5, 'grad_acc': 1}, 'model': {'arch': 'contrastive', 'input_dim': 640, 'output_dim': 512, 'dropout1': 0.8, 'dropout2': 0.5}}
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:init():618] starting backend
+2023-12-19 23:01:10,247 INFO    MainThread:387802 [wandb_init.py:init():622] setting up manager
+2023-12-19 23:01:10,250 INFO    MainThread:387802 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-12-19 23:01:10,252 INFO    MainThread:387802 [wandb_init.py:init():628] backend started and connected
+2023-12-19 23:01:10,261 INFO    MainThread:387802 [wandb_init.py:init():720] updated telemetry
+2023-12-19 23:01:10,288 INFO    MainThread:387802 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2023-12-19 23:01:11,059 INFO    MainThread:387802 [wandb_run.py:_on_init():2220] communicating current version
+2023-12-19 23:01:11,193 INFO    MainThread:387802 [wandb_run.py:_on_init():2229] got version response upgrade_message: "wandb version 0.16.1 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-12-19 23:01:11,193 INFO    MainThread:387802 [wandb_init.py:init():804] starting run threads in backend
+2023-12-19 23:01:11,329 INFO    MainThread:387802 [wandb_run.py:_console_start():2199] atexit reg
+2023-12-19 23:01:11,329 INFO    MainThread:387802 [wandb_run.py:_redirect():2054] redirect: wrap_raw
+2023-12-19 23:01:11,330 INFO    MainThread:387802 [wandb_run.py:_redirect():2119] Wrapping output streams.
+2023-12-19 23:01:11,330 INFO    MainThread:387802 [wandb_run.py:_redirect():2144] Redirects installed.
+2023-12-19 23:01:11,332 INFO    MainThread:387802 [wandb_init.py:init():845] run started, returning control to user process
+2023-12-19 23:08:41,629 WARNING MsgRouterThr:387802 [router.py:message_loop():77] message_loop has been closed
