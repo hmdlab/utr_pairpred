@@ -425,186 +425,140 @@ class PairPredCR(nn.Module):
 
 
 # Belows are extracted from https://github.com/Hhhzj-7/DeepCoVDR/blob/main/enceoder.py
-
-
-class LayerNorm(nn.Module):
-    def __init__(self, hidden_size, variance_epsilon=1e-12):
-        super(LayerNorm, self).__init__()
-        self.gamma = nn.Parameter(torch.ones(hidden_size))
-        self.beta = nn.Parameter(torch.zeros(hidden_size))
-        self.variance_epsilon = variance_epsilon
-
-    def forward(self, x):
-        u = x.mean(-1, keepdim=True)
-        s = (x - u).pow(2).mean(-1, keepdim=True)
-        x = (x - u) / torch.sqrt(s + self.variance_epsilon)
-        return self.gamma * x + self.beta
-
-
-class SelfAttention(nn.Module):
-    def __init__(self, hidden_size, num_attention_heads, attention_probs_dropout_prob):
-        super(SelfAttention, self).__init__()
-        self.num_attention_heads = num_attention_heads  # multi-heads
-        self.attention_head_size = int(hidden_size / num_attention_heads)
-        self.all_head_size = self.num_attention_heads * self.attention_head_size
-
-        self.query = nn.Linear(hidden_size, self.all_head_size)
-        self.key = nn.Linear(hidden_size, self.all_head_size)
-        self.value = nn.Linear(hidden_size, self.all_head_size)
-
-        self.query2 = nn.Linear(hidden_size, self.all_head_size)
-        self.key2 = nn.Linear(hidden_size, self.all_head_size)
-        self.value2 = nn.Linear(hidden_size, self.all_head_size)
-
-        self.dropout = nn.Dropout(attention_probs_dropout_prob)
-
-    def transpose_for_scores(self, x):
-        new_x_shape = x.size()[:-1] + (
-            self.num_attention_heads,
-            self.attention_head_size,
-        )  # [bs,seq_len,hidden_dim,num_head]
-        x = x.view(*new_x_shape)
-        return x.permute(0, 2, 1, 3)  # [bs,hidden_dim,seq_len,num_head]
-
-    def forward(self, hidden_states):
-        # for cross-attention module
-        # Q, K, V for 5utr cross-attention
-        query_5utr = self.transpose_for_scores(self.query(hidden_states[0]))
-        key_5utr = self.transpose_for_scores(self.key(hidden_states[0]))
-        value_5utr = self.transpose_for_scores(self.value(hidden_states[0]))
-
-        # Q, K, V for 3utr in cross-attention
-        query_3utr = self.transpose_for_scores(self.query2(hidden_states[0]))
-        key_3utr = self.transpose_for_scores(self.key2(hidden_states[0]))
-        value_3utr = self.transpose_for_scores(self.value2(hidden_states[0]))
-
-        # attention scores for 5UTR
-        attention_scores_5utr = torch.matmul(query_5utr, key_3utr.transpose(-1, -2))
-        attention_scores_5utr = attention_scores_5utr / math.sqrt(
-            self.attention_head_size
-        )
-        attention_probs_5utr = nn.Softmax(dim=-1)(attention_scores_5utr)
-        attention_probs_5utr = self.dropout(attention_probs_5utr)
-        attention_output_5utr = torch.matmul(attention_probs_5utr, value_3utr)
-        attention_output_5utr = attention_output_5utr.permute(0, 2, 1, 3).contiguous()
-
-        new_attention_shape = attention_output_5utr.size()[:-2] + (self.all_head_size,)
-        attention_output_5utr = attention_output_5utr.view(*new_attention_shape)
-
-        # attention scores for 3UTR
-        attention_scores_3utr = torch.matmul(query_3utr, key_5utr.transpose(-1, -2))
-        attention_scores_3utr = attention_scores_3utr / math.sqrt(
-            self.attention_head_size
-        )
-        attention_probs_3utr = nn.Softmax(dim=-1)(attention_scores_3utr)
-        attention_probs_3utr = self.dropout(attention_probs_3utr)
-        attention_output_3utr = torch.matmul(attention_probs_3utr, value_5utr)
-
-        attention_output_3utr = attention_output_3utr.permute(0, 2, 1, 3).contiguous()
-
-        new_attention_shape = attention_output_3utr.size()[:-2] + (self.all_head_size,)
-        attention_output_3utr = attention_output_3utr.view(*new_attention_shape)
-
-        return (attention_output_5utr, attention_output_3utr)
-
-
-# output of self-attention
-class CrossAttnOutput(nn.Module):
-    """LayerNorm + Skip Connection"""
-
-    def __init__(self, hidden_size, hidden_dropout_prob):
-        super(CrossAttnOutput, self).__init__()
-        self.dense = nn.Linear(hidden_size, hidden_size)
-        self.LayerNorm = LayerNorm(hidden_size)
-        self.dropout = nn.Dropout(hidden_dropout_prob)
-
-    def forward(self, hidden_states, input_tensor):
-        hidden_states = self.dense(hidden_states)
-        hidden_states = self.dropout(hidden_states)
-        hidden_states = self.LayerNorm(hidden_states + input_tensor)
-        return hidden_states
-
-
-class Attention(nn.Module):
-    def __init__(
-        self,
-        hidden_size,
-        num_attention_heads,
-        attention_probs_dropout_prob,
-        hidden_dropout_prob,
-    ):
-        super(Attention, self).__init__()
-        self.selfattn = SelfAttention(
-            hidden_size, num_attention_heads, attention_probs_dropout_prob
-        )
-        self.output_5utr = CrossAttnOutput(hidden_size, hidden_dropout_prob)
-        self.output_3utr = CrossAttnOutput(hidden_size, hidden_dropout_prob)
-
-    def forward(self, inputs):
-        crossattention_output: tuple = self.selfattn(inputs)
-        attention_output_5utr = self.output_5utr(crossattention_output[0], inputs[0])
-        attention_output_3utr = self.output_3utr(crossattention_output[1], inputs[1])
-
-        return (attention_output_5utr, attention_output_3utr)
-
-
-class FeedForward(nn.Module):
-    def __init__(self, hidden_size, intermediate_size, hidden_dropout_prob):
-        super(FeedForward, self).__init__()
-        self.linear1 = nn.Linear(hidden_size, intermediate_size)
-        self.linear2 = nn.Linear(intermediate_size, hidden_size)
-        self.dropout1 = nn.Dropout(hidden_dropout_prob)
-        self.dropout2 = nn.Dropout(hidden_dropout_prob)
+class FFN(nn.Module):
+    def __init__(self, cfg):
+        super().__init__()
+        input_dim = cfg.attn_dim
+        hidden_dim = cfg.hidden_dim
+        self.linear1 = nn.Linear(input_dim, hidden_dim)
+        self.linear2 = nn.Linear(hidden_dim, input_dim)
 
     def forward(self, x):
-        x = self.linear1(x)  # hidden_size -> intermed_size
-        x = F.relu(x)
-        x = self.dropout1(x)
-        x = self.linear2(x)  # intermed_size -> hidden_size
-        x = self.dropout2(x)
+        x = F.relu(self.linear1(x))
+        x = self.linear2(x)
+
         return x
 
 
-# output
-class Output(nn.Module):
-    def __init__(self, intermediate_size, hidden_size, hidden_dropout_prob):
-        super(Output, self).__init__()
-        self.dense = nn.Linear(intermediate_size, hidden_size)
-        self.LayerNorm = LayerNorm(hidden_size)
-        self.dropout = nn.Dropout(hidden_dropout_prob)
-
-    def forward(self, hidden_states, input_tensor):
-        hidden_states = self.dense(hidden_states)
-        hidden_states = self.dropout(hidden_states)
-        hidden_states = self.LayerNorm(hidden_states + input_tensor)
-        return hidden_states
-
-
-class TransformerEncoder(nn.Module):
-    def __init__(
-        self,
-        hidden_size,
-        intermediate_size,
-        num_attention_heads,
-        attention_probs_dropout_prob,
-        hidden_dropout_prob,
-    ):
-        super(TransformerEncoder, self).__init__()
-        self.attention = Attention(
-            hidden_size,
-            num_attention_heads,
-            attention_probs_dropout_prob,
-            hidden_dropout_prob,
+class ConcatSelfAttn(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.multi_head_attn = MultiheadAttention(
+            embed_dim=cfg.attn_dim,
+            num_heads=cfg.num_heads,
+            dropout=cfg.dropout_attn,
+            batch_first=True,
         )
-        self.feedforward = FeedForward(
-            hidden_size, intermediate_size, hidden_dropout_prob
-        )
-        self.LayerNorm = LayerNorm(hidden_size)
+        self.dropout_attn = nn.Dropout(cfg.dropout_attn)
+        self.layernorm_attn = nn.LayerNorm(cfg.attn_dim, eps=float(cfg.layer_norm_eps))
 
-    def forward(self, hidden_states, attention_mask, fusion):
-        attention_output = self.attention(hidden_states, attention_mask, fusion)
-        feedforward_output = self.feedforward(attention_output)
-        layer_output = self.LayerNorm(
-            feedforward_output + attention_output
-        )  ## skip connection
-        return layer_output
+        self.ffn = FFN(cfg)
+        self.dropout_ffn = nn.Dropout(cfg.dropout_ffn)
+        self.layernorm_ffn = nn.LayerNorm(cfg.attn_dim, eps=float(cfg.layer_norm_eps))
+
+    def forward(self, inputs: tuple) -> torch.Tensor:
+        ## Multi head attention module
+        attn_out, _ = self.multi_head_attn(inputs, inputs, inputs)
+        attn_out = self.dropout_attn(attn_out)
+        attn_out = self.layernorm_attn(attn_out + inputs)
+
+        ## FeedForward module
+        ffn_out = self.ffn(attn_out)
+        ffn_out = self.dropout_ffn(ffn_out)
+        ffn_out = self.layernorm_ffn(ffn_out + attn_out)  # (bs,seq_len,hidden_dim)
+
+        return ffn_out
+
+
+class CrossAttn(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.multi_head_attn = MultiheadAttention(
+            embed_dim=cfg.attn_dim,
+            num_heads=cfg.num_heads,
+            dropout=cfg.dropout_attn,
+            batch_first=True,
+        )
+        self.dropout_attn = nn.Dropout(cfg.dropout_attn)
+        self.layernorm_attn = nn.LayerNorm(cfg.attn_dim, eps=float(cfg.layer_norm_eps))
+
+        self.ffn = FFN(cfg)
+        self.dropout_ffn = nn.Dropout(cfg.dropout_ffn)
+        self.layernorm_ffn = nn.LayerNorm(cfg.attn_dim, eps=float(cfg.layer_norm_eps))
+
+    def forward(self, inputs: tuple) -> torch.Tensor:
+        input_query = inputs[0]
+        input_key = inputs[1]
+        ## Multi head attention module
+        attn_out, _ = self.multi_head_attn(input_query, input_key, input_key)
+        attn_out = self.dropout_attn(attn_out)
+        attn_out = self.layernorm_attn(attn_out + input_query)  # [length,bs,hidden_dim]
+
+        ## FeedForward module
+        ffn_out = self.ffn(attn_out)
+        ffn_out = self.dropout_ffn(ffn_out)
+        ffn_out = self.layernorm_ffn(ffn_out + attn_out)  # (bs,seq_len,hidden_dim)
+
+        return ffn_out
+
+
+class PairPredCrossAttn(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+        self.crossattn_utr5 = CrossAttn(cfg)
+        self.crossattn_utr3 = CrossAttn(cfg)
+
+        self.pooler = nn.MaxPool1d(kernel_size=cfg.attn_dim)
+
+        self.head1 = nn.Sequential(
+            nn.Linear(in_features=cfg.fc1_in, out_features=cfg.fc1_out),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=cfg.fc1_out),
+            nn.Dropout(cfg.dropout_head),
+        )
+
+        self.head2 = nn.Sequential(
+            nn.Linear(in_features=cfg.fc2_in, out_features=cfg.fc2_out)
+        )
+
+    def forward(self, inputs):
+        attn_out_utr5 = self.crossattn_utr5((inputs[0], inputs[1]))
+        attn_out_utr3 = self.crossattn_utr3((inputs[1], inputs[0]))
+
+        attn_out_utr5 = self.pooler(attn_out_utr5.transpose(1, 2)).squeeze()
+        attn_out_utr3 = self.pooler(attn_out_utr3.transpose(1, 2)).squeeze()
+
+        x = torch.concat([attn_out_utr5, attn_out_utr3], dim=1)
+        x = self.head1(x)
+        x = self.head2(x)
+
+        return x
+
+
+class PairPredConcatSelfAttn(nn.Module):
+    def __init__(self, cfg: AttrDict):
+        super().__init__()
+
+        self.concatattn = nn.ModuleList(
+            ConcatSelfAttn(cfg) for _ in range(cfg.num_layers)
+        )
+
+        self.head1 = nn.Sequential(
+            nn.Linear(in_features=cfg.fc1_in, out_features=cfg.fc1_out),
+            nn.ReLU(),
+            nn.BatchNorm1d(num_features=cfg.fc1_out),
+            nn.Dropout(cfg.dropout_head),
+        )
+
+        self.head2 = nn.Sequential(
+            nn.Linear(in_features=cfg.fc2_in, out_features=cfg.fc2_out)
+        )
+
+    def forward(self, inputs):
+        for layer in self.concatattn:
+            x = layer(inputs)  # [bs,seq_len*2,hidden_dim]
+        x = F.adaptive_avg_pool1d(x.transpose(1, 2), output_size=1).squeeze()
+        x = self.head1(x)
+        x = self.head2(x)
+
+        return x

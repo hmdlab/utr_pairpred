@@ -1,12 +1,139 @@
 """Dataset class"""
 import pickle
+from typing import Union
 import numpy as np
 import pandas as pd
 from attrdict import AttrDict
-from typing import Union
+from sklearn.model_selection import train_test_split
 import torch
-import torch.nn as nn
 from torch.utils.data import Dataset
+
+
+class CreateDataset:
+    """dataset creating class"""
+
+    def __init__(
+        self,
+        cfg: AttrDict,
+        datasetclass: Dataset,
+        datasetclass_test: Dataset = None,
+        kfold=None,
+    ) -> None:
+        self.cfg = cfg
+        self.seq_emb = self._load_emb(cfg.emb_data)
+
+        self.dataset_class = datasetclass
+        self.dataset_class_test = datasetclass_test
+
+        self.df = pd.read_csv(self.cfg.seq_data, index_col=0)
+        self.all_idx = np.arange(len(self.df))
+        self.kfold = kfold
+        if self.kfold is not None:
+            self.kfold_set = self.kfold_split_list(self.all_idx, k=self.kfold)
+            # kfold_set is each index list for using test datasets
+
+    def _load_emb(self, emb_path: str) -> np.ndarray:
+        print("Loading embedding data ...")
+        with open(emb_path, "rb") as f:
+            seq_emb = pickle.load(f)
+        print("Successflly loaded embedding data !!!")
+        return seq_emb
+
+    def create_pos_neg_pair(self, idx_list: np.ndarray):
+        """Create pos/neg pair list
+
+        Args:
+            idx_list (np.array): list of idx for the dataset
+
+        Returns:
+            _type_: pair list array. dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
+        """
+        ## add positive pairs
+        pair_list = [[i, i, 1] for i in idx_list]
+        ## add negative pairs
+        for utr5_idx in idx_list:
+            flg = 1
+            while flg:
+                utr3_idx = np.random.choice(idx_list)
+                if utr3_idx != utr5_idx:
+                    flg = 0
+            pair_list.append([utr5_idx, utr3_idx, 0])
+
+        return pair_list
+
+    def kfold_split_list(self, input_list: list, k: int) -> list:
+        n = len(input_list)
+        avg = n // k
+        remainder = n % k
+        kfold_set = []
+        start = 0
+
+        for i in range(k):
+            end = start + avg + (1 if i < remainder else 0)
+            kfold_set.append(input_list[start:end])
+            start = end
+
+        return kfold_set
+
+    def create_split_pair_set(self, test_size: float = 0.2) -> dict:
+        """Split all sequences into for training and evaluating (testing).
+        Create pos/neg pairs within splited sequence ids.
+
+        Args:
+            cfg (_type_): _description_
+            data_path (_type_): _description_
+            test_size (float, optional): _description_. Defaults to 0.2.
+
+        Returns:
+            dict : dict of pair_idx_list for each phase.
+        """
+
+        train_idx, val_idx = train_test_split(self.all_idx, test_size=test_size)
+        pair_set_dict = {"train": train_idx, "val": val_idx}
+        if self.cfg.conduct_test:
+            val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
+            pair_set_dict["val"] = val_idx
+            pair_set_dict["test"] = self.create_pos_neg_pair(test_idx)
+
+        return pair_set_dict
+
+    def load_dataset(self) -> dict:
+        """Creating dataset and dataloader"""
+
+        pair_set_dict: dict = self.create_split_pair_set()
+        dataset_dict = dict()
+
+        for phase, pair_list in pair_set_dict.items():
+            print(f"Creating {phase} dataset ...")
+            print(f"{phase},{len(pair_list)}")
+            if phase == "test" and (self.dataset_class_test is not None):
+                dataset_dict[phase] = self.dataset_class_test(self.seq_emb, pair_list)
+            else:
+                dataset_dict[phase] = self.dataset_class(self.seq_emb, pair_list)
+
+        return dataset_dict
+
+    def load_dataset_kfold(self, k: int) -> dict:
+        """Creating dataset and dataloader for kfold cross val."""
+
+        test_idx = self.kfold_set[k]
+        remain_idx = [x for x in self.all_idx if x not in test_idx]
+        test_idx = self.create_pos_neg_pair(test_idx)
+        train_idx, val_idx = train_test_split(remain_idx, test_size=0.1)
+
+        pair_set_dict = {"train": train_idx, "val": val_idx, "test": test_idx}
+
+        dataset_dict = dict()
+
+        for phase, pair_list in pair_set_dict.items():
+            print(f"Creating {phase} dataset ...")
+            print(f"{phase},{len(pair_list)}")
+            if phase == "test" and (self.dataset_class_test is not None):
+                dataset_dict[phase] = self.dataset_class_test(self.seq_emb, pair_list)
+            else:
+                dataset_dict[phase] = self.dataset_class(self.seq_emb, pair_list)
+
+        return dataset_dict
 
 
 class PairDataset(Dataset):
@@ -29,7 +156,7 @@ class PairDataset(Dataset):
 
 
 class PairDataset_Multi(Dataset):
-    def __init__(self, data: np.array, seq_embs):
+    def __init__(self, seq_embs: list, data: np.array):
         super().__init__()
         self.seq_embs = seq_embs
         self.pair_idx = (
@@ -101,6 +228,27 @@ class PairDatasetRF_feature:
         return len(self.pair_list)
 
 
+class PairDatasetAttn(Dataset):
+    """Dataset class for pairpred Contrastive Learning task"""
+
+    def __init__(self, seq_emb: tuple, pair_idx: np.ndarray):
+        super().__init__()
+        self.seq_emb = seq_emb
+        self.pair_idx = pair_idx
+
+        self.utr5emb = self.seq_emb[0]  # (sample_num,max_length,hidden_dim)
+        self.utr3emb = self.seq_emb[1]  # (sample_num,max_length,hidden_dim)
+
+    def __getitem__(self, idx) -> tuple:
+        pair_data = self.pair_idx[idx]
+        embs = (self.utr5emb[pair_data[0]], self.utr3emb[pair_data[1]])
+        labels = pair_data[2]
+        return embs, labels, pair_data
+
+    def __len__(self):
+        return len(self.pair_idx)
+
+
 class PairDatasetCL(Dataset):
     """Dataset class for pairpred Contrastive Learning task"""
 
@@ -159,7 +307,7 @@ class PairDatasetCL_test(PairDatasetCL):
 
 class PairDatasetCL_Multi_test(PairDatasetCL_Multi):
     def __init__(self, seq_embs: list, pair_idx: np.ndarray):
-        super().__init__(seq_embs, pair_idx)
+        super(PairDatasetCL_Multi_test, self).__init__(seq_embs, pair_idx)
 
     def __getitem__(self, idx) -> list:
         pair_data = self.pair_idx[idx]

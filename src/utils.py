@@ -1,9 +1,20 @@
 import re
 import numpy as np
 import pandas as pd
+from biomart import BiomartServer
 import torch
 from torch import nn
 import torch.nn.functional as F
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    matthews_corrcoef,
+    confusion_matrix,
+    roc_curve,
+    roc_auc_score,
+)
 
 
 class Focal_Loss(nn.Module):
@@ -34,6 +45,34 @@ class NpairLoss(nn.Module):
         loss = (loss_utr5 + loss_utr3) / 2
 
         return loss
+
+
+def discretize(logits, threshold=0.5):
+    discretized = logits >= threshold
+    return discretized
+
+
+def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") -> dict:
+    "evaluation metrics"
+    scores = dict()
+    scores["accuracy"] = accuracy_score(label, pred)
+    scores["precision"] = precision_score(label, pred)
+    scores["recall"] = recall_score(label, pred)
+    scores["f1"] = f1_score(label, pred)
+    scores["matthews"] = matthews_corrcoef(label, pred)
+    scores["auc_roc"] = roc_auc_score(label, out_logits)
+    """
+    if phase == "test":
+        conf_mat = confusion_matrix(label, pred)
+        scores["confusion_matrix"] = conf_mat
+        fpr_all, tpr_all, thresholds_all = roc_curve(
+            label, out_logits, drop_intermediate=False
+        )
+        scores["fpr_all"] = fpr_all
+        scores["tpr_all"] = tpr_all
+        scores["roc_thresh"] = thresholds_all
+    """
+    return scores
 
 
 def csv_to_fasta(seq_df: pd.DataFrame, output_fasta_path: str):
@@ -186,3 +225,26 @@ class Seq2Feature:
         feature_map = list(self.singleNucleotide_composition(seq).items())
 
         return feature_map
+
+
+def get_go_enst_table() -> dict:
+    server = BiomartServer("http://www.ensembl.org/biomart")
+
+    # データセットのリストを取得
+    ensembl_genes = server.databases["ENSEMBL_MART_ENSEMBL"]
+    ensembl_genes = server.datasets["hsapiens_gene_ensembl"]
+    response = ensembl_genes.search({"attributes": ["go_id", "ensembl_transcript_id"]})
+    go_enst_dict = {}
+    for line in response.iter_lines():
+        line = line.decode("utf-8")
+        items = line.split("\t")
+        if items[0] == "":
+            pass
+        else:
+            go_id_list = go_enst_dict.get(items[0])
+            if go_id_list == None:
+                go_enst_dict[items[0]] = []
+            else:
+                go_id_list.append(items[1])
+
+    return go_enst_dict

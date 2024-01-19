@@ -6,6 +6,8 @@ from model import (
     PairPredMLP_split_large,
     PairPredMLP_split_skip,
     PairPredCR,
+    PairPredCrossAttn,
+    PairPredConcatSelfAttn,
 )
 
 MODEL_DICT = {
@@ -16,4 +18,6 @@ MODEL_DICT = {
     "cnn": PairPredCNN,
     "cnn_small": PairPredCNN_small,
     "contrastive": PairPredCR,
+    "crossattn": PairPredCrossAttn,
+    "concatselfattn": PairPredConcatSelfAttn,
 }

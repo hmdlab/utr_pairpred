@@ -1,8 +1,8 @@
 # General params
 wandb_project: UTR_PairPred
 wandb_group: Multi_spieces
-result_dir: ../multi_MLP_split_large_ave_cdhit09_model_mod
-data_dir: ./data
+result_dir: ../results/runs/multi_MLP_split_large_ave_cdhit09_model_mod
+data_dir: ../data
 multi_species: True
 seq_data: [../data/human/gencode44_utr_gene_unique_cdhit09.csv,../data/mouse/gencode_vM33_utr_gene_unique_cdhit09.csv] # path to raw data csv
 emb_data: [../data/human/gencode44_embedding_ave_cdhit09.pkl,  ../data/mouse/gencode_vM33_embedding_ave_cdhit09.pkl]
