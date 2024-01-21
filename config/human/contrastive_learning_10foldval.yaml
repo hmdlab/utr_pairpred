@@ -3,13 +3,13 @@ wandb_project: UTR_PairPred
 wandb_group: human_CL_10fold
 wandb_mode: online
 multi_species: False
-result_dir: ../results/runs/contrastive_learning_10fold/
+result_dir: ../results/runs/contrastive_learning_10fold_seed1/
 data_dir: ../data
 seq_data: ../data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
 emb_data: ../data/human/gencode44_embedding_ave_cdhit09.pkl
 te_idx: ../data/human/TE/hek_matched_idx_cdhit09.pkl
 conduct_test: True
-seed: 0
+seed: 1
 gpus: [0,1,2,3]
 kfold: 10
 

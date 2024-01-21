@@ -39,29 +39,57 @@ class CreateDataset:
         print("Successflly loaded embedding data !!!")
         return seq_emb
 
-    def create_pos_neg_pair(self, idx_list: np.ndarray):
+    def create_pos_neg_pair(self, idx_list: np.ndarray, sample_counts: list = None):
         """Create pos/neg pair list
 
         Args:
-            idx_list (np.array): list of idx for the dataset
+            idx_list (np.ndarray): list of idx for the dataset
 
         Returns:
             _type_: pair list array. dim=(sample_num*2 , 3) [5utr_idx,3utr_idx,label]. label 1->positive, 0->negative
         """
-        ## add positive pairs
+        ## Positive pairs
         pair_list = [[i, i, 1] for i in idx_list]
-        ## add negative pairs
-        for utr5_idx in idx_list:
-            flg = 1
-            while flg:
-                utr3_idx = np.random.choice(idx_list)
-                if utr3_idx != utr5_idx:
-                    flg = 0
-            pair_list.append([utr5_idx, utr3_idx, 0])
+
+        ## Negative pairs
+        if sample_counts is not None:  # = multi_species==True
+            total_sample = 0
+            for sample_count in sample_counts:
+                species_idx = idx_list[
+                    (total_sample <= idx_list)
+                    & (idx_list < total_sample + sample_count)
+                ]
+                for utr5_idx in species_idx:
+                    flg = 1
+                    while flg:
+                        utr3_idx = np.random.choice(species_idx)
+                        if utr3_idx != utr5_idx:
+                            flg = 0
+                    pair_list.append([utr5_idx, utr3_idx, 0])
+
+                total_sample += sample_count
+
+        else:
+            for utr5_idx in idx_list:
+                flg = 1
+                while flg:
+                    utr3_idx = np.random.choice(idx_list)
+                    if utr3_idx != utr5_idx:
+                        flg = 0
+                pair_list.append([utr5_idx, utr3_idx, 0])
 
         return pair_list
 
     def kfold_split_list(self, input_list: list, k: int) -> list:
+        """
+
+        Args:
+            input_list (list): list of idx for which want you divide
+            k (int): K-fold.
+
+        Returns:
+            list: Devided idx list.
+        """
         n = len(input_list)
         avg = n // k
         remainder = n % k
@@ -74,6 +102,40 @@ class CreateDataset:
             start = end
 
         return kfold_set
+
+    def create_split_pair_set_mlp(self, test_size=0.2) -> dict:
+        """Split all sequences into for training and evaluating (testing).
+        Create pos/neg pairs within splited sequence ids.
+
+        Args:
+            cfg (_type_): _description_
+            data_path (_type_): _description_
+            test_size (float, optional): _description_. Defaults to 0.2.
+
+        Returns:
+            dict : dict of pair_idx_list for each phase.
+        """
+        ## split idx for train/val/test
+        if self.cfg.multi_species:
+            raise NotImplementedError()
+            df_list = [pd.read_csv(path) for path in data_path]
+            sample_counts = []
+            for df in df_list:
+                sample_counts.append(len(df))
+            all_idx = np.arange(sum(sample_counts))
+
+        train_idx, val_idx = train_test_split(self.all_idx, test_size=test_size)
+        val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
+        pair_set_dict = {"train": train_idx, "val": val_idx, "test": test_idx}
+
+        ## Create pos/neg pair sets
+        for phase, idx_list in pair_set_dict.items():
+            if self.cfg.multi_species:
+                pair_set_dict[phase] = self.create_pos_neg_pair(idx_list)
+            else:
+                pair_set_dict[phase] = self.create_pos_neg_pair(idx_list)
+
+        return pair_set_dict
 
     def create_split_pair_set(self, test_size: float = 0.2) -> dict:
         """Split all sequences into for training and evaluating (testing).
@@ -99,8 +161,10 @@ class CreateDataset:
 
     def load_dataset(self) -> dict:
         """Creating dataset and dataloader"""
-
-        pair_set_dict: dict = self.create_split_pair_set()
+        if "mlp" in self.cfg.model.arch:
+            pair_set_dict: dict = self.create_split_pair_set_mlp()
+        elif "contrastive" in self.cfg.model.arch:
+            pair_set_dict: dict = self.create_split_pair_set()
         dataset_dict = dict()
 
         for phase, pair_list in pair_set_dict.items():
@@ -120,6 +184,9 @@ class CreateDataset:
         remain_idx = [x for x in self.all_idx if x not in test_idx]
         test_idx = self.create_pos_neg_pair(test_idx)
         train_idx, val_idx = train_test_split(remain_idx, test_size=0.1)
+        if "mlp" in self.cfg.model.arch:
+            train_idx = self.create_pos_neg_pair(train_idx)
+            val_idx = self.create_pos_neg_pair(val_idx)
 
         pair_set_dict = {"train": train_idx, "val": val_idx, "test": test_idx}
 

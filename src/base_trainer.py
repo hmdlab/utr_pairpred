@@ -146,3 +146,90 @@ class Trainer:
         scores = metrics(preds, out_labels, out_logits, phase)
 
         return scores, (out_cos_sim, out_logits, pair_idx_list)
+
+
+class TrainerMLP(Trainer):
+    def __init__(
+        self,
+        cfg: AttrDict,
+        model: nn.Module,
+        dataset_dict: dict,
+        loss_fn,
+        optimizer,
+        scheduler,
+        device=str,
+    ):
+        super(TrainerMLP, self).__init__(
+            cfg, model, dataset_dict, loss_fn, optimizer, scheduler, device
+        )
+
+    def iterate(self, epoch: int, phase: str):
+        if phase == "train":
+            self.optimizer.zero_grad()
+            self.model.train()
+        elif (phase == "val") or (phase == "test"):
+            self.model.eval()
+            preds = None
+        else:
+            NotImplementedError
+
+        running_loss = 0.0
+        steps = 0
+
+        for data, labels, pair_idx in tqdm(
+            self.dataloader_dict[phase], desc=f"Epoch: {epoch}"
+        ):
+            if "split" in self.cfg.model.arch:
+                inputs = (data[0].to(self.device), data[1].to(self.device))
+
+            else:
+                inputs = torch.cat(
+                    [data[0], data[1]], dim=1
+                )  # concat 5UTR and 3UTR embeddings
+                if "cnn" in self.cfg.model.arch:
+                    inputs = inputs.unsqueeze(dim=-1)
+                inputs = inputs.to(self.device)
+
+            logit = self.model(inputs)
+
+            labels = torch.tensor(labels, dtype=torch.float).to(self.device)
+            loss = self.loss_fn(logit.view(-1), labels.view(-1))
+
+            # loss = loss / cfg.train.grad_acc
+            if phase == "train":
+                loss.backward()
+                self.optimizer.step()
+                self.optimizer.zero_grad()
+
+            running_loss += loss.item()
+            steps += 1
+
+            if (phase == "val") or (phase == "test"):
+                if preds is None:
+                    logits = self.sigmoid(logit)
+                    pair_idx_list = [pair_idx]
+                    out_logits = logits.detach().cpu().numpy()
+                    preds = discretize(logits.detach().cpu().numpy())
+                    out_labels = labels.detach().cpu().numpy()
+                else:
+                    logits = self.sigmoid(logit)
+                    pair_idx_list.append(pair_idx)
+                    out_logits = np.append(
+                        out_logits, logits.detach().cpu().numpy(), axis=0
+                    )
+                    preds = np.append(
+                        preds, discretize(logits.detach().cpu().numpy()), axis=0
+                    )
+                    out_labels = np.append(
+                        out_labels, labels.detach().cpu().numpy(), axis=0
+                    )
+
+        epoch_loss = running_loss / steps
+        wandb.log({f"{phase}/loss": epoch_loss}, step=epoch)
+        print(f"Phase:{phase},Epoch {epoch}, loss:{epoch_loss}")
+        if (phase == "val") or (phase == "test"):
+            scores = metrics(preds, out_labels, out_logits, phase)
+            for key, value in scores.items():
+                if phase == "val":
+                    wandb.log({f"{phase}/{key}": value}, step=epoch)
+            return epoch_loss, out_labels, preds, out_logits, scores, pair_idx_list
