@@ -43,7 +43,10 @@ def _argparse():
         ],
         help="hyenadna model name",
     )
-    args.add_argument("--rinarmo", action="store_true", default=False)
+    args.add_argument("--rinalmo", action="store_true", default=False)
+    args.add_argument(
+        "--rinalmo_method", type=str, choices=["whole", "average", "whole_ave"]
+    )
     args.add_argument("--feature_craft", action="store_true")
     args.add_argument("--with_pad", action="store_true")
     args.add_argument(
@@ -51,6 +54,12 @@ def _argparse():
         type=str,
         help="path to pretrained params of RNA-FM",
         default="/home/ksuga/whole_mrna_predictor/RNA-FM/pretrained/RNA-FM_pretrained.pth",
+    )
+    args.add_argument(
+        "--format",
+        type=str,
+        choices=["pkl", "pt"],
+        help="save file format. pickle or pt",
     )
     opt = args.parse_args()
     return opt
@@ -136,28 +145,30 @@ class GetEmbedding:
             return self._calc_embedding(seq, seq_name)
 
 
-class GetEmbeddingRiNARMo:
+class GetEmbeddingRinalMo:
     """Get Embedding class"""
 
     def __init__(self, opt: argparse.Namespace):
+        self.max_seq_len = 1022
+        self.method = opt.rinalmo_method
 
         self.model, self.alphabet = get_pretrained_model(model_name="giga-v1")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.model = self.model.to(self.device)
 
-    def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
+    def _calc_embedding(self, seq: str) -> torch.Tensor:
         data = [seq]
-        tokens = self.alphabet.batch_tokenize(
-            data, dtype=torch.int64, device=self.device
+        tokens = torch.tensor(
+            self.alphabet.batch_tokenize(data), dtype=torch.int64, device=self.device
         )
         tokens = tokens.to(self.device)
         with torch.no_grad(), torch.cuda.amp.autocast():
             output = self.model(tokens)
-        token_embeddings = output["representations"]  # dim=(1,seq_len+2,emb_dim=1280)
+        token_embeddings = output["representation"]  # dim=(1,seq_len+2,emb_dim=1280)
         tokens = tokens.detach().cpu()
         token_embeddings = token_embeddings.detach().cpu()
-        return token_embeddings[0][0]  # return embedding of [CLS] token.
+        return token_embeddings[0]  # return embedding dim of [seq_len,emb_dim]
 
     def get(self, seq: str) -> torch.Tensor:
         """getting embedding for each sequence
@@ -168,8 +179,26 @@ class GetEmbeddingRiNARMo:
         Returns:
             torch.Tensor: embedding tensor
         """
-        embedding = self._calc_embedding(seq)
-        return embedding
+        if self.method == "average":
+            # embedding = self._calc_embedding(seq)
+            seq_fragments = [
+                seq[i : i + self.max_seq_len]
+                for i in range(0, len(seq), self.max_seq_len)
+            ]
+            frag_embs = [
+                self._calc_embedding(seq_frag) for seq_frag in seq_fragments
+            ]  # list[torch.Tensor]
+            frag_embs = torch.stack(frag_embs)  # fragments of embeddings
+            ave_embedding = torch.mean(frag_embs, 0)  # calc mean along with dim=1
+            return ave_embedding
+
+        elif self.method == "whole":
+            embedding = self._calc_embedding(seq)
+            return embedding[0]  # return only [CLS] token
+
+        elif self.method == "whole_ave":
+            embedding = self._calc_embedding(seq)
+            return embedding.mean(dim=0)  # use average of whole embedding.
 
 
 class GetEmbeddingWithPad(GetEmbedding):
@@ -426,15 +455,19 @@ def main(opt: argparse.Namespace):
 
         emb_array = (all_emb5, all_emb3)
 
-    elif opt.rinarmo:
+    elif opt.rinalmo:
         print("Using RiNARMo for Embedding !!!")
-        embedder = GetEmbeddingRiNARMo(opt)
+        embedder = GetEmbeddingRinalMo(opt)
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
 
         for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
             emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
+            emb_array.append([emb5, emb3])
 
-        emb_array.append([emb5, emb3])
+        emb5_all = torch.stack([e[0] for e in emb_array])
+        emb3_all = torch.stack([e[1] for e in emb_array])
+
+        emb_pt = torch.concat([emb5_all, emb3_all])
 
     else:
         print("Using 'RNA-FM' for embedding !!! ")
@@ -452,9 +485,12 @@ def main(opt: argparse.Namespace):
             emb_array.append([emb5, emb3])
 
     print(f"Writing down embedding results ...")
+    if opt.format == "pkl":
+        with open(opt.o, "wb") as f:
+            pickle.dump(emb_array, f)
 
-    with open(opt.o, "wb") as f:
-        pickle.dump(emb_array, f)
+    elif opt.format == "pt":
+        torch.save(emb_pt, opt.o)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 """Dataset class"""
+
 import pickle
 from typing import Union
 import numpy as np
@@ -27,6 +28,7 @@ class CreateDataset:
 
         self.df = pd.read_csv(self.cfg.seq_data, index_col=0)
         self.all_idx = np.arange(len(self.df))
+        np.random.shuffle(self.all_idx)
         self.kfold = kfold
         if self.kfold is not None:
             self.kfold_set = self.kfold_split_list(self.all_idx, k=self.kfold)
@@ -34,8 +36,14 @@ class CreateDataset:
 
     def _load_emb(self, emb_path: str) -> np.ndarray:
         print("Loading embedding data ...")
-        with open(emb_path, "rb") as f:
-            seq_emb = pickle.load(f)
+        if emb_path.endswith(".pkl"):
+            with open(emb_path, "rb") as f:
+                seq_emb = pickle.load(f)
+        elif emb_path.endswith(".pt"):
+            seq_emb = torch.load(emb_path)
+        else:
+            raise NotImplementedError
+
         print("Successflly loaded embedding data !!!")
         return seq_emb
 
@@ -210,8 +218,13 @@ class PairDataset(Dataset):
         self.pair_idx = (
             data  # Embedding idx. dim=[sample_num,3]=(utr5idx,utr3idx,label)
         )
-        self.utr5emb = np.stack(list(np.array(self.seq_emb)[:, 0]))
-        self.utr3emb = np.stack(list(np.array(self.seq_emb)[:, 1]))
+
+        if type(self.seq_emb) == list:
+            self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
+            self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
+        elif type(self.seq_emb) == torch.Tensor:
+            self.utr5emb = self.seq_emb[: self.seq_emb.size()[0] // 2]
+            self.utr3emb = self.seq_emb[self.seq_emb.size()[0] // 2 :]
 
     def __getitem__(self, idx) -> Union[list, int]:
         pair_data = self.pair_idx[idx]
@@ -324,8 +337,12 @@ class PairDatasetCL(Dataset):
         self.seq_emb = seq_emb
         self.pair_idx = pair_idx
 
-        self.utr5emb = np.stack(list(np.array(self.seq_emb)[:, 0]))
-        self.utr3emb = np.stack(list(np.array(self.seq_emb)[:, 1]))
+        if type(self.seq_emb) == list:
+            self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
+            self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
+        elif type(self.seq_emb) == torch.Tensor:
+            self.utr5emb = self.seq_emb[: self.seq_emb.size()[0] // 2]
+            self.utr3emb = self.seq_emb[self.seq_emb.size()[0] // 2 :]
 
     def __getitem__(self, idx) -> list:
         embs = [self.utr5emb[self.pair_idx[idx]], self.utr3emb[self.pair_idx[idx]]]

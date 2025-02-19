@@ -1,4 +1,5 @@
 """Model class for simple MLP"""
+
 import copy
 import math
 import numpy as np

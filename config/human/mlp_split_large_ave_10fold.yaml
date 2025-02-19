@@ -1,14 +1,14 @@
 # General params
 wandb_project: UTR_PairPred
 wandb_group: mlp_10fold
-wandb_mode: online
+wandb_mode: offline
 multi_species: False
-result_dir: ../results/runs/MLP_split_large_ave_10fold_seed1/
+result_dir: ../results/runs/MLP_split_large_ave_10fold_shuffle_seed0/
 data_dir: ../data
 seq_data: ../data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
 emb_data: ../data/human/gencode44_embedding_ave_cdhit09.pkl
 conduct_test: True
-seed: 1
+seed: 0
 gpus: [0,1,2,3]
 kfold: 10
 # Params related to training

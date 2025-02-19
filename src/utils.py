@@ -1,7 +1,12 @@
+import os
+import pickle
 import re
 import numpy as np
 import pandas as pd
 from biomart import BiomartServer
+import matplotlib.pyplot as plt
+from typing import List, Tuple
+from matplotlib import cbook
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -14,6 +19,8 @@ from sklearn.metrics import (
     confusion_matrix,
     roc_curve,
     roc_auc_score,
+    precision_recall_curve,
+    average_precision_score,
 )
 
 
@@ -61,6 +68,7 @@ def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") 
     scores["f1"] = f1_score(label, pred)
     scores["matthews"] = matthews_corrcoef(label, pred)
     scores["auc_roc"] = roc_auc_score(label, out_logits)
+    scores["auc_prc"] = average_precision_score(label, out_logits)
     """
     if phase == "test":
         conf_mat = confusion_matrix(label, pred)
@@ -248,3 +256,142 @@ def get_go_enst_table() -> dict:
                 go_id_list.append(items[1])
 
     return go_enst_dict
+
+
+def create_total_df(
+    res_dir: str, seq_df: pd.DataFrame, kfold: int = 10
+) -> pd.DataFrame:
+    kfold = kfold
+    flg = 1
+    for i in range(kfold):
+        dir = os.path.join(res_dir, str(i))
+        pred_path = os.path.join(dir, "pred_results.pkl")
+        with open(pred_path, "rb") as f:
+            pred_results = pickle.load(f)  # (out_cos_sim,out_logits,pair_idx_list)
+            pair_idx = reconst_pair_idx(pred_results[-1])
+            logits = pred_results[1].reshape(-1)
+            cos_sim = pred_results[0].reshape(-1)
+
+        df_pred_res = pd.DataFrame(pair_idx, columns=["utr5", "utr3", "label"])
+        df_pred_res["pred"] = list(map(discretize, pred_results[1]))
+        df_pred_res["correct"] = (df_pred_res["label"] == df_pred_res["pred"]).values
+        df_pred_res["logits"] = logits
+        df_pred_res["cos_sim"] = cos_sim
+        df_pred_res["ENST_ID"] = seq_df.iloc[df_pred_res.utr5.values]["ENST_ID"].values
+        df_pred_res["ENST_ID_PRE"] = list(
+            map(lambda enst_id: enst_id.split(".")[0], df_pred_res["ENST_ID"].values)
+        )
+        df_pred_res["GENE"] = seq_df.iloc[df_pred_res.utr5.values]["GENE"].values
+        df_pred_res = pd.concat(
+            [
+                df_pred_res,
+                seq_df.iloc[:, 3:].iloc[df_pred_res.utr5.values].reset_index(drop=True),
+            ],
+            axis=1,
+        )
+        df_pred_res.sort_values("cos_sim", ascending=False, inplace=True)
+        if flg:
+            total_df = df_pred_res
+            flg = 0
+        else:
+            total_df = pd.concat([total_df, df_pred_res])
+
+        total_df.sort_values("cos_sim", ascending=False, inplace=True)
+        total_df = total_df[(total_df["label"] == 1)]
+
+    return total_df
+
+
+def create_total_df_sv(
+    res_dir: str, seq_df: pd.DataFrame, kfold: int = 10
+) -> pd.DataFrame:
+    kfold = kfold
+    flg = 1
+    for i in range(kfold):
+        dir = os.path.join(res_dir, str(i))
+        pred_path = os.path.join(dir, "pred_results.pkl")
+        with open(pred_path, "rb") as f:
+            pred_results = pickle.load(
+                f
+            )  # [pair_idx_list, preds, out_labels, out_logits]
+            pair_idx = reconst_pair_idx(pred_results[0])
+            logits = pred_results[-1].reshape(-1)
+
+        df_pred_res = pd.DataFrame(pair_idx, columns=["utr5", "utr3", "label"])
+        df_pred_res["pred"] = pred_results[1]
+        df_pred_res["correct"] = (df_pred_res["label"] == df_pred_res["pred"]).values
+        df_pred_res["logits"] = logits
+        df_pred_res["ENST_ID"] = seq_df.iloc[df_pred_res.utr5.values]["ENST_ID"].values
+        df_pred_res["ENST_ID_PRE"] = list(
+            map(lambda enst_id: enst_id.split(".")[0], df_pred_res["ENST_ID"].values)
+        )
+        df_pred_res["GENE"] = seq_df.iloc[df_pred_res.utr5.values]["GENE"].values
+        df_pred_res = pd.concat(
+            [
+                df_pred_res,
+                seq_df.iloc[:, -4:]
+                .iloc[df_pred_res.utr5.values]
+                .reset_index(drop=True),
+            ],
+            axis=1,
+        )
+        df_pred_res.sort_values("logits", ascending=False, inplace=True)
+        if flg:
+            total_df = df_pred_res
+            flg = 0
+        else:
+            total_df = pd.concat([total_df, df_pred_res])
+
+        total_df.sort_values("logits", ascending=False, inplace=True)
+        total_df = total_df[(total_df["label"] == 1)]
+
+    return total_df
+
+
+def boxplot(
+    df: pd.DataFrame,
+    target: str,
+    violin_data_dic: dict,
+    tick_names: list,
+    save_name=False,
+):
+    figsize = (6, 4)
+    xlabel = "CosSim bin"
+    data_list = violin_data_dic[target]
+    all_data = df[~((df["cos_sim"] > 0.8) & (df["cos_sim"] < 1))][target].values
+
+    _, ax = plt.subplots(1, 1, figsize=figsize)
+    pairs = [(tick_names[-2], tick_names[-1])]
+
+    pvalues = [stats.mannwhitneyu(data_list[-1], all_data)[-1]]
+
+    target_val = np.append(
+        np.concatenate([lis for lis in violin_data_dic[target]]), df[target].values
+    )
+    labels = np.append(
+        np.concatenate(
+            [
+                np.repeat(f"{label}", len(lis))
+                for label, lis in zip(tick_names, violin_data_dic[target])
+            ]
+        ),
+        np.repeat("All", len(df)),
+    )
+
+    data = {target: target_val, xlabel: labels, "cell": None}
+
+    data_df = pd.DataFrame(data)
+    # Seabornのboxplotを使用
+    plot_params = {
+        "data": data_df,
+        "x": xlabel,
+        "y": target,
+        "showfliers": False,
+    }
+    sns.boxplot(**plot_params)
+    annotator = Annotator(ax, pairs, **plot_params)
+    annotator.set_pvalues(pvalues)
+    annotator.annotate()
+    plt.tight_layout()
+    if save_name:
+        plt.savefig(f"./results/imgs/{save_name}")

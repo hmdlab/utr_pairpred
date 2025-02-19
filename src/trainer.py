@@ -1,13 +1,12 @@
 """Main trainer code"""
+
 import os
 import argparse
 import random
 import pickle
 from attrdict import AttrDict
-from typing import Tuple, Union
 import wandb
 import yaml
-import random
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
@@ -20,6 +19,7 @@ from sklearn.metrics import (
     matthews_corrcoef,
     confusion_matrix,
     roc_curve,
+    precision_recall_curve,
     roc_auc_score,
 )
 import torch
@@ -165,6 +165,7 @@ def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") 
         scores["tpr_all"] = tpr_all
         scores["roc_thresh"] = thresholds_all
         scores["auc_roc"] = roc_auc_score(label, out_logits)
+        scores["auc_prc"] = precision_recall_curve(label, out_logits)
     return scores
 
 
@@ -271,7 +272,7 @@ class Trainer:
 
             logit = self.model(inputs)
 
-            labels = torch.tensor(labels, dtype=torch.float).to(self.device)
+            labels = torch.Tensor(labels, dtype=torch.float).to(self.device)
             loss = self.loss_fn(logit.view(-1), labels.view(-1))
 
             # loss = loss / cfg.train.grad_acc

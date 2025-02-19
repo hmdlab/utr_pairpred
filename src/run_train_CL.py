@@ -1,4 +1,5 @@
 """Main trainer code"""
+
 import os
 import argparse
 import random
@@ -19,6 +20,7 @@ from base_trainer import Trainer
 def _argparse():
     args = argparse.ArgumentParser()
     args.add_argument("--cfg", required=True, type=str, help="path to config yaml")
+    args.add_argument("--seed", type=int, help="seed", default=0)
     args = args.parse_args()
     return args
 
@@ -96,6 +98,8 @@ class Runner:
 def main(opt: argparse.Namespace):
     """main func"""
     cfg = _parse_config(opt.cfg)
+    cfg.seed = opt.seed
+    cfg.result_dir = cfg.result_dir + f"_seed{cfg.seed}/"
 
     ## Setup section
     _random_seeds(cfg.seed)
