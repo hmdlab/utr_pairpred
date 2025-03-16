@@ -1,4 +1,7 @@
 # UTR_PairPred
+
+## Installation
+
 ## Data preprocess
 1. Download gencode `Protein-coding transcript sequences` fasta file from [here](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.pc_transcripts.fa.gz)
 2. Createing sequence df with filtering.
@@ -22,6 +25,7 @@ python trainer.py --cfg <YOUR_CONFIG_PATH>
 ```
 - Results will be saved in wandb.
 
+## Downstream analysis
 
 ## Utils
 **cd-hit**
