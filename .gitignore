@@ -3,7 +3,6 @@ wandb
 gscripts
 gencode*
 GENCODE*
-CLIP/
 data/
 results/
 
@@ -13,7 +12,6 @@ results/
 *.pkl
 *.yaml
 *.yml
-*.ipynb
 *.txt
 *.pth
 *.pt
