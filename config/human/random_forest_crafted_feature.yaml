@@ -2,9 +2,9 @@
 wandb_project: UTR_PairPred
 result_dir: ../RF_crafted_feature
 data_dir: ../data
-seq_data: ../data/human/gencode44_utr_gene_unique_cdhit09_max10k.csv # path to raw data csv
-utr5_feature_path: ../data/human/gencode44_utr_gene_unique_cdhit09_max10k_feature_5utr.csv
-utr3_feature_path: ../data/human/gencode44_utr_gene_unique_cdhit09_max10k_feature_3utr.csv
+seq_data: ../data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
+utr5_feature_path: ../data/human/gencode44_utr_gene_unique_cdhit09_feature_5utr.csv
+utr3_feature_path: ../data/human/gencode44_utr_gene_unique_cdhit09_feature_3utr.csv
 input_type: feature
 seed: 2023
 gpus: [0,1,2,3]

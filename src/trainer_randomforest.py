@@ -121,7 +121,7 @@ def main(opt: argparse.Namespace):
 
     print("Predicting ...")
     pred = model.predict(X_val)
-    pred_scores = model.predict_proba(X_val)[:, 1]
+    pred_scores = model.predict_proba(X_val)[:, 0]
     scores = metrics(y_val,pred,pred_scores)
     print("Prediction finished !!!\n Metrics")
     for k, v in scores.items():

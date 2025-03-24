@@ -417,7 +417,7 @@ def main(opt: argparse.Namespace):
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
         seq5utr = [seq.replace("U", "T") for seq in seq5utr]
         seq3utr = [seq.replace("U", "T") for seq in seq3utr]
-        """
+        
         print("Creating 5utr features ...")
         time1 = time.time()
         feature_5utr = pool.map(converter.get, seq5utr)
@@ -427,9 +427,9 @@ def main(opt: argparse.Namespace):
                 opt.o, os.path.basename(opt.i).replace(".csv", "_feature_5utr.csv")
             )
         )
-        """
+        
         time2 = time.time()
-        #print(f"elaplsed time 5utr:{time2-time1}s")
+        print(f"elaplsed time 5utr:{time2-time1}s")
         print("Creating 3utr features ...")
         feature_3utr = pool.map(converter.get, seq3utr)
         df_3utr = pd.DataFrame(feature_3utr, index=seq_df["ENST_ID"].values)
