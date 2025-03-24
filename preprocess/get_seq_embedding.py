@@ -1,23 +1,21 @@
 """Getting sequence embedding code"""
 
+import argparse
 import os
+import pickle
+import subprocess
 import sys
 import time
-import subprocess
-from multiprocessing import Pool, cpu_count
-import argparse
-import pickle
 from itertools import product
+from multiprocessing import Pool, cpu_count
 
-import torch
 import fm
-from tqdm import tqdm
 import pandas as pd
-
-
+import torch
 from huggingface_hyena import HyenaDNAPreTrainedModel
-from standalone_hyenadna import CharacterTokenizer
 from rinalmo.pretrained import get_pretrained_model
+from standalone_hyenadna import CharacterTokenizer
+from tqdm import tqdm
 
 
 def _argparse():
@@ -326,7 +324,7 @@ class GetFeature:
 
         return feature_map
 
-    def _RNAfold_energy(self, seq: str, *args):
+    def _RNAfold_energy(self, seq: str, *args)->float:
         rnaf = subprocess.Popen(
             ["RNAfold", "--noPS"] + list(args),
             stdin=subprocess.PIPE,
@@ -339,7 +337,11 @@ class GetFeature:
         output_lines = (
             rnafold_output.strip().splitlines()
         )  ## output_lines:list=[original_seq,dot-bracket (energy)]
-        energy = float(output_lines[1].rsplit("(", 1)[1].strip("()").strip())
+        try:
+            energy = float(output_lines[1].rsplit("(", 1)[1].strip("()").strip())
+        except IndexError:
+            print(f'Error output:{output_lines}')
+            energy = -100
         return energy
 
     def foldenergy_feature(self, seq) -> dict:
@@ -415,7 +417,7 @@ def main(opt: argparse.Namespace):
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
         seq5utr = [seq.replace("U", "T") for seq in seq5utr]
         seq3utr = [seq.replace("U", "T") for seq in seq3utr]
-
+        """
         print("Creating 5utr features ...")
         time1 = time.time()
         feature_5utr = pool.map(converter.get, seq5utr)
@@ -425,8 +427,9 @@ def main(opt: argparse.Namespace):
                 opt.o, os.path.basename(opt.i).replace(".csv", "_feature_5utr.csv")
             )
         )
+        """
         time2 = time.time()
-        print(f"elaplsed time 5utr:{time2-time1}s")
+        #print(f"elaplsed time 5utr:{time2-time1}s")
         print("Creating 3utr features ...")
         feature_3utr = pool.map(converter.get, seq3utr)
         df_3utr = pd.DataFrame(feature_3utr, index=seq_df["ENST_ID"].values)
@@ -484,7 +487,7 @@ def main(opt: argparse.Namespace):
                 emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
             emb_array.append([emb5, emb3])
 
-    print(f"Writing down embedding results ...")
+    print("Writing down embedding results ...")
     if opt.format == "pkl":
         with open(opt.o, "wb") as f:
             pickle.dump(emb_array, f)

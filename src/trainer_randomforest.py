@@ -1,18 +1,24 @@
 """Main trainer code"""
-import os
 import argparse
+import os
 import random
-from attrdict import AttrDict
-import yaml
-import random
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
-
+import yaml
+from attrdict import AttrDict
 from dataset import PairDatasetRF, PairDatasetRF_feature
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    average_precision_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
+from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier
 
 
 def _argparse():
@@ -61,12 +67,16 @@ def create_pair_set(data_path):
     return pair_list
 
 
-def metrics(pred: np.array, label: np.array) -> dict:
+def metrics(label: np.array,pred: np.array,  pred_scores:np.array=None) -> dict:
     scores = dict()
     scores["accuracy"] = accuracy_score(pred, label)
     scores["precision"] = precision_score(pred, label)
     scores["recall"] = recall_score(pred, label)
     scores["f1"] = f1_score(pred, label)
+
+    if pred_scores is not None:
+        scores["auc_roc"] = roc_auc_score(label,pred_scores)
+        scores["auc_prc"] = average_precision_score(label, pred_scores) 
 
     return scores
 
@@ -111,7 +121,8 @@ def main(opt: argparse.Namespace):
 
     print("Predicting ...")
     pred = model.predict(X_val)
-    scores = metrics(pred, y_val)
+    pred_scores = model.predict_proba(X_val)[:, 1]
+    scores = metrics(y_val,pred,pred_scores)
     print("Prediction finished !!!\n Metrics")
     for k, v in scores.items():
         print(f"{k}:{v:.4f}")
