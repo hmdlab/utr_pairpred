@@ -1,13 +1,13 @@
 from model import (
-    PairPredMLP,
-    PairPredMLP_split,
     PairPredCNN,
     PairPredCNN_small,
-    PairPredMLP_split_large,
-    PairPredMLP_split_skip,
+    PairPredConcatSelfAttn,
     PairPredCR,
     PairPredCrossAttn,
-    PairPredConcatSelfAttn,
+    PairPredMLP,
+    PairPredMLP_split,
+    PairPredMLP_split_large,
+    PairPredMLP_split_skip,
 )
 
 MODEL_DICT = {

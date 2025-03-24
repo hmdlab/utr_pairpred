@@ -25,7 +25,7 @@ from torch import nn
 
 class Focal_Loss(nn.Module):
     def __init__(self, gamma):
-        super(Focal_Loss, self).__init__()
+        super().__init__()
         self.gamma = gamma
         self.bceloss = nn.BCELoss(reduction="none")
         self.sigmoid = nn.Sigmoid()
@@ -60,7 +60,7 @@ def discretize(logits, threshold=0.5):
 
 def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") -> dict:
     "evaluation metrics"
-    scores = dict()
+    scores = {}
     scores["accuracy"] = accuracy_score(label, pred)
     scores["precision"] = precision_score(label, pred)
     scores["recall"] = recall_score(label, pred)
@@ -108,17 +108,14 @@ def extract_enst_ids_from_file(file_path, species="human") -> np.array:
     Returns:
         _type_:
     """
-    # ファイルを読み込む
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         text_data = file.read()
 
-    # ENST idを抽出する正規表現パターン
     if species == "human":
         pattern = re.compile(r"(ENST\d+\.\d+)")
     elif species == "mouse":
         pattern = re.compile(r"(ENSMUST\d+\.\d+)")
 
-    # テキストデータからENST idを抽出
     enst_ids = re.findall(pattern, text_data)
     enst_ids = np.array(enst_ids)
 
@@ -197,7 +194,7 @@ class Seq2Feature:
     def codonFreq(self, seq):
         codon_str = seq.translate()
         tot = len(codon_str)
-        feature_map = dict()
+        feature_map = {}
         for a in codon_str:
             a = "codon_" + a
             if a not in feature_map:
@@ -209,7 +206,7 @@ class Seq2Feature:
 
     def singleNucleotide_composition(self, seq, three=False):
         dna_str = str(seq).upper()
-        N_count = dict()  # add one pseudo count
+        N_count = {}  # add one pseudo count
         N_count["C"] = 1
         N_count["G"] = 1
         N_count["A"] = 1
@@ -218,7 +215,7 @@ class Seq2Feature:
             if a not in N_count:
                 N_count[a] = 0
             N_count[a] += 1
-        feature_map = dict()
+        feature_map = {}
         feature_map["CGperc"] = float(N_count["C"] + N_count["G"]) / len(dna_str)
         feature_map["CGratio"] = abs(float(N_count["C"]) / N_count["G"] - 1)
         feature_map["ATratio"] = abs(float(N_count["A"]) / N_count["T"] - 1)
@@ -237,7 +234,6 @@ class Seq2Feature:
 def get_go_enst_table() -> dict:
     server = BiomartServer("http://www.ensembl.org/biomart")
 
-    # データセットのリストを取得
     ensembl_genes = server.databases["ENSEMBL_MART_ENSEMBL"]
     ensembl_genes = server.datasets["hsapiens_gene_ensembl"]
     response = ensembl_genes.search({"attributes": ["go_id", "ensembl_transcript_id"]})
@@ -277,9 +273,7 @@ def create_total_df(
         df_pred_res["logits"] = logits
         df_pred_res["cos_sim"] = cos_sim
         df_pred_res["ENST_ID"] = seq_df.iloc[df_pred_res.utr5.values]["ENST_ID"].values
-        df_pred_res["ENST_ID_PRE"] = list(
-            map(lambda enst_id: enst_id.split(".")[0], df_pred_res["ENST_ID"].values)
-        )
+        df_pred_res["ENST_ID_PRE"] = [enst_id.split(".")[0] for enst_id in df_pred_res["ENST_ID"].values]
         df_pred_res["GENE"] = seq_df.iloc[df_pred_res.utr5.values]["GENE"].values
         df_pred_res = pd.concat(
             [
@@ -321,9 +315,7 @@ def create_total_df_sv(
         df_pred_res["correct"] = (df_pred_res["label"] == df_pred_res["pred"]).values
         df_pred_res["logits"] = logits
         df_pred_res["ENST_ID"] = seq_df.iloc[df_pred_res.utr5.values]["ENST_ID"].values
-        df_pred_res["ENST_ID_PRE"] = list(
-            map(lambda enst_id: enst_id.split(".")[0], df_pred_res["ENST_ID"].values)
-        )
+        df_pred_res["ENST_ID_PRE"] = [enst_id.split(".")[0] for enst_id in df_pred_res["ENST_ID"].values]
         df_pred_res["GENE"] = seq_df.iloc[df_pred_res.utr5.values]["GENE"].values
         df_pred_res = pd.concat(
             [
@@ -365,7 +357,7 @@ def boxplot(
     pvalues = [stats.mannwhitneyu(data_list[-1], all_data)[-1]]
 
     target_val = np.append(
-        np.concatenate([lis for lis in violin_data_dic[target]]), df[target].values
+        np.concatenate(list(violin_data_dic[target])), df[target].values
     )
     labels = np.append(
         np.concatenate(
@@ -380,7 +372,6 @@ def boxplot(
     data = {target: target_val, xlabel: labels, "cell": None}
 
     data_df = pd.DataFrame(data)
-    # Seabornのboxplotを使用
     plot_params = {
         "data": data_df,
         "x": xlabel,

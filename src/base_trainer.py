@@ -1,17 +1,16 @@
 """Main trainer code"""
 
 import os
-from attrdict import AttrDict
-import wandb
-from tqdm import tqdm
-import numpy as np
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import wandb
+from attrdict import AttrDict
 from torch.utils.data import DataLoader
-
-from utils import metrics, discretize
+from tqdm import tqdm
+from utils import discretize, metrics
 
 
 class Trainer:
@@ -160,11 +159,11 @@ class TrainerMLP(Trainer):
         scheduler,
         device=str,
     ):
-        super(TrainerMLP, self).__init__(
+        super().__init__(
             cfg, model, dataset_dict, loss_fn, optimizer, scheduler, device
         )
 
-    def iterate(self, epoch: int, phase: str):
+    def iterate(self, epoch: int, phase: str): # noqa: C901
         if phase == "train":
             self.optimizer.zero_grad()
             self.model.train()
@@ -172,7 +171,7 @@ class TrainerMLP(Trainer):
             self.model.eval()
             preds = None
         else:
-            NotImplementedError
+            raise NotImplementedError()
 
         running_loss = 0.0
         steps = 0

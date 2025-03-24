@@ -1,20 +1,21 @@
 """Main trainer code"""
 
-import os
 import argparse
-import random
+import os
 import pickle
-from attrdict import AttrDict
-import yaml
+import random
+
 import numpy as np
 import pandas as pd
 import torch
+import yaml
+from _model_dict import MODEL_DICT
+from attrdict import AttrDict
+from base_trainer import Trainer
+from dataset import CreateDataset, PairDatasetCL, PairDatasetCL_test
 from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
-from dataset import PairDatasetCL, PairDatasetCL_test, CreateDataset
-from _model_dict import MODEL_DICT
 from utils import NpairLoss
-from base_trainer import Trainer
 
 
 def _argparse():
@@ -129,7 +130,7 @@ def main(opt: argparse.Namespace):
             runner.test()
 
     else:
-        score_of_score_dic = dict()
+        score_of_score_dic = {}
         for k in range(cfg.kfold):
             model = MODEL_DICT[cfg.model.arch](cfg.model)
             model = model.to(device)

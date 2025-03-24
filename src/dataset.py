@@ -2,11 +2,12 @@
 
 import pickle
 from typing import Union
+
 import numpy as np
 import pandas as pd
+import torch
 from attrdict import AttrDict
 from sklearn.model_selection import train_test_split
-import torch
 from torch.utils.data import Dataset
 
 
@@ -126,11 +127,6 @@ class CreateDataset:
         ## split idx for train/val/test
         if self.cfg.multi_species:
             raise NotImplementedError()
-            df_list = [pd.read_csv(path) for path in data_path]
-            sample_counts = []
-            for df in df_list:
-                sample_counts.append(len(df))
-            all_idx = np.arange(sum(sample_counts))
 
         train_idx, val_idx = train_test_split(self.all_idx, test_size=test_size)
         val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
@@ -173,7 +169,7 @@ class CreateDataset:
             pair_set_dict: dict = self.create_split_pair_set_mlp()
         elif "contrastive" in self.cfg.model.arch:
             pair_set_dict: dict = self.create_split_pair_set()
-        dataset_dict = dict()
+        dataset_dict = {}
 
         for phase, pair_list in pair_set_dict.items():
             print(f"Creating {phase} dataset ...")
@@ -198,7 +194,7 @@ class CreateDataset:
 
         pair_set_dict = {"train": train_idx, "val": val_idx, "test": test_idx}
 
-        dataset_dict = dict()
+        dataset_dict = {}
 
         for phase, pair_list in pair_set_dict.items():
             print(f"Creating {phase} dataset ...")
@@ -219,10 +215,10 @@ class PairDataset(Dataset):
             data  # Embedding idx. dim=[sample_num,3]=(utr5idx,utr3idx,label)
         )
 
-        if type(self.seq_emb) == list:
+        if isinstance(self.seq_emb,list):
             self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
             self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
-        elif type(self.seq_emb) == torch.Tensor:
+        elif isinstance(self.seq_emb,torch.Tensor):
             self.utr5emb = self.seq_emb[: self.seq_emb.size()[0] // 2]
             self.utr3emb = self.seq_emb[self.seq_emb.size()[0] // 2 :]
 
@@ -242,8 +238,8 @@ class PairDataset_Multi(Dataset):
         self.pair_idx = (
             data  # Embedding idx. dim=[sample_num,3]=(utr5idx,utr3idx,label)
         )
-        self.utr5emb_list = list()
-        self.utr3emb_list = list()
+        self.utr5emb_list = []
+        self.utr3emb_list = []
 
         for seq_emb in self.seq_embs:
             self.utr5emb_list.append(torch.stack(list(np.array(seq_emb)[:, 0])))
@@ -270,7 +266,7 @@ class PairDatasetRF:
         self.utr5emb = np.stack(list(np.array(self.seq_emb)[:, 0]))
         self.utr3emb = np.stack(list(np.array(self.seq_emb)[:, 1]))
 
-    def get(self) -> (list, list):
+    def get(self) -> tuple[list, list]:
         embeddings = []
         labels = []
         for pair_data in self.pair_list:
@@ -293,7 +289,7 @@ class PairDatasetRF_feature:
         self.utr5feature = pd.read_csv(cfg.utr5_feature_path, index_col=0)
         self.utr3feature = pd.read_csv(cfg.utr3_feature_path, index_col=0)
 
-    def get(self) -> (list, list):
+    def get(self) -> tuple[list, list]:
         utr5_idx = self.pair_list[:, 0]
         utr3_idx = self.pair_list[:, 1]
         labels = self.pair_list[:, 2]
@@ -337,10 +333,10 @@ class PairDatasetCL(Dataset):
         self.seq_emb = seq_emb
         self.pair_idx = pair_idx
 
-        if type(self.seq_emb) == list:
+        if isinstance(self.seq_emb,list):
             self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
             self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
-        elif type(self.seq_emb) == torch.Tensor:
+        elif isinstance(self.seq_emb, torch.Tensor):
             self.utr5emb = self.seq_emb[: self.seq_emb.size()[0] // 2]
             self.utr3emb = self.seq_emb[self.seq_emb.size()[0] // 2 :]
 
@@ -360,8 +356,8 @@ class PairDatasetCL_Multi(Dataset):
         self.seq_embs = seq_embs
         self.pair_idx = pair_idx
 
-        self.utr5emb_list = list()
-        self.utr3emb_list = list()
+        self.utr5emb_list = []
+        self.utr3emb_list = []
 
         for seq_emb in self.seq_embs:
             self.utr5emb_list.append(torch.stack(list(np.array(seq_emb)[:, 0])))
@@ -391,7 +387,7 @@ class PairDatasetCL_test(PairDatasetCL):
 
 class PairDatasetCL_Multi_test(PairDatasetCL_Multi):
     def __init__(self, seq_embs: list, pair_idx: np.ndarray):
-        super(PairDatasetCL_Multi_test, self).__init__(seq_embs, pair_idx)
+        super().__init__(seq_embs, pair_idx)
 
     def __getitem__(self, idx) -> list:
         pair_data = self.pair_idx[idx]

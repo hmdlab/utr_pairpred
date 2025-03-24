@@ -1,35 +1,35 @@
 """Main trainer code"""
 
-import os
 import argparse
-import random
+import os
 import pickle
-from attrdict import AttrDict
-import wandb
-import yaml
-from tqdm import tqdm
+import random
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import torch
+import wandb
+import yaml
+from _model_dict import MODEL_DICT
+from attrdict import AttrDict
+from dataset import PairDataset, PairDataset_Multi
 from sklearn.metrics import (
     accuracy_score,
-    precision_score,
-    recall_score,
+    confusion_matrix,
     f1_score,
     matthews_corrcoef,
-    confusion_matrix,
-    roc_curve,
     precision_recall_curve,
+    precision_score,
+    recall_score,
     roc_auc_score,
+    roc_curve,
 )
-import torch
+from sklearn.model_selection import train_test_split
 from torch import nn
-from torch.optim import Adam
 from torch.nn import BCEWithLogitsLoss
+from torch.optim import Adam
 from torch.utils.data import DataLoader
-
-from dataset import PairDataset, PairDataset_Multi
-from _model_dict import MODEL_DICT
+from tqdm import tqdm
 
 
 def _argparse():
@@ -148,7 +148,7 @@ def _discretize(logits, threshold=0.5):
 
 def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") -> dict:
     "evaluation metrics"
-    scores = dict()
+    scores = {}
     scores["accuracy"] = accuracy_score(label, pred)
     scores["precision"] = precision_score(label, pred)
     scores["recall"] = recall_score(label, pred)
@@ -176,7 +176,7 @@ def load_split_dataset(cfg: AttrDict) -> dict:
     if cfg.multi_species:
         dataset_class = PairDataset_Multi
 
-        seq_embs = list()
+        seq_embs = []
         for path in cfg.emb_data:
             with open(path, "rb") as f:
                 seq_emb = pickle.load(f)
@@ -189,7 +189,7 @@ def load_split_dataset(cfg: AttrDict) -> dict:
     print("Successflly loaded embedding data !!!")
 
     pair_set_dict = create_split_pair_set(cfg, data_path=cfg.seq_data)
-    dataset_dict = dict()
+    dataset_dict = {}
 
     for phase, pair_list in pair_set_dict.items():
         print(f"Creating {phase} dataset ...")
@@ -243,7 +243,7 @@ class Trainer:
         self.best_model = None
         self.best_model_path = os.path.join(self.cfg.result_dir, "best_model.pth")
 
-    def iterate(self, epoch: int, phase: str):
+    def iterate(self, epoch: int, phase: str): # noqa: C901
         if phase == "train":
             self.optimizer.zero_grad()
             self.model.train()
@@ -251,7 +251,7 @@ class Trainer:
             self.model.eval()
             preds = None
         else:
-            NotImplementedError
+            raise NotImplementedError()
 
         running_loss = 0.0
         steps = 0

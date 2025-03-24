@@ -1,13 +1,11 @@
 """Model class for simple MLP"""
 
-import copy
-import math
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.nn import MultiheadAttention
 import torch.nn.functional as F
 from attrdict import AttrDict
+from torch.nn import MultiheadAttention
 
 
 class PairPredMLP(nn.Module):
@@ -282,7 +280,7 @@ class ResBlock(nn.Module):
         conv_layer=nn.Conv2d,
         norm_layer=nn.BatchNorm2d,
     ):
-        super(ResBlock, self).__init__()
+        super().__init__()
         self.bn1 = norm_layer(in_planes)
         self.relu1 = nn.ReLU(inplace=True)
         self.conv1 = conv_layer(

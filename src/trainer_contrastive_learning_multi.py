@@ -4,34 +4,33 @@ import sys
 
 sys.path.append("..")
 import argparse
-import random
 import pickle
-from attrdict import AttrDict
-import wandb
-import yaml
 import random
-from tqdm import tqdm
+
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    confusion_matrix,
-    roc_curve,
-    roc_auc_score,
-)
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.optim import Adam
-from torch.optim.lr_scheduler import MultiStepLR, CosineAnnealingWarmRestarts
-from torch.utils.data import DataLoader
-
-from dataset import PairDatasetCL_Multi, PairDatasetCL_Multi_test
+import wandb
+import yaml
 from _model_dict import MODEL_DICT
+from attrdict import AttrDict
+from dataset import PairDatasetCL_Multi, PairDatasetCL_Multi_test
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+    roc_curve,
+)
+from sklearn.model_selection import train_test_split
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiStepLR
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 from utils import NpairLoss
 
 
@@ -71,7 +70,7 @@ def _discretize(logits, threshold=0.5):
 
 def metrics(pred: np.array, label: np.array, out_logits: np.array, phase="val") -> dict:
     "evaluation metrics"
-    scores = dict()
+    scores = {}
     scores["accuracy"] = accuracy_score(label, pred)
     scores["precision"] = precision_score(label, pred)
     scores["recall"] = recall_score(label, pred)
@@ -176,10 +175,10 @@ def load_split_dataset(cfg: AttrDict) -> dict:
     dataset_class = PairDatasetCL_Multi
     dataset_class_test = PairDatasetCL_Multi_test
     pair_set_dict = create_split_pair_set(cfg, data_path=cfg.seq_data)
-    dataset_dict = dict()
+    dataset_dict = {}
 
     print("Loading embedding data ...")
-    seq_embs = list()
+    seq_embs = []
     for path in cfg.emb_data:
         with open(path, "rb") as f:
             seq_emb = pickle.load(f)

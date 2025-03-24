@@ -18,7 +18,6 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.model_selection import train_test_split
-from xgboost import XGBClassifier
 
 
 def _argparse():
@@ -68,7 +67,7 @@ def create_pair_set(data_path):
 
 
 def metrics(label: np.array,pred: np.array,  pred_scores:np.array=None) -> dict:
-    scores = dict()
+    scores = {}
     scores["accuracy"] = accuracy_score(pred, label)
     scores["precision"] = precision_score(pred, label)
     scores["recall"] = recall_score(pred, label)
@@ -76,7 +75,7 @@ def metrics(label: np.array,pred: np.array,  pred_scores:np.array=None) -> dict:
 
     if pred_scores is not None:
         scores["auc_roc"] = roc_auc_score(label,pred_scores)
-        scores["auc_prc"] = average_precision_score(label, pred_scores) 
+        scores["auc_prc"] = average_precision_score(label, pred_scores)
 
     return scores
 
@@ -116,8 +115,8 @@ def main(opt: argparse.Namespace):
     if cfg.model.arch == "rf":
         model = RandomForestClassifier(random_state=cfg.seed)
         model.fit(X_train, y_train)
-    elif cfg.model.arch == "xgboost":
-        model = XGBClassifier()
+    else:
+        raise NotImplementedError()
 
     print("Predicting ...")
     pred = model.predict(X_val)
