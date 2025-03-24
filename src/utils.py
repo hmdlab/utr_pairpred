@@ -249,7 +249,7 @@ def get_go_enst_table() -> dict:
             pass
         else:
             go_id_list = go_enst_dict.get(items[0])
-            if go_id_list == None:
+            if go_id_list is None:
                 go_enst_dict[items[0]] = []
             else:
                 go_id_list.append(items[1])
