@@ -1,7 +1,8 @@
 import argparse
-import RNA
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+import RNA
 from tqdm import tqdm
 
 
@@ -34,7 +35,7 @@ def utr5_process(
     Returns:
         pd.DataFrame: _description_
     """
-    print(f"Calculating 5UTRs ...")
+    print("Calculating 5UTRs ...")
     # whole_mfe = []
     tail_mfes = []
     tail_cds_mfes = []
@@ -83,7 +84,7 @@ def utr3_process(
     Returns:
         pd.DataFrame: _description_
     """
-    print(f"Calculating 3UTRs ...")
+    print("Calculating 3UTRs ...")
     # whole_mfe = []
     tail_mfes = []
     head_mfes = []

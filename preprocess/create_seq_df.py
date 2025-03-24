@@ -1,9 +1,10 @@
-import os
-import pandas as pd
-from tqdm import tqdm
-from Bio import SeqIO
 import argparse
+import os
+
+import pandas as pd
+from Bio import SeqIO
 from pyensembl import Genome
+from tqdm import tqdm
 
 
 def _argparse():

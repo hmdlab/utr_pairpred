@@ -12,9 +12,7 @@ from multiprocessing import Pool, cpu_count
 import fm
 import pandas as pd
 import torch
-from huggingface_hyena import HyenaDNAPreTrainedModel
 from rinalmo.pretrained import get_pretrained_model
-from standalone_hyenadna import CharacterTokenizer
 from tqdm import tqdm
 
 
@@ -252,54 +250,6 @@ class GetEmbeddingWithPad(GetEmbedding):
             return self._calc_embedding(seq, seq_name)
 
 
-class GetEmbeddingHyenaDNA:
-    def __init__(self, pretrained_model_name="hyenadna-small-32k-seqlen"):
-        use_head = False
-        n_classes = 2
-        backbone_cfg = None
-        max_lengths = {
-            "hyenadna-tiny-1k-seqlen": 1024,
-            "hyenadna-small-32k-seqlen": 32768,
-            "hyenadna-medium-160k-seqlen": 160000,
-            "hyenadna-medium-450k-seqlen": 450000,  # T4 up to here
-            "hyenadna-large-1m-seqlen": 1_000_000,  # only A100 (paid tier)
-        }
-        max_length = max_lengths[pretrained_model_name]
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("Using device:", self.device)
-        self.model = HyenaDNAPreTrainedModel.from_pretrained(
-            "./checkpoints",
-            pretrained_model_name,
-            download=True,
-            config=backbone_cfg,
-            device=self.device,
-            use_head=use_head,
-            n_classes=n_classes,
-        )
-        self.model.to(self.device)
-
-        self.tokenizer = CharacterTokenizer(
-            characters=["A", "C", "G", "T", "N"],  # add DNA characters, N is uncertain
-            model_max_length=max_length + 2,  # to account for special tokens, like EOS
-            add_special_tokens=False,  # we handle special tokens elsewhere
-            padding_side="left",  # since HyenaDNA is causal, we pad on the left
-        )
-
-    def get(self, seq: str, seq_name=None) -> torch.Tensor:
-        tok_seq = self.tokenizer(seq)
-        tok_seq = tok_seq["input_ids"]  # grab ids
-
-        # place on device, convert to tensor
-        tok_seq = torch.LongTensor(tok_seq).unsqueeze(0)  # unsqueeze for batch dim
-        tok_seq = tok_seq.to(self.device)
-        self.model.eval()
-        with torch.inference_mode():
-            embeddings = self.model(tok_seq)  # dim=[bs,seq_len,hidden_dim]
-
-        tok_seq = tok_seq.detach().cpu()
-
-        return embeddings[0].mean(dim=0)  # embeddings[0][-1]  only use CLS token
-
 
 class GetFeature:
     def __init__(self):
@@ -314,7 +264,7 @@ class GetFeature:
             if v == 0:
                 base_dic[k] = 1
 
-        feature_map = dict()
+        feature_map:dict[str,float] = {}
         feature_map["CGperc"] = (base_dic["C"] + base_dic["G"]) / len(seq)
         feature_map["CGratio"] = base_dic["C"] / base_dic["G"]
         feature_map["ATratio"] = base_dic["A"] / base_dic["T"]
@@ -346,7 +296,7 @@ class GetFeature:
 
     def foldenergy_feature(self, seq) -> dict:
         dna_str = str(seq)
-        feature_map = dict()
+        feature_map = {}
         # feature_map["energy_head"] = self._RNAfold_energy(dna_str[:100])
         feature_map["energy_whole"] = self._RNAfold_energy(dna_str)
         # feature_map["energy_tail"] = self._RNAfold_energy(dna_str[-100:])
@@ -373,7 +323,7 @@ class GetFeature:
         return patterns
 
     def Kmer_feature(self, seq: str) -> dict:
-        result_dict = dict()
+        result_dict = {}
         for k in range(3, 7):
             kmer_counts = self._count_kmers(seq, k)
 
@@ -395,29 +345,17 @@ class GetFeature:
 
 
 def main(opt: argparse.Namespace):
-    """main"""
     seq_df = pd.read_csv(opt.i, index_col=0)
     emb_array = []
 
-    if opt.hyenadna:
-        print(f"Using '{opt.hyenadna}' model for embedding !!!")
-        embedder = GetEmbeddingHyenaDNA(pretrained_model_name=opt.hyenadna)
-        seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
-
-        for utr5, utr3 in tqdm(zip(seq5utr, seq3utr)):
-            utr5, utr3 = utr5.replace("U", "T"), utr3.replace("U", "T")
-            emb5, emb3 = embedder.get(utr5), embedder.get(utr3)
-            emb5, emb3 = emb5.detach().cpu(), emb3.detach().cpu()
-            emb_array.append([emb5, emb3])
-
-    elif opt.feature_craft:
+    if opt.feature_craft:
         print("Creating features !!!")
         converter = GetFeature()
         pool = Pool(cpu_count())
         seq5utr, seq3utr = seq_df["5UTR"].values, seq_df["3UTR"].values
         seq5utr = [seq.replace("U", "T") for seq in seq5utr]
         seq3utr = [seq.replace("U", "T") for seq in seq3utr]
-        
+
         print("Creating 5utr features ...")
         time1 = time.time()
         feature_5utr = pool.map(converter.get, seq5utr)
@@ -427,7 +365,7 @@ def main(opt: argparse.Namespace):
                 opt.o, os.path.basename(opt.i).replace(".csv", "_feature_5utr.csv")
             )
         )
-        
+
         time2 = time.time()
         print(f"elaplsed time 5utr:{time2-time1}s")
         print("Creating 3utr features ...")
