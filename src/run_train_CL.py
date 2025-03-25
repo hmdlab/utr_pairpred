@@ -9,12 +9,13 @@ import numpy as np
 import pandas as pd
 import torch
 import yaml
-from _model_dict import MODEL_DICT
 from attrdict import AttrDict
-from base_trainer import Trainer
-from dataset import CreateDataset, PairDatasetCL, PairDatasetCL_test
 from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
+
+from _model_dict import MODEL_DICT
+from base_trainer import Trainer
+from dataset import CreateDataset, PairDatasetCL, PairDatasetCL_test
 from utils import NpairLoss
 
 

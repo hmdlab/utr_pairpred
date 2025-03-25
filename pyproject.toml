@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "UTR_PairPred"
+version = "1.0.0"
+description = "Original dir of Deciphering the comprehensive relationship between 5'UTR and 3'UTR sequence with deep learning"
+authors = ["Kanta Suga"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.8.10"
+attrdict="2.0.1"
+biopython="*"
+matplotlib = "3.5.1"
+numpy = "1.22.4"
+pandas = "1.4.3"
+pyensembl="*"
+scikit-learn= "1.0.2"
+seaborn = "0.12.2"
+statannotations="*"
+torch = "2.0.0"
+tqdm = "*"
+wandb = "*"
+ViennaRNA="*"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+jupyterlab = "*"
+
+[tool.ruff]
+line-length = 120
+
+exclude = [
+	"*/__init__.py",
+]
+
+[tool.ruff.lint]
+# All rules are listed on https://docs.astral.sh/ruff/rules/
+select = [
+	"E",  # pycodestyle errors
+	"W",  # pycodestyle warnings
+	"F",  # pyflakes
+	"I",  # isort
+	"C",  # flake8-comprehensions
+	"B",  # flake8-bugbear
+	"UP", # pyupgrade
+]
+
+
+[tool.ruff.format]
+quote-style = "single"

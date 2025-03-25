@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import yaml
 from attrdict import AttrDict
-from dataset import PairDatasetRF, PairDatasetRF_feature
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
@@ -18,6 +17,8 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.model_selection import train_test_split
+
+from dataset import PairDatasetRF, PairDatasetRF_feature
 
 
 def _argparse():

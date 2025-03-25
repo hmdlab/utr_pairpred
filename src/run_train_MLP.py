@@ -7,15 +7,16 @@ import random
 import numpy as np
 import pandas as pd
 import torch
-import wandb
 import yaml
-from _model_dict import MODEL_DICT
 from attrdict import AttrDict
-from base_trainer import TrainerMLP
-from dataset import CreateDataset, PairDataset
 from torch.nn import BCEWithLogitsLoss
 from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
+
+import wandb
+from _model_dict import MODEL_DICT
+from base_trainer import TrainerMLP
+from dataset import CreateDataset, PairDataset
 
 
 def _argparse():

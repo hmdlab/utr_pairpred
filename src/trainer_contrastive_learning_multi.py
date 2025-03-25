@@ -12,11 +12,8 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import wandb
 import yaml
-from _model_dict import MODEL_DICT
 from attrdict import AttrDict
-from dataset import PairDatasetCL_Multi, PairDatasetCL_Multi_test
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
@@ -31,6 +28,10 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import MultiStepLR
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+
+import wandb
+from _model_dict import MODEL_DICT
+from dataset import PairDatasetCL_Multi, PairDatasetCL_Multi_test
 from utils import NpairLoss
 
 

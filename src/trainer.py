@@ -8,11 +8,8 @@ import random
 import numpy as np
 import pandas as pd
 import torch
-import wandb
 import yaml
-from _model_dict import MODEL_DICT
 from attrdict import AttrDict
-from dataset import PairDataset, PairDataset_Multi
 from sklearn.metrics import (
     accuracy_score,
     confusion_matrix,
@@ -30,6 +27,10 @@ from torch.nn import BCEWithLogitsLoss
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+
+import wandb
+from _model_dict import MODEL_DICT
+from dataset import PairDataset, PairDataset_Multi
 
 
 def _argparse():

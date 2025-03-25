@@ -5,6 +5,7 @@ gencode*
 GENCODE*
 data/
 results/
+config/multi_spieces
 
 *.gz
 *.csv
