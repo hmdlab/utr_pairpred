@@ -1,6 +1,13 @@
 # UTR_PairPred
 
 ## Installation
+1. Install required libraries  with `poetry install`
+2. Install RNA foundation models.
+- RNA-FM
+```sh 
+
+```
+
 
 ## Data preprocess
 1. Download gencode `Protein-coding transcript sequences` fasta file from [here](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.pc_transcripts.fa.gz)
