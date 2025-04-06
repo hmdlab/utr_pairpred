@@ -9,10 +9,9 @@ import time
 from itertools import product
 from multiprocessing import Pool, cpu_count
 
-import fm
 import pandas as pd
 import torch
-from rinalmo.pretrained import get_pretrained_model
+from multimolecule import RiNALMoModel, RnaFmModel, RnaTokenizer
 from tqdm import tqdm
 
 
@@ -62,30 +61,24 @@ def _argparse():
 
 
 class GetEmbedding:
-    """Get Embedding class"""
+    """Get Embedding using RNA-FM"""
 
     def __init__(self, opt: argparse.Namespace):
         self.max_seq_len = 1022  #
 
         self.over_length = opt.over_length  # "trancate" or "average"
-        self.model, self.alphabet = fm.pretrained.rna_fm_t12(
-            model_location=opt.RNAFM_path
-        )
-        self.batch_converter = self.alphabet.get_batch_converter()
+        self.model = RnaFmModel.from_pretrained("multimolecule/rnafm")
+        self.tokenizer = RnaTokenizer.from_pretrained("multimolecule/rnafm")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.model = self.model.to(self.device)
 
     def _calc_embedding(self, seq: str, seq_name: str) -> torch.Tensor:
-        data = [(f"{seq_name}", f"{seq}")]
-        _, _, batch_tokens = self.batch_converter(data)
-        batch_tokens = batch_tokens.to(self.device)
+        inputs = self.tokenizer(seq, return_tensors="pt")
+        inputs = inputs.to(self.device)
         with torch.no_grad():
-            results = self.model(batch_tokens, repr_layers=[12])
-        token_embeddings = results["representations"][
-            12
-        ]  # dim=(1,seq_len+2,emb_dim=640)
-        batch_tokens = batch_tokens.detach().cpu()
+            outputs = self.model(**inputs)
+        token_embeddings = outputs["last_hidden_state"]  # dim=(1,seq_len+2,emb_dim=640)
         token_embeddings = token_embeddings.detach().cpu()
         return token_embeddings[0][0]  # return embedding of [CLS] token.
 
@@ -148,21 +141,18 @@ class GetEmbeddingRinalMo:
         self.max_seq_len = 1022
         self.method = opt.rinalmo_method
 
-        self.model, self.alphabet = get_pretrained_model(model_name="giga-v1")
+        self.model = RiNALMoModel.from_pretrained("multimolecule/rinalmo")
+        self.tokenizer = RnaTokenizer.from_pretrained("multimolecule/rinalmo")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.model = self.model.to(self.device)
 
     def _calc_embedding(self, seq: str) -> torch.Tensor:
-        data = [seq]
-        tokens = torch.tensor(
-            self.alphabet.batch_tokenize(data), dtype=torch.int64, device=self.device
-        )
-        tokens = tokens.to(self.device)
+        inputs = self.tokenizer(seq, return_tensors="pt")
+        inputs = inputs.to(self.device)
         with torch.no_grad(), torch.cuda.amp.autocast():
-            output = self.model(tokens)
-        token_embeddings = output["representation"]  # dim=(1,seq_len+2,emb_dim=1280)
-        tokens = tokens.detach().cpu()
+            output = self.model(**inputs)
+        token_embeddings = output["last_hidden_state"]  # dim=(1,seq_len+2,emb_dim=1280)
         token_embeddings = token_embeddings.detach().cpu()
         return token_embeddings[0]  # return embedding dim of [seq_len,emb_dim]
 
@@ -250,7 +240,6 @@ class GetEmbeddingWithPad(GetEmbedding):
             return self._calc_embedding(seq, seq_name)
 
 
-
 class GetFeature:
     def __init__(self):
         pass
@@ -264,7 +253,7 @@ class GetFeature:
             if v == 0:
                 base_dic[k] = 1
 
-        feature_map:dict[str,float] = {}
+        feature_map: dict[str, float] = {}
         feature_map["CGperc"] = (base_dic["C"] + base_dic["G"]) / len(seq)
         feature_map["CGratio"] = base_dic["C"] / base_dic["G"]
         feature_map["ATratio"] = base_dic["A"] / base_dic["T"]
@@ -274,7 +263,7 @@ class GetFeature:
 
         return feature_map
 
-    def _RNAfold_energy(self, seq: str, *args)->float:
+    def _RNAfold_energy(self, seq: str, *args) -> float:
         rnaf = subprocess.Popen(
             ["RNAfold", "--noPS"] + list(args),
             stdin=subprocess.PIPE,
@@ -290,7 +279,7 @@ class GetFeature:
         try:
             energy = float(output_lines[1].rsplit("(", 1)[1].strip("()").strip())
         except IndexError:
-            print(f'Error output:{output_lines}')
+            print(f"Error output:{output_lines}")
             energy = -100
         return energy
 
@@ -344,7 +333,7 @@ class GetFeature:
         return feature_dic
 
 
-def main(opt: argparse.Namespace):
+def main(opt: argparse.Namespace):  # noqa: C901
     seq_df = pd.read_csv(opt.i, index_col=0)
     emb_array = []
 
