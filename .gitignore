@@ -6,6 +6,7 @@ GENCODE*
 data/
 results/
 config/multi_spieces
+past_trash/
 
 *.gz
 *.csv

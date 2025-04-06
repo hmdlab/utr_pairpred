@@ -4,7 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from attrdict import AttrDict
+from omegaconf import OmegaConf
 from torch.nn import MultiheadAttention
 
 
@@ -38,7 +38,7 @@ class PairPredMLP(nn.Module):
 
 
 class PairPredMLP_split(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.cfg = cfg
         self.fc5utr = nn.Sequential(
@@ -81,7 +81,7 @@ class PairPredMLP_split(nn.Module):
 
 
 class PairPredMLP_split_large(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.cfg = cfg
         self.fc5utr = nn.Sequential(
@@ -133,7 +133,7 @@ class PairPredMLP_split_large(nn.Module):
 
 
 class PairPredMLP_split_skip(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.cfg = cfg
         self.fc5utr = SkipNetwork(cfg)
@@ -165,7 +165,7 @@ class PairPredMLP_split_skip(nn.Module):
 
 
 class PairPredCNN(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.in_planes = cfg.in_planes
         self.out_planes = cfg.out_planes
@@ -234,7 +234,7 @@ class PairPredCNN(nn.Module):
 
 
 class PairPredCNN_small(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.in_planes = cfg.in_planes
         self.out_planes = cfg.out_planes
@@ -330,7 +330,7 @@ class ResBlock(nn.Module):
 # Belows are extracted from https://gist.github.com/yonedahayato/17b9dac98cdb77ea82fec1ea6516d94c#file-re_training_clip-ipynb
 # Used for PairPred Contrastive Learning.
 class SkipBlock(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         input_dim = cfg.input_dim
         self.fc = nn.Sequential(
@@ -349,7 +349,7 @@ class SkipBlock(nn.Module):
 
 
 class SkipNetwork(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         input_dim = cfg.input_dim
         output_dim = cfg.output_dim
@@ -385,7 +385,7 @@ class SkipNetwork(nn.Module):
 class PairPredCR(nn.Module):
     """Model for PairPred contrastive learning."""
 
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.network_utr5 = SkipNetwork(cfg)
         self.network_utr3 = SkipNetwork(cfg)
@@ -440,7 +440,7 @@ class FFN(nn.Module):
 
 
 class ConcatSelfAttn(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.multi_head_attn = MultiheadAttention(
             embed_dim=cfg.attn_dim,
@@ -470,7 +470,7 @@ class ConcatSelfAttn(nn.Module):
 
 
 class CrossAttn(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.multi_head_attn = MultiheadAttention(
             embed_dim=cfg.attn_dim,
@@ -502,7 +502,7 @@ class CrossAttn(nn.Module):
 
 
 class PairPredCrossAttn(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
         self.crossattn_utr5 = CrossAttn(cfg)
         self.crossattn_utr3 = CrossAttn(cfg)
@@ -535,7 +535,7 @@ class PairPredCrossAttn(nn.Module):
 
 
 class PairPredConcatSelfAttn(nn.Module):
-    def __init__(self, cfg: AttrDict):
+    def __init__(self, cfg: OmegaConf):
         super().__init__()
 
         self.concatattn = nn.ModuleList(

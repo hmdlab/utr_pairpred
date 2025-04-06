@@ -9,11 +9,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9.0"
-attrdict="*"
+biomart = "*"
 biopython="*"
 matplotlib = "*"
 multimolecule = "*"
 numpy = "1.26.4"
+omegaconf = "*"
 pandas = "*"
 pyensembl="*"
 scikit-learn= "*"

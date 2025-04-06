@@ -176,6 +176,17 @@ files = [
 ]
 
 [[package]]
+name = "antlr4-python3-runtime"
+version = "4.9.3"
+description = "ANTLR 4.9.3 runtime for Python 3.7"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "antlr4-python3-runtime-4.9.3.tar.gz", hash = "sha256:f224469b4168294902bb1efa80a8bf7855f24c99aef99cbefc1bcd3cce77881b"},
+]
+
+[[package]]
 name = "anyio"
 version = "4.9.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
@@ -367,21 +378,6 @@ files = [
 ]
 
 [[package]]
-name = "attrdict"
-version = "2.0.1"
-description = "A dict with attribute-style access"
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "attrdict-2.0.1-py2.py3-none-any.whl", hash = "sha256:9432e3498c74ff7e1b20b3d93b45d766b71cbffa90923496f82c4ae38b92be34"},
-    {file = "attrdict-2.0.1.tar.gz", hash = "sha256:35c90698b55c683946091177177a9e9c0713a0860f0e049febd72649ccd77b70"},
-]
-
-[package.dependencies]
-six = "*"
-
-[[package]]
 name = "attrs"
 version = "25.3.0"
 description = "Classes Without Boilerplate"
@@ -438,6 +434,21 @@ chardet = ["chardet"]
 charset-normalizer = ["charset-normalizer"]
 html5lib = ["html5lib"]
 lxml = ["lxml"]
+
+[[package]]
+name = "biomart"
+version = "0.9.2"
+description = "Python API that consumes the biomart webservice"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "biomart-0.9.2-py3-none-any.whl", hash = "sha256:69fd29b42efac99370951eed3f9ece9ae9b01868e85d104d9877f8cb99e7bd0f"},
+    {file = "biomart-0.9.2.tar.gz", hash = "sha256:a75e53b1bea4abae0b3a9deab389333ea00f2f88c75f66ab332002ee30862619"},
+]
+
+[package.dependencies]
+requests = ">=2.2"
 
 [[package]]
 name = "biopython"
@@ -3250,6 +3261,22 @@ files = [
     {file = "nvidia_nvtx_cu11-11.8.86-py3-none-manylinux2014_x86_64.whl", hash = "sha256:979f5b2aef5da164c5c53c64c85c3dfa61b8b4704f4f963bb568bf98fa8472e8"},
     {file = "nvidia_nvtx_cu11-11.8.86-py3-none-win_amd64.whl", hash = "sha256:54031010ee38d774b2991004d88f90bbd7bbc1458a96bbc4b42662756508c252"},
 ]
+
+[[package]]
+name = "omegaconf"
+version = "2.3.0"
+description = "A flexible configuration library"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "omegaconf-2.3.0-py3-none-any.whl", hash = "sha256:7b4df175cdb08ba400f45cae3bdcae7ba8365db4d165fc65fd04b050ab63b46b"},
+    {file = "omegaconf-2.3.0.tar.gz", hash = "sha256:d5d4b6d29955cc50ad50c46dc269bcd92c6e00f5f90d23ab5fee7bfca4ba4cc7"},
+]
+
+[package.dependencies]
+antlr4-python3-runtime = "==4.9.*"
+PyYAML = ">=5.1.0"
 
 [[package]]
 name = "overrides"
@@ -6362,4 +6389,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.0"
-content-hash = "0568708cde4a366a8914ac49912c63ec26ec82161ea73d661d87005a74b0a853"
+content-hash = "8e8e5f515bcee035ae0441f17047d60c6801944df143ed31c671794fbd0b7b28"

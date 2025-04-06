@@ -1,7 +1,7 @@
-CONFIG=/home/ksuga/whole_mrna_predictor/UTR_PairPred/config/human/contrastive_learning_10foldval_rinalmo.yaml
-CONFIG1=/home/ksuga/whole_mrna_predictor/UTR_PairPred/config/human/contrastive_learning_10foldval.yaml
-CONFIG2=/home/ksuga/whole_mrna_predictor/UTR_PairPred/config/human/mlp_split_large_ave_10fold.yaml
-CONFIG3=/home/ksuga/whole_mrna_predictor/UTR_PairPred/config/human/mlp_split_large_rinalmo_10fold.yaml
+CONFIG=../config/human/contrastive_learning_10foldval_rinalmo.yaml
+CONFIG1=../config/human/contrastive_learning_10foldval.yaml
+CONFIG2=../config/human/mlp_split_large_ave_10fold.yaml
+CONFIG3=../config/human/mlp_split_large_rinalmo_10fold.yaml
 
 for CFG in ${CONFIG1} ${CONFIG2} ${CONFIG3}
 do

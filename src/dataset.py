@@ -6,7 +6,7 @@ from typing import Union
 import numpy as np
 import pandas as pd
 import torch
-from attrdict import AttrDict
+from omegaconf import OmegaConf
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
 
@@ -16,7 +16,7 @@ class CreateDataset:
 
     def __init__(
         self,
-        cfg: AttrDict,
+        cfg: OmegaConf,
         datasetclass: Dataset,
         datasetclass_test: Dataset = None,
         kfold=None,
@@ -215,10 +215,10 @@ class PairDataset(Dataset):
             data  # Embedding idx. dim=[sample_num,3]=(utr5idx,utr3idx,label)
         )
 
-        if isinstance(self.seq_emb,list):
+        if isinstance(self.seq_emb, list):
             self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
             self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
-        elif isinstance(self.seq_emb,torch.Tensor):
+        elif isinstance(self.seq_emb, torch.Tensor):
             self.utr5emb = self.seq_emb[: self.seq_emb.size()[0] // 2]
             self.utr3emb = self.seq_emb[self.seq_emb.size()[0] // 2 :]
 
@@ -283,7 +283,7 @@ class PairDatasetRF:
 
 
 class PairDatasetRF_feature:
-    def __init__(self, data: np.array, cfg: AttrDict):
+    def __init__(self, data: np.array, cfg: OmegaConf):
         self.pair_list = data  # [utr5_idx,utr3_idx,label]
 
         self.utr5feature = pd.read_csv(cfg.utr5_feature_path, index_col=0)
@@ -333,7 +333,7 @@ class PairDatasetCL(Dataset):
         self.seq_emb = seq_emb
         self.pair_idx = pair_idx
 
-        if isinstance(self.seq_emb,list):
+        if isinstance(self.seq_emb, list):
             self.utr5emb = torch.stack([e[0] for e in self.seq_emb])
             self.utr3emb = torch.stack([e[1] for e in self.seq_emb])
         elif isinstance(self.seq_emb, torch.Tensor):

@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from attrdict import AttrDict
+from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -17,7 +17,7 @@ from utils import discretize, metrics
 class Trainer:
     def __init__(
         self,
-        cfg: AttrDict,
+        cfg: OmegaConf,
         model: nn.Module,
         dataset_dict: dict,
         loss_fn,
@@ -152,7 +152,7 @@ class Trainer:
 class TrainerMLP(Trainer):
     def __init__(
         self,
-        cfg: AttrDict,
+        cfg: OmegaConf,
         model: nn.Module,
         dataset_dict: dict,
         loss_fn,
@@ -164,7 +164,7 @@ class TrainerMLP(Trainer):
             cfg, model, dataset_dict, loss_fn, optimizer, scheduler, device
         )
 
-    def iterate(self, epoch: int, phase: str): # noqa: C901
+    def iterate(self, epoch: int, phase: str):  # noqa: C901
         if phase == "train":
             self.optimizer.zero_grad()
             self.model.train()
