@@ -16,6 +16,7 @@ past_trash/
 *.pyc
 *.clstr
 
+*.python-version
 *.png
 *.pdf
 
