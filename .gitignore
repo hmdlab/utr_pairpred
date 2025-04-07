@@ -1,6 +1,5 @@
 __pycache__
 wandb
-gscripts
 gencode*
 GENCODE*
 data/
@@ -11,8 +10,6 @@ past_trash/
 *.csv
 *.tsv
 *.pkl
-*.yaml
-*.yml
 *.txt
 *.pth
 *.pt
