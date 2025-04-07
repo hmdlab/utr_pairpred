@@ -1,36 +1,44 @@
 # UTR_PairPred
 
 ## Installation
-1. Install required libraries  with `poetry install`
-2. Install RNA foundation models.
-- RNA-FM
-```sh 
-
+reuirements
+```sh
+python>=3.9.0
+CUDA=11.8
+torch=2.2.0
 ```
+- Install required libraries  with `poetry install`
 
 
 ## Data preprocess
-1. Download gencode `Protein-coding transcript sequences` fasta file from [here](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.pc_transcripts.fa.gz)
-2. Createing sequence df with filtering.
-- run code below in `scripts` dir.
-- you need to change some arguments as you want.
+1. Download GENCODE, `Protein-coding transcript sequences` fasta file from [here](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.pc_transcripts.fa.gz)
+
+2. Createing sequence df from GENCODE raw fasta file.
 ```linux
 cd scripts
 sh create_seq_df.sh
 ```
-3. Getting sequence embedding
-```linux
-sh get_emb.sh
-```
+
+3. Getting sequence embeddings (model inputs).
+- With `RNA-FM`: `sh get_emb_rnafm.sh`
+- With `RiNALMo`: `sh get_emb_rinalmo.sh`
+- For random forest feature: `sh get_rf_feature.sh`
+
 
 ## Training prediction models
-1. Create and put config in `config` dir.
+- Use `src/run_train_XX.py` code for training (replace XX from the below learning method abb table as you want).
+- Config also has name rule `config/<SPECIES>_<LEANING_METHOD>.yaml`
 
-2. Training with this code
-```linux
-python trainer.py --cfg <YOUR_CONFIG_PATH>
+| abb | full |
+| ---- | ---- |
+| cl | contrastive learning |
+| sv | supervised learning |
+| rf | random forest |
+
+- Run example
+```sh
+poetry run python run_train_cl.py --cfg ../config/human_cl.yaml
 ```
-- Results will be saved in wandb.
 
 ## Downstream analysis
 
