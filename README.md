@@ -1,7 +1,7 @@
 # UTR_PairPred
 
 ## Installation
-reuirements
+requirements
 ```sh
 python>=3.9.0
 CUDA=11.8
