@@ -5,7 +5,7 @@ GENCODE*
 data/
 results/
 past_trash/
-notebooks_past
+notebooks_past/
 
 *.gz
 *.csv
