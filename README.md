@@ -1,9 +1,9 @@
 # UTR_PairPred
 
 ## Installation
-- Install required python libraries  with `poetry install
+- Install required python libraries with `poetry install`
 
-requirements
+Basic requirements
 ```sh
 python>=3.9.0
 CUDA=11.8

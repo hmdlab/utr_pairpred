@@ -7,7 +7,6 @@ result_dir: ../results/runs/human_cl/
 data_dir: ../data
 seq_data: ../data/human/gencode44_utr_gene_unique_cdhit09.csv # path to raw data csv
 emb_data: ../data/human/gencode44_embedding_ave_cdhit09.pkl
-te_idx: ../data/human/TE/hek_matched_idx_cdhit09.pkl
 conduct_test: True
 seed: 0
 gpus: [0,1,2,3]
