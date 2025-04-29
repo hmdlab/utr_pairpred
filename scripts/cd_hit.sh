@@ -2,14 +2,14 @@ IDENTITY=0.9
 
 # For human
 
-cd-hit   -i ../data/human/gencode44_gene_unique_5utr.fa \
+cd-hit   -i ../data/human/gencode_v44_gene_unique_5utr.fa \
 		 -o ../results/cdhit/cdhit_gencode44_thresh09_5utr.fa \
 		 -n 5 \
 		 -T 0 \
 		 -M 2000 \
 		 -c $IDENTITY \
 
-cd-hit   -i ../data/human/gencode44_gene_unique_3utr.fa \
+cd-hit   -i ../data/human/gencode_v44_gene_unique_3utr.fa \
 		 -o ../results/cdhit/cdhit_gencode44_thresh09_3utr.fa \
 		 -n 5 \
 		 -T 0 \

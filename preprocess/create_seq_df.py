@@ -42,7 +42,7 @@ def ext_longest_seq(seq_df: pd.DataFrame) -> pd.DataFrame:
     ## Extract longest sequence for each GENE symbol.
     abs_idx_list = []
     unique_genes = seq_df.GENE.value_counts().index.values
-    for gene in tqdm(unique_genes):
+    for gene in tqdm(unique_genes):  # noqa: B007
         tmp_df = seq_df.query("GENE==@gene")
         max_idx = tmp_df["total_len"].idxmax()
         abs_idx_list.append(max_idx)
@@ -54,6 +54,20 @@ def ext_longest_seq(seq_df: pd.DataFrame) -> pd.DataFrame:
 
 def convert_TtoU(seq: str) -> str:
     return seq.replace("T", "U")
+
+
+def create_fasta(df: pd.DataFrame, output_path: str) -> None:
+    # Create 5UTR fasta file
+    utr5_savepath = os.path.basename(output_path).replace(".csv", "_5utr.fa")
+    with open(utr5_savepath, "w") as utr5_file:
+        for _, row in df.iterrows():
+            utr5_file.write(f">{row['ENST_ID']} {row['GENE']}\n{row['5UTR']}\n")
+
+    # Create 3UTR fasta file
+    utr3_savepath = os.path.basename(output_path).replace(".csv", "_3utr.fa")
+    with open(utr3_savepath, "w") as utr3_file:
+        for _, row in df.iterrows():
+            utr3_file.write(f">{row['ENST_ID']} {row['GENE']}\n{row['3UTR']}\n")
 
 
 def main_ensembl(opt: argparse.Namespace):
@@ -115,7 +129,8 @@ def main_ensembl(opt: argparse.Namespace):
                 len_3utr.append(len(utr3))
 
         except ValueError:
-            pass
+            print(f"Error: {enst_id} not found in Ensembl data.")
+            continue
 
     seq_df = pd.DataFrame(
         {
@@ -131,7 +146,7 @@ def main_ensembl(opt: argparse.Namespace):
         }
     )
     max_len_trans_df = ext_longest_seq(seq_df)
-    if opt.max_seq_len != None:
+    if opt.max_seq_len is not None:
         max_len_trans_df = max_len_trans_df[
             (max_len_trans_df["5UTR_len"] >= 10)
             & (max_len_trans_df["5UTR_len"] <= opt.max_seq_len)
@@ -173,13 +188,17 @@ def main(opt: argparse.Namespace):
         if flag_5 and flag_3:
             gene_symbols.append(desc.split("|")[5])
             total_len.append(int(desc.split("|")[6]))
-            UTR5, CDS, UTR3 = regions[0], regions[1], regions[2]  # UTRおよびCDSの位置を取得
-            UTR5_start.append(int(UTR5.split(":")[1].split("-")[0]))  # UTR5の開始位置をリストに追加
-            UTR5_end.append(int(UTR5.split(":")[1].split("-")[1]))  # UTR5の終了位置をリストに追加
-            CDS_start.append(int(CDS.split(":")[1].split("-")[0]))  # CDSの開始位置をリストに追加
-            CDS_end.append(int(CDS.split(":")[1].split("-")[1]))  # CDSの終了位置をリストに追加
-            UTR3_start.append(int(UTR3.split(":")[1].split("-")[0]))  # UTR3の開始位置をリストに追加
-            UTR3_end.append(int(UTR3.split(":")[1].split("-")[1]))  # UTR3の終了位置をリストに追加
+            UTR5, CDS, UTR3 = (
+                regions[0],
+                regions[1],
+                regions[2],
+            )
+            UTR5_start.append(int(UTR5.split(":")[1].split("-")[0]))
+            UTR5_end.append(int(UTR5.split(":")[1].split("-")[1]))
+            CDS_start.append(int(CDS.split(":")[1].split("-")[0]))
+            CDS_end.append(int(CDS.split(":")[1].split("-")[1]))
+            UTR3_start.append(int(UTR3.split(":")[1].split("-")[0]))
+            UTR3_end.append(int(UTR3.split(":")[1].split("-")[1]))
             seq_dict[enst_id] = seq
 
     seq_df = pd.DataFrame(
@@ -205,10 +224,10 @@ def main(opt: argparse.Namespace):
         }
     )
     max_len_trans_df = ext_longest_seq(seq_df)
-    if opt.max_seq_len == None:
+    if opt.max_seq_len is None:
         max_len_trans_df = max_len_trans_df[
             (max_len_trans_df["5UTR_len"] >= 10) & (max_len_trans_df["3UTR_len"] >= 10)
-        ]  ## filtering by minimum seq length
+        ]  # filtering by minimum seq length
 
     else:
         max_len_trans_df = max_len_trans_df[
@@ -223,7 +242,10 @@ def main(opt: argparse.Namespace):
 
 if __name__ == "__main__":
     opt = _argparse()
-    if opt.ensembl_dir == None:
+    os.makedirs("../data/human", exist_ok=True)
+    os.makedirs("../data/mouse", exist_ok=True)
+
+    if opt.ensembl_dir is None:
         main(opt)
     else:
         main_ensembl(opt)
