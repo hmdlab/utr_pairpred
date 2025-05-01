@@ -48,7 +48,6 @@ poetry run python run_train_cl.py --cfg ../config/human_cl.yaml
 ```
 
 ## Downstream analysis
-## Downstream analysis
 - [`crossval_analysis.ipynb`](./notebooks/crossval_analysis.ipynb):  
   Performs cross-validation analysis to evaluate the consistency of results across experiments. Visualizes the distribution of cosine similarity and correlations between different experiments. 
 

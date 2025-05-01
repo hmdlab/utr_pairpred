@@ -6,6 +6,7 @@ data/
 results/
 past_trash/
 notebooks_past/
+mapping-pipeline
 
 *.gz
 *.csv
