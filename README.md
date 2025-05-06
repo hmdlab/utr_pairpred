@@ -16,6 +16,8 @@ torch=2.2.0
 
 
 ## Data preprocess
+**Processed sequence embedding & sequence csv files can be downloaded from [here](https://waseda.box.com/v/utr-pairpred-data.)**
+
 1. Download GENCODE, `Protein-coding transcript sequences` fasta file from [here](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_44/gencode.v44.pc_transcripts.fa.gz)
 
 2. Createing sequence df from GENCODE raw fasta file.
@@ -30,6 +32,8 @@ sh create_seq_df.sh
 - With `RNA-FM`: `sh get_emb_rnafm.sh`
 - With `RiNALMo`: `sh get_emb_rinalmo.sh`
 - For random forest feature: `sh get_rf_feature.sh`
+
+* Processed sequence embedding & sequence csv files can be downloaded from [here](https://waseda.box.com/v/utr-pairpred-data.)
 
 
 ## Training prediction models
