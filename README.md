@@ -51,6 +51,56 @@ sh create_seq_df.sh
 poetry run python run_train_cl.py --cfg ../config/human_cl.yaml
 ```
 
+## Cross-species evaluation
+Train models on one species from scratch and evaluate on another species' data (e.g., train on human, evaluate on mouse, or vice versa). This workflow does not use cross-validation (kfold=1).
+
+**Important**: This will train models from scratch, not use pre-trained weights.
+
+- For contrastive learning models:
+```sh
+cd scripts
+sh run_cross_species_eval_cl.sh
+```
+This will:
+1. Train a CL model on human data (60 epochs)
+2. Evaluate the trained model on mouse data
+3. Train a CL model on mouse data (60 epochs)
+4. Evaluate the trained model on human data
+
+- For supervised learning models:
+```sh
+cd scripts
+sh run_cross_species_eval_sv.sh
+```
+This will:
+1. Train an SV model on human data (100 epochs)
+2. Evaluate the trained model on mouse data
+3. Train an SV model on mouse data (100 epochs)
+4. Evaluate the trained model on human data
+
+- You can also run training and evaluation separately:
+```sh
+# Train on human
+poetry run python ../src/run_train_cl.py --cfg ../config/human_cl_cross_species.yaml
+
+# Evaluate on mouse
+poetry run python ../src/run_cross_species_eval.py \
+    --cfg ../config/human_cl_cross_species.yaml \
+    --model_path ../results/runs/cross_species_human_cl/best_model.pth \
+    --eval_species mouse \
+    --method cl
+```
+
+### Evaluation Parameters:
+- `--cfg`: Config file for the training species
+- `--model_path`: Path to the trained model (.pth file)
+- `--eval_species`: Species to evaluate on (human or mouse)
+- `--method`: Learning method (cl or sv)
+
+### Results:
+- Training results: `results/runs/cross_species_{species}_{method}/`
+- Cross-species evaluation results: `results/runs/cross_species_{species}_{method}/cross_species_*_eval_{eval_species}/`
+
 ## Downstream analysis
 - [`crossval_analysis.ipynb`](./notebooks/crossval_analysis.ipynb):  
   Performs cross-validation analysis to evaluate the consistency of results across experiments. Visualizes the distribution of cosine similarity and correlations between different experiments. 

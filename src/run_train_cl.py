@@ -98,7 +98,7 @@ def main(opt: argparse.Namespace):
     """main func"""
     cfg = _parse_config(opt.cfg)
     cfg.seed = opt.seed
-    cfg.result_dir = cfg.result_dir + f"_seed{cfg.seed}/"
+    cfg.result_dir = cfg.result_dir
 
     ## Setup section
     _random_seeds(cfg.seed)
