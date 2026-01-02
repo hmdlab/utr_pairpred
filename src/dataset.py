@@ -128,6 +128,15 @@ class CreateDataset:
         if self.cfg.multi_species:
             raise NotImplementedError()
 
+        # For cross-species training, use all data for both train and val
+        if hasattr(self.cfg, 'cross_species') and self.cfg.cross_species:
+            all_pairs = self.create_pos_neg_pair(self.all_idx)
+            pair_set_dict = {"train": all_pairs, "val": all_pairs}
+            # If conducting test (for evaluation), also add test dataset
+            if self.cfg.conduct_test:
+                pair_set_dict["test"] = all_pairs
+            return pair_set_dict
+
         train_idx, val_idx = train_test_split(self.all_idx, test_size=test_size)
         val_idx, test_idx = train_test_split(val_idx, test_size=0.5)
         pair_set_dict = {"train": train_idx, "val": val_idx, "test": test_idx}
@@ -153,6 +162,15 @@ class CreateDataset:
         Returns:
             dict : dict of pair_idx_list for each phase.
         """
+
+        # For cross-species training, use all data for both train and val
+        if hasattr(self.cfg, 'cross_species') and self.cfg.cross_species:
+            # For training, use index-based pairs (same as regular training)
+            pair_set_dict = {"train": self.all_idx, "val": self.all_idx}
+            # If conducting test (for evaluation), create pos/neg pairs
+            if self.cfg.conduct_test:
+                pair_set_dict["test"] = self.create_pos_neg_pair(self.all_idx)
+            return pair_set_dict
 
         train_idx, val_idx = train_test_split(self.all_idx, test_size=test_size)
         pair_set_dict = {"train": train_idx, "val": val_idx}
