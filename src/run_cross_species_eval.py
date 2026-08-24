@@ -9,13 +9,13 @@ import random
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn.functional as F
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-import torch.nn.functional as F
 
 from _model_dict import MODEL_DICT
-from dataset import CreateDataset, PairDatasetCL_test, PairDataset
+from dataset import CreateDataset, PairDataset, PairDatasetCL_test
 from utils import discretize, metrics
 
 
@@ -157,7 +157,7 @@ def override_data_paths(cfg, eval_species):
             raise ValueError(f"Unknown embedding_type: {cfg.emb_type}. Must be 'rinalmo' or 'rnafm'")
     else:
         raise ValueError(f"Unknown species: {eval_species}")
-    
+
     return cfg
 
 def main(opt: argparse.Namespace):
@@ -247,8 +247,8 @@ def main(opt: argparse.Namespace):
     scores_df.to_csv(os.path.join(result_dir, "scores.csv"), index=False)
 
     print(f"\nResults saved to: {result_dir}")
-    print(f"  - evaluation_summary.json")
-    print(f"  - scores.csv")
+    print("  - evaluation_summary.json")
+    print("  - scores.csv")
 
 
 if __name__ == "__main__":
