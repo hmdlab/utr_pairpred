@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "UTR_PairPred"
 version = "1.0.0"
-description = "Original dir of Deciphering the comprehensive relationship between 5'UTR and 3'UTR sequence with deep learning"
-authors = ["Kanta Suga"]
+description = "Deciphering the comprehensive relationship between 5'UTR and 3'UTR sequence with deep learning"
+authors = ["Kanta Suga", "Keisuke Yamada", "Michiaki Hamada <mhamada@waseda.jp>"]
 package-mode = false
 license = "MIT"
 readme = "README.md"
@@ -18,8 +18,10 @@ omegaconf = "*"
 pandas = "*"
 pyensembl="*"
 scikit-learn= "*"
+scipy = "*"
 seaborn = "*"
 statannotations="*"
+statsmodels = "*"
 torch = {version="2.2.0",source='torch_cu118'}
 torchvision = {version='0.17.0',source='torch_cu118'}
 tqdm = "*"
@@ -41,6 +43,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 line-length = 120
+target-version = "py39"
 
 
 [tool.ruff.lint]

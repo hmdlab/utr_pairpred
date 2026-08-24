@@ -47,8 +47,11 @@ def _argparse():
     args.add_argument(
         "--RNAFM_path",
         type=str,
-        help="path to pretrained params of RNA-FM",
-        default="/home/ksuga/whole_mrna_predictor/RNA-FM/pretrained/RNA-FM_pretrained.pth",
+        help=(
+            "path to the pretrained RNA-FM checkpoint "
+            "(download from https://github.com/ml4bio/RNA-FM)"
+        ),
+        default="../pretrained/RNA-FM_pretrained.pth",
     )
     args.add_argument(
         "--format",
