@@ -253,15 +253,6 @@ UTR_PairPred/
 └── README.md
 ```
 
-## Reproducibility & outputs
-- No image or tabular artifact is tracked. `results/`, `docs/figures/` and every
-  `*.png` / `*.pdf` / `*.svg` / `*.csv` are git-ignored, so a fresh clone contains code
-  only — every figure and table comes back by re-running the pipelines documented above.
-  The scripts create their own output directories, so `docs/figures/` does not need to
-  exist beforehand.
-- Consequently the repository holds no rendered copy of the figures. Compare against the
-  published article's figures when checking a reproduction.
-
 ## Citation
 The paper has been accepted at *Bioinformatics*; the DOI, volume, and page numbers are not
 yet assigned and will be filled in once published.
